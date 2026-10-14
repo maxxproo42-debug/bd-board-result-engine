@@ -48,8 +48,20 @@ def api_institute():
     if not eiin:
         return jsonify({"success": False, "error": "প্রতিষ্ঠানের EIIN নম্বর প্রদান করুন।"}), 400
 
-    result = engine.get_institute_result(eiin_no=eiin, exam=exam, year=year)
+    result = engine.get_institute_result(eiin_no=eiin, exam=exam, year=year, board=board)
     return jsonify(result)
+
+@app.route('/api/institute/pdf')
+def api_institute_pdf():
+    pdf_bytes, filename = engine.download_institution_pdf()
+    if pdf_bytes:
+        from flask import Response
+        return Response(
+            pdf_bytes,
+            mimetype='application/pdf',
+            headers={'Content-Disposition': f'attachment; filename="{filename}"'}
+        )
+    return jsonify({"success": False, "error": "PDF রেজাল্ট শিট পাওয়া যায়নি।"}), 404
 
 @app.route('/api/health')
 def health():

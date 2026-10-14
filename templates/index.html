@@ -654,7 +654,7 @@
                     <label class="input-label">
                         <span>শিক্ষা বোর্ড</span>
                     </label>
-                    <select id="inst_board_select" class="custom-input">
+                    <select id="inst_board_select" class="custom-input" onchange="syncInstToStudent()">
                         <option value="dhaka">🏛️ ঢাকা বোর্ড</option>
                         <option value="dinajpur" selected>🟢 দিনাজপুর বোর্ড</option>
                         <option value="chittagong">🌊 চট্টগ্রাম বোর্ড</option>
@@ -673,7 +673,7 @@
                     <label class="input-label">
                         <span>পরীক্ষার নাম</span>
                     </label>
-                    <select id="inst_exam_select" class="custom-input">
+                    <select id="inst_exam_select" class="custom-input" onchange="syncInstToStudent()">
                         <option value="HSC" selected>🎓 এইচএসসি / আলিম</option>
                         <option value="SSC">🏫 এসএসসি / দাখিল</option>
                     </select>
@@ -683,7 +683,7 @@
                     <label class="input-label">
                         <span>পাসের সাল</span>
                     </label>
-                    <select id="inst_year_select" class="custom-input">
+                    <select id="inst_year_select" class="custom-input" onchange="syncInstToStudent()">
                         <option value="2026">২০২৬ [লাইভ]</option>
                         <option value="2025" selected>২০২৫</option>
                         <option value="2024">২০২৪</option>
@@ -759,6 +759,31 @@
         document.getElementById('institute-section').style.display = (tab === 'institute') ? 'block' : 'none';
         document.getElementById('sms-section').style.display = (tab === 'sms') ? 'block' : 'none';
         hideError();
+
+        if (tab === 'institute') {
+            syncStudentToInst();
+        } else if (tab === 'student') {
+            syncInstToStudent();
+        }
+    }
+
+    function syncStudentToInst() {
+        const b = document.getElementById('board_select').value;
+        const ex = document.getElementById('exam_select').value;
+        const yr = document.getElementById('year_select').value;
+        if (document.getElementById('inst_board_select')) document.getElementById('inst_board_select').value = b;
+        if (document.getElementById('inst_exam_select')) document.getElementById('inst_exam_select').value = (ex === 'JSC') ? 'SSC' : ex;
+        if (document.getElementById('inst_year_select')) document.getElementById('inst_year_select').value = yr;
+    }
+
+    function syncInstToStudent() {
+        const b = document.getElementById('inst_board_select') ? document.getElementById('inst_board_select').value : null;
+        const ex = document.getElementById('inst_exam_select') ? document.getElementById('inst_exam_select').value : null;
+        const yr = document.getElementById('inst_year_select') ? document.getElementById('inst_year_select').value : null;
+        if (b && document.getElementById('board_select')) document.getElementById('board_select').value = b;
+        if (ex && document.getElementById('exam_select')) document.getElementById('exam_select').value = ex;
+        if (yr && document.getElementById('year_select')) document.getElementById('year_select').value = yr;
+        updateExamYearState();
     }
 
     function showError(msg) {
@@ -1001,11 +1026,44 @@
         const exam = document.getElementById('inst_exam_select').value;
         const year = document.getElementById('inst_year_select').value;
         const btn = document.getElementById('institute-btn');
+        const btnText = btn.querySelector('.btn-text');
 
-        if (!eiin) return;
+        if (!eiin) {
+            showError('অনুগ্রহ করে প্রতিষ্ঠানের ৬ সংখ্যার EIIN নম্বর প্রদান করুন।');
+            document.getElementById('eiin_input').focus();
+            return;
+        }
 
         btn.classList.add('loading');
         btn.disabled = true;
+
+        const originalBtnHtml = btnText.innerHTML;
+        const steps = [
+            '🤖 AI দিয়ে সিকিউরিটি কোড সমাধান হচ্ছে...',
+            '⚡ সরকারি সার্ভার থেকে প্রতিষ্ঠান তথ্য আনা হচ্ছে...',
+            '🏫 ফলাফল ও পাস রেট পরিসংখ্যান তৈরি হচ্ছে...'
+        ];
+        let stepIdx = 0;
+        btnText.innerHTML = steps[0];
+        const cycleInterval = setInterval(() => {
+            stepIdx = (stepIdx + 1) % steps.length;
+            btnText.innerHTML = steps[stepIdx];
+        }, 1300);
+
+        // Immediate visual feedback showing exact Year, EIIN and Exam being fetched
+        const container = document.getElementById('result-container');
+        container.innerHTML = `
+            <div class="sheet-card" style="text-align:center; padding:3rem 1.5rem;">
+                <div class="spinner" style="display:inline-block; width:44px; height:44px; border-width:4px; border-color:rgba(56,189,248,0.2); border-top-color:#38bdf8; margin-bottom:1.2rem;"></div>
+                <div style="display:inline-block; background:rgba(56,189,248,0.12); color:#38bdf8; font-weight:800; padding:0.35rem 0.9rem; border-radius:8px; border:1px solid rgba(56,189,248,0.3); font-size:1rem; margin-bottom:0.8rem;">
+                    📅 ${year} সালের ফলাফল অনুসন্ধান চলছে...
+                </div>
+                <h3 style="color:#ffffff; font-size:1.15rem; margin-bottom:0.4rem;">EIIN: <span style="color:#38bdf8; letter-spacing:0.05em;">${eiin}</span> · পরীক্ষা: ${exam} · সাল: ${year}</h3>
+                <p style="color:#94a3b8; font-size:0.9rem;">সরকারি সার্ভার থেকে ${year} সালের বিস্তারিত পরিসংখ্যান ও শিক্ষার্থীদের তালিকা প্রস্তুত করা হচ্ছে</p>
+            </div>
+        `;
+        container.style.display = 'block';
+        container.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
 
         try {
             const res = await fetch('/api/institute', {
@@ -1024,8 +1082,10 @@
         } catch (err) {
             showError('সার্ভারের সাথে যোগাযোগে ত্রুটি হয়েছে: ' + err.message);
         } finally {
+            clearInterval(cycleInterval);
             btn.classList.remove('loading');
             btn.disabled = false;
+            btnText.innerHTML = originalBtnHtml;
         }
     }
 
@@ -1118,41 +1178,80 @@
         const container = document.getElementById('result-container');
 
         let groupsHtml = '';
-        if (data.groups) {
+        if (data.groups && Object.keys(data.groups).length > 0) {
             for (const [groupName, items] of Object.entries(data.groups)) {
-                const chips = items.map(item => `<span class="roll-chip" onclick="searchThisRoll('${item.split('[')[0]}')">${item}</span>`).join('');
-                groupsHtml += `
-                    <div>
-                        <div class="group-tag">📌 ${groupName} (${items.length} জন শিক্ষার্থী)</div>
-                        <div class="rolls-cloud">
-                            ${chips || 'কোনো রোল নেই'}
+                const isRollList = items.length > 0 && /^\d+/.test(items[0].trim());
+                let bodyHtml = '';
+                if (isRollList) {
+                    const chips = items.map(item => `<span class="roll-chip" onclick="searchThisRoll('${item.split('[')[0]}')">${item}</span>`).join('');
+                    bodyHtml = `
+                        <div>
+                            <div class="group-tag">📌 বিভাগ: ${groupName} (${items.length} জন শিক্ষার্থী)</div>
+                            <div class="rolls-cloud">
+                                ${chips}
+                            </div>
                         </div>
-                    </div>
-                `;
+                    `;
+                } else {
+                    const badges = items.map(item => {
+                        let badgeBg = '#f1f5f9';
+                        let badgeColor = '#334155';
+                        if (item.includes('উত্তীর্ণ') || item.includes('PASSED')) {
+                            badgeBg = '#dcfce7'; badgeColor = '#15803d';
+                        } else if (item.includes('অনুত্তীর্ণ') || item.includes('FAILED') || item.includes('NOT PASSED')) {
+                            badgeBg = '#fee2e2'; badgeColor = '#b91c1c';
+                        } else if (item.includes('5.00') || item.includes('GPA5') || item.includes('GPA 5')) {
+                            badgeBg = '#fef9c3'; badgeColor = '#854d0e';
+                        }
+                        return `<span style="display:inline-block; background:${badgeBg}; color:${badgeColor}; font-weight:700; font-size:0.92rem; padding:0.4rem 0.85rem; border-radius:8px; border:1px solid rgba(0,0,0,0.06);">${item}</span>`;
+                    }).join('');
+                    bodyHtml = `
+                        <div style="background:#f8fafc; border:1px solid #e2e8f0; border-radius:12px; padding:1.1rem; margin-top:0.85rem;">
+                            <div style="font-weight:800; font-size:1.05rem; color:#0f766e; margin-bottom:0.6rem;">📌 ${groupName}</div>
+                            <div style="display:flex; flex-wrap:wrap; gap:0.65rem;">
+                                ${badges}
+                            </div>
+                        </div>
+                    `;
+                }
+                groupsHtml += bodyHtml;
             }
         }
+
+        const downloadPdfBtn = data.has_pdf ? `
+            <a href="/api/institute/pdf" target="_blank" class="btn-print" style="text-decoration:none; display:inline-flex; align-items:center; gap:0.4rem; background:#059669; border-color:#059669; color:#ffffff;" title="বোর্ডের অফিসিয়াল রেজাল্ট শিট ডাউনলোড করুন">
+                📥 অফিসিয়াল বোর্ড PDF
+            </a>
+        ` : '';
 
         container.innerHTML = `
             <div class="sheet-card">
                 <div class="sheet-header">
                     <div class="board-info">
+                        <div style="display:inline-flex; align-items:center; gap:0.5rem; background:rgba(2,132,199,0.1); border:1px solid rgba(2,132,199,0.3); border-radius:8px; padding:0.25rem 0.75rem; margin-bottom:0.6rem; color:#0284c7; font-weight:800; font-size:0.95rem;">
+                            📅 ${data.year} সালের ফলাফল
+                        </div>
                         <h2>${data.institute || 'INSTITUTE RESULT'}</h2>
-                        <h4>EIIN: ${data.eiin} · ${data.exam_title || ''}</h4>
+                        <h4>EIIN: ${data.eiin} · ${data.board || ''} · ${data.exam_title || ''}</h4>
+                        ${data.centre || data.thana ? `<p style="color:#64748b; font-size:0.88rem; margin-top:0.35rem; font-weight:600;">📍 কেন্দ্র ও এলাকা: <b>${data.centre || data.thana}</b></p>` : ''}
                     </div>
-                    <button class="btn-print" onclick="window.print()">
-                        🖨️ প্রিন্ট / PDF সংরক্ষণ
-                    </button>
+                    <div style="display:flex; align-items:center; gap:0.6rem; flex-wrap:wrap;">
+                        ${downloadPdfBtn}
+                        <button class="btn-print" onclick="window.print()">
+                            🖨️ প্রিন্ট
+                        </button>
+                    </div>
                 </div>
 
                 <div class="sheet-body">
                     <div class="inst-stats">
                         <div class="stat-box">
                             <div class="num" style="color:#0284c7;">${data.appeared || '0'}</div>
-                            <div class="lbl">পরীক্ষার্থী</div>
+                            <div class="lbl">অংশগ্রহণকারী</div>
                         </div>
                         <div class="stat-box">
                             <div class="num" style="color:#16a34a;">${data.passed || '0'}</div>
-                            <div class="lbl">উত্তীর্ণ</div>
+                            <div class="lbl">উত্তীর্ণ (Passed)</div>
                         </div>
                         <div class="stat-box">
                             <div class="num" style="color:#d97706;">${data.gpa5 || '0'}</div>
@@ -1164,9 +1263,9 @@
                         </div>
                     </div>
 
-                    <h4 style="margin:1.5rem 0 0.5rem; font-size:1.05rem; font-weight:700; color:#0f172a;">গ্রুপভিত্তিক শিক্ষার্থীদের ফলাফল তালিকা:</h4>
-                    <p style="font-size:0.85rem; color:#64748b; margin-bottom:1rem;">(যেকোনো রোলে ক্লিক করলে তাৎক্ষণিক তার একক মার্কশিট লোড হবে)</p>
-                    ${groupsHtml}
+                    <h4 style="margin:1.5rem 0 0.5rem; font-size:1.05rem; font-weight:700; color:#0f172a;">গ্রুপভিত্তিক ফলাফল ও বিভাগীয় পরিসংখ্যান:</h4>
+                    ${data.groups && Object.keys(data.groups).length > 0 && /^\d+/.test(Object.values(data.groups)[0][0] || '') ? '<p style="font-size:0.85rem; color:#64748b; margin-bottom:1rem;">(যেকোনো রোলে ক্লিক করলে তাৎক্ষণিক তার একক মার্কশিট লোড হবে)</p>' : ''}
+                    ${groupsHtml || '<p style="color:#64748b; font-size:0.9rem;">গ্রুপভিত্তিক বিস্তারিত তথ্য উপলব্ধ নেই।</p>'}
                 </div>
             </div>
         `;
