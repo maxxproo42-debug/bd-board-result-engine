@@ -1,0 +1,6 @@
+flask
+requests
+Pillow
+numpy
+ddddocr
+gunicorn

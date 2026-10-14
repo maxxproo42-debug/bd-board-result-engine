@@ -1,0 +1,1145 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>দিনাজপুর শিক্ষা বোর্ড রেজাল্ট পোর্টাল (২০১৫ - ২০২৬)</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.2/dist/confetti.browser.min.js"></script>
+    <style>
+        :root {
+            --bg-dark: #0a0e17;
+            --bg-card: rgba(18, 24, 38, 0.75);
+            --bg-card-hover: rgba(26, 34, 52, 0.85);
+            --border-glass: rgba(255, 255, 255, 0.08);
+            --border-glow: rgba(16, 185, 129, 0.3);
+            --accent-green: #10b981;
+            --accent-emerald: #059669;
+            --accent-cyan: #06b6d4;
+            --accent-gold: #f59e0b;
+            --accent-rose: #f43f5e;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --text-dim: #64748b;
+            --font-main: 'Outfit', 'Hind Siliguri', sans-serif;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            background-color: var(--bg-dark);
+            color: var(--text-main);
+            font-family: var(--font-main);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow-x: hidden;
+            background-image: 
+                radial-gradient(circle at 15% 15%, rgba(16, 185, 129, 0.12) 0%, transparent 40%),
+                radial-gradient(circle at 85% 25%, rgba(6, 182, 212, 0.12) 0%, transparent 45%),
+                radial-gradient(circle at 50% 85%, rgba(245, 158, 11, 0.08) 0%, transparent 50%);
+            background-attachment: fixed;
+        }
+
+        .app-container {
+            max-width: 960px;
+            margin: 0 auto;
+            padding: 2.5rem 1.25rem 4rem;
+            width: 100%;
+            flex: 1;
+        }
+
+        .app-header {
+            text-align: center;
+            margin-bottom: 2.5rem;
+            position: relative;
+        }
+
+        .board-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.4rem 1.1rem;
+            border-radius: 9999px;
+            background: rgba(16, 185, 129, 0.12);
+            border: 1px solid rgba(16, 185, 129, 0.25);
+            color: var(--accent-green);
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 0 20px rgba(16, 185, 129, 0.15);
+        }
+
+        .live-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background-color: var(--accent-green);
+            box-shadow: 0 0 10px var(--accent-green);
+            animation: pulse-dot 1.5s infinite;
+        }
+
+        @keyframes pulse-dot {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.4; transform: scale(1.2); }
+        }
+
+        .app-title {
+            font-size: clamp(1.8rem, 4vw, 2.75rem);
+            font-weight: 800;
+            background: linear-gradient(135deg, #ffffff 0%, #cbd5e1 50%, #10b981 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 0.75rem;
+            letter-spacing: -0.02em;
+        }
+
+        .app-subtitle {
+            color: var(--text-muted);
+            font-size: 1.05rem;
+            max-width: 650px;
+            margin: 0 auto;
+            line-height: 1.6;
+        }
+
+        .tabs-nav {
+            display: flex;
+            background: rgba(15, 23, 42, 0.6);
+            padding: 0.35rem;
+            border-radius: 14px;
+            border: 1px solid var(--border-glass);
+            margin-bottom: 2rem;
+            backdrop-filter: blur(12px);
+            gap: 0.35rem;
+        }
+
+        .tab-btn {
+            flex: 1;
+            padding: 0.75rem 1rem;
+            background: transparent;
+            border: none;
+            color: var(--text-muted);
+            font-family: var(--font-main);
+            font-size: 0.95rem;
+            font-weight: 600;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+
+        .tab-btn:hover {
+            color: var(--text-main);
+            background: rgba(255, 255, 255, 0.04);
+        }
+
+        .tab-btn.active {
+            background: linear-gradient(135deg, rgba(16, 185, 129, 0.2), rgba(6, 182, 212, 0.2));
+            color: #ffffff;
+            border: 1px solid rgba(16, 185, 129, 0.3);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.25);
+        }
+
+        .glass-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-glass);
+            border-radius: 20px;
+            padding: 2rem;
+            backdrop-filter: blur(16px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+            margin-bottom: 2.5rem;
+            transition: border-color 0.3s;
+        }
+
+        .glass-card:focus-within {
+            border-color: var(--border-glow);
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 1.25rem;
+            margin-bottom: 1.75rem;
+        }
+
+        .input-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .input-label {
+            font-size: 0.88rem;
+            font-weight: 600;
+            color: var(--text-muted);
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .input-label span.req { color: var(--accent-rose); }
+        .input-label span.opt { color: var(--text-dim); font-weight: 400; }
+
+        .custom-input {
+            width: 100%;
+            padding: 0.85rem 1.1rem;
+            background: rgba(10, 14, 23, 0.7);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            border-radius: 12px;
+            color: #ffffff;
+            font-family: var(--font-main);
+            font-size: 1.02rem;
+            letter-spacing: 0.02em;
+            transition: all 0.2s;
+        }
+
+        .custom-input:focus {
+            outline: none;
+            border-color: var(--accent-green);
+            background: rgba(10, 14, 23, 0.9);
+            box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.2);
+        }
+
+        .custom-input option {
+            background: #0f172a;
+            color: #ffffff;
+        }
+
+        /* Captcha Card Box */
+        .captcha-box {
+            background: rgba(15, 23, 42, 0.8);
+            border: 1px dashed rgba(6, 182, 212, 0.4);
+            border-radius: 14px;
+            padding: 1.25rem;
+            margin-bottom: 1.5rem;
+            display: none;
+            animation: fadeIn 0.3s ease-in;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-8px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .captcha-inner {
+            display: flex;
+            align-items: center;
+            gap: 1.25rem;
+            flex-wrap: wrap;
+        }
+
+        .captcha-img-wrap {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            background: #ffffff;
+            padding: 0.45rem 0.75rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .captcha-img-wrap img {
+            height: 62px;
+            display: block;
+            border-radius: 6px;
+            filter: contrast(135%) brightness(105%);
+            image-rendering: -webkit-optimize-contrast;
+        }
+
+        .btn-reload-captcha {
+            background: #f1f5f9;
+            border: 1px solid #cbd5e1;
+            padding: 0.55rem 0.8rem;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1.15rem;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .btn-reload-captcha:hover { background: #e2e8f0; transform: rotate(45deg); }
+
+        .btn-submit {
+            width: 100%;
+            padding: 0.95rem 1.5rem;
+            border-radius: 12px;
+            border: none;
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            color: #ffffff;
+            font-family: var(--font-main);
+            font-size: 1.05rem;
+            font-weight: 700;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.6rem;
+            box-shadow: 0 8px 25px rgba(16, 185, 129, 0.35);
+            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .btn-submit:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 30px rgba(16, 185, 129, 0.45);
+            background: linear-gradient(135deg, #34d399 0%, #059669 100%);
+        }
+
+        .btn-submit:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .btn-submit .spinner {
+            width: 20px;
+            height: 20px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-top-color: #ffffff;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+            display: none;
+        }
+
+        .btn-submit.loading .spinner { display: inline-block; }
+        .btn-submit.loading .btn-text { display: none; }
+
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        .error-banner {
+            display: none;
+            background: rgba(244, 63, 94, 0.12);
+            border: 1px solid rgba(244, 63, 94, 0.3);
+            color: #fda4af;
+            padding: 1rem 1.25rem;
+            border-radius: 12px;
+            margin-bottom: 1.5rem;
+            font-size: 0.95rem;
+            align-items: center;
+            gap: 0.75rem;
+            line-height: 1.5;
+        }
+
+        .result-container {
+            display: none;
+            animation: slideUp 0.4s ease-out;
+        }
+
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .sheet-card {
+            background: #ffffff;
+            color: #1e293b;
+            border-radius: 18px;
+            overflow: hidden;
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.5);
+            position: relative;
+        }
+
+        .sheet-header {
+            background: linear-gradient(135deg, #07b699 0%, #0f766e 100%);
+            color: #ffffff;
+            padding: 1.75rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .board-info h2 {
+            font-size: 1.25rem;
+            font-weight: 800;
+            letter-spacing: 0.02em;
+        }
+
+        .board-info h4 {
+            font-size: 1rem;
+            font-weight: 700;
+            color: #ecfdf5;
+            margin-top: 0.35rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .btn-print {
+            background: rgba(255, 255, 255, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.4);
+            color: #ffffff;
+            padding: 0.55rem 1.1rem;
+            border-radius: 8px;
+            font-family: var(--font-main);
+            font-size: 0.88rem;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+            transition: all 0.2s;
+        }
+
+        .btn-print:hover { background: #ffffff; color: #0f766e; }
+        .sheet-body { padding: 2rem; }
+
+        .score-banner {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 14px;
+            padding: 1.25rem 1.75rem;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .score-item-lead {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .gpa-circle {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #10b981 0%, #047857 100%);
+            color: #ffffff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.4rem;
+            font-weight: 800;
+            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.35);
+        }
+
+        .gpa-circle.gold {
+            background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+            box-shadow: 0 4px 15px rgba(245, 158, 11, 0.45);
+        }
+
+        .score-meta h3 { font-size: 1.2rem; font-weight: 700; color: #0f172a; }
+        .score-meta p { font-size: 0.88rem; color: #64748b; }
+
+        .bio-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 0.75rem 1.5rem;
+            margin-bottom: 2rem;
+            background: #ffffff;
+            padding: 1rem 0;
+            border-bottom: 1px dashed #cbd5e1;
+        }
+
+        .bio-row { display: flex; font-size: 0.92rem; line-height: 1.6; }
+        .bio-lbl { width: 140px; color: #64748b; font-weight: 600; flex-shrink: 0; }
+        .bio-val { color: #0f172a; font-weight: 700; word-break: break-word; }
+
+        .marks-table-wrap { overflow-x: auto; border-radius: 12px; border: 1px solid #e2e8f0; }
+        .marks-table { width: 100%; border-collapse: collapse; text-align: left; font-size: 0.92rem; }
+        .marks-table th { background: #f1f5f9; color: #334155; font-weight: 700; padding: 0.85rem 1.25rem; border-bottom: 1px solid #cbd5e1; }
+        .marks-table td { padding: 0.85rem 1.25rem; border-bottom: 1px solid #f1f5f9; color: #1e293b; }
+        .marks-table tr:last-child td { border-bottom: none; }
+
+        .grade-badge {
+            display: inline-block;
+            font-weight: 800;
+            padding: 0.25rem 0.65rem;
+            border-radius: 6px;
+            font-size: 0.88rem;
+            text-align: center;
+            min-width: 38px;
+        }
+
+        .grade-A-plus { background: #dcfce7; color: #15803d; }
+        .grade-A { background: #e0f2fe; color: #0369a1; }
+        .grade-A-minus { background: #fef9c3; color: #854d0e; }
+        .grade-B { background: #ffedd5; color: #9a3412; }
+        .grade-C { background: #f1f5f9; color: #475569; }
+        .grade-D { background: #f1f5f9; color: #475569; }
+        .grade-F { background: #fee2e2; color: #b91c1c; }
+
+        .inst-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .stat-box { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 12px; padding: 1rem; text-align: center; }
+        .stat-box .num { font-size: 1.6rem; font-weight: 800; color: #0f172a; }
+        .stat-box .lbl { font-size: 0.8rem; color: #64748b; font-weight: 600; margin-top: 0.25rem; }
+
+        .group-tag { font-size: 0.85rem; font-weight: 700; color: #0f766e; background: #ccfbf1; padding: 0.35rem 0.85rem; border-radius: 8px; margin: 1.5rem 0 0.75rem; display: inline-block; }
+        .rolls-cloud { display: flex; flex-wrap: wrap; gap: 0.5rem; max-height: 280px; overflow-y: auto; padding: 0.75rem; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 10px; }
+        .roll-chip { background: #ffffff; border: 1px solid #cbd5e1; padding: 0.25rem 0.65rem; border-radius: 6px; font-size: 0.85rem; font-weight: 600; color: #334155; cursor: pointer; transition: all 0.15s; }
+        .roll-chip:hover { border-color: #07b699; color: #07b699; transform: scale(1.05); }
+
+        .sms-box { background: rgba(15, 23, 42, 0.6); border: 1px dashed rgba(16, 185, 129, 0.4); border-radius: 14px; padding: 1.5rem; margin-top: 1.5rem; }
+        .sms-code { background: #000000; padding: 0.85rem 1.25rem; border-radius: 10px; font-family: monospace; font-size: 1.1rem; color: #34d399; display: flex; align-items: center; justify-content: space-between; margin: 0.75rem 0; border: 1px solid rgba(255, 255, 255, 0.1); }
+        .app-footer { text-align: center; padding: 2rem 0 1rem; color: var(--text-dim); font-size: 0.88rem; border-top: 1px solid var(--border-glass); margin-top: auto; }
+
+        @media print {
+            body { background: #ffffff !important; color: #000000 !important; }
+            .app-header, .tabs-nav, .glass-card, .btn-print, .app-footer, .no-print { display: none !important; }
+            .result-container { display: block !important; }
+            .sheet-card { box-shadow: none !important; border: 1px solid #000000 !important; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="app-container">
+    <header class="app-header">
+        <div class="board-badge">
+            <span class="live-dot"></span>
+            দিনাজপুর ও মাদ্রাসা শিক্ষা বোর্ড · সরাসরি বাইপাস ও অল-ইয়ার গেটওয়ে
+        </div>
+        <h1 class="app-title">Dinajpur & Madrasah Board Result Portal</h1>
+        <p class="app-subtitle">দিনাজপুর এবং বাংলাদেশ মাদ্রাসা শিক্ষা বোর্ডের যেকোনো পরীক্ষার (HSC/Alim, SSC/Dakhil, JSC/JDC) রেজাল্ট ও মার্কশিট সেকেন্ডের মধ্যে দেখুন।</p>
+    </header>
+
+    <nav class="tabs-nav">
+        <button class="tab-btn active" id="tab-student" onclick="switchTab('student')">
+            🎓 একক রেজাল্ট (২০১৫ - ২০২৬)
+        </button>
+        <button class="tab-btn" id="tab-institute" onclick="switchTab('institute')">
+            🏫 পুরো প্রতিষ্ঠানের রেজাল্ট (EIIN)
+        </button>
+        <button class="tab-btn" id="tab-sms" onclick="switchTab('sms')">
+            📱 SMS ব্যাকআপ
+        </button>
+    </nav>
+
+    <!-- Error Banner -->
+    <div class="error-banner" id="error-banner">
+        <span style="font-size:1.3rem">⚠️</span>
+        <span id="error-msg">কোনো ত্রুটি হয়েছে।</span>
+    </div>
+
+    <!-- TAB 1: Student Search Form -->
+    <section class="glass-card" id="student-section">
+        <form id="student-form" onsubmit="handleStudentSubmit(event)">
+            <div class="form-grid">
+                <div class="input-group">
+                    <label class="input-label">
+                        <span>শিক্ষা বোর্ড (Board)</span>
+                        <span class="req">*</span>
+                    </label>
+                    <select id="board_select" class="custom-input" onchange="handleBoardChange()">
+                        <option value="dinajpur" selected>🟢 দিনাজপুর বোর্ড (Dinajpur Board)</option>
+                        <option value="madrasah">🕌 বাংলাদেশ মাদ্রাসা শিক্ষা বোর্ড (Madrasah Board)</option>
+                    </select>
+                </div>
+
+                <div class="input-group">
+                    <label class="input-label">
+                        <span>পরীক্ষার নাম (Exam)</span>
+                        <span class="req">*</span>
+                    </label>
+                    <select id="exam_select" class="custom-input" onchange="updateExamYearState()">
+                        <option value="HSC" selected>🎓 এইচএসসি / আলিম (HSC / Alim)</option>
+                        <option value="SSC">🏫 এসএসসি / দাখিল (SSC / Dakhil)</option>
+                        <option value="JSC">📖 জেএসসি / জেডিসি (JSC / JDC)</option>
+                    </select>
+                </div>
+
+                <div class="input-group">
+                    <label class="input-label">
+                        <span>পাসের বছর (Passing Year)</span>
+                        <span class="req">*</span>
+                    </label>
+                    <select id="year_select" class="custom-input" onchange="updateExamYearState()">
+                        <option value="2026">⚡ ২০২৬ (2026) [নতুন আসন্ন লাইভ]</option>
+                        <option value="2025" selected>২০২৫ (2025)</option>
+                        <option value="2024">২০২৪ (2024)</option>
+                        <option value="2023">২০২৩ (2023)</option>
+                        <option value="2022">২০২২ (2022) [আর্কাইভ]</option>
+                        <option value="2021">২০২১ (2021) [আর্কাইভ]</option>
+                        <option value="2020">২০২০ (2020) [আর্কাইভ]</option>
+                        <option value="2019">২০১৯ (2019) [আর্কাইভ]</option>
+                        <option value="2018">২০১৮ (2018) [আর্কাইভ]</option>
+                        <option value="2017">২০১৭ (2017) [আর্কাইভ]</option>
+                        <option value="2016">২০১৬ (2016) [আর্কাইভ]</option>
+                        <option value="2015">২০১৫ (2015) [আর্কাইভ]</option>
+                    </select>
+                </div>
+
+                <div class="input-group">
+                    <label class="input-label">
+                        <span>রোল নম্বর (Roll No)</span>
+                        <span class="req">* আবশ্যক</span>
+                    </label>
+                    <input type="number" id="roll_input" class="custom-input" placeholder="যেমন: 142137" required autofocus>
+                </div>
+
+                <div class="input-group">
+                    <label class="input-label">
+                        <span>রেজিস্ট্রেশন নম্বর (Reg No)</span>
+                        <span id="reg_badge" class="opt">ঐচ্ছিক (পূর্ণ নম্বরের জন্য)</span>
+                    </label>
+                    <input type="number" id="reg_input" class="custom-input" placeholder="ঐচ্ছিক (পূর্ণ নম্বর দেখার জন্য)">
+                </div>
+            </div>
+
+            <!-- Dynamic Archive Info Note -->
+            <div id="archive-info-note" style="display:none; background:rgba(245, 158, 11, 0.12); border:1px solid rgba(245, 158, 11, 0.35); border-radius:10px; padding:0.85rem 1.1rem; margin-bottom:1.25rem; font-size:0.9rem; color:#fde68a; line-height:1.5;">
+                ⚠️ <b>সেন্ট্রাল আর্কাইভ নির্দেশিকা:</b> শিক্ষা বোর্ডের নিয়মানুযায়ী ২০১৫ থেকে ২০২৪ সালের সেন্ট্রাল আর্কাইভে রেজাল্ট দেখতে <b>রোল ও রেজিস্ট্রেশন নম্বর উভয়ই প্রদান করা আবশ্যক</b>। (আপনার কাছে রেজিস্ট্রেশন নম্বর না থাকলে পাশের <b>"পুরো প্রতিষ্ঠানের রেজাল্ট (EIIN)"</b> ট্যাব থেকে রোল ও জিপিএ দেখতে পারেন)।
+            </div>
+
+            <!-- AI Auto-Bypass Active Indicator -->
+            <div id="ai-bypass-indicator" style="display:none; align-items:center; justify-content:space-between; background:rgba(16, 185, 129, 0.12); border:1px solid rgba(16, 185, 129, 0.35); border-radius:12px; padding:0.75rem 1.1rem; margin-bottom:1.25rem;">
+                <div style="display:flex; align-items:center; gap:0.6rem; color:#a7f3d0; font-size:0.92rem; font-weight:600;">
+                    <span style="font-size:1.25rem;">🤖</span>
+                    <span>AI অটোমেটিক ক্যাপচা বাইপাস চালু আছে (ম্যানুয়ালি কোড লেখার প্রয়োজন নেই)</span>
+                </div>
+                <button type="button" onclick="toggleManualCaptcha()" style="background:rgba(255, 255, 255, 0.08); border:1px solid rgba(255, 255, 255, 0.2); color:#38bdf8; padding:0.3rem 0.75rem; border-radius:6px; font-size:0.8rem; cursor:pointer; font-weight:600;">
+                    ক্যাপচা দেখুন 👁️
+                </button>
+            </div>
+
+            <!-- Archive 4-digit Captcha Box (Optional / Fallback) -->
+            <div class="captcha-box" id="archive-captcha-box" style="display:none;">
+                <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:0.6rem;">
+                    <p style="font-size:0.88rem; color:#38bdf8; font-weight:700;">
+                        🛡️ সেন্ট্রাল সিকিউরিটি চেক (বোর্ড ক্যাপচা প্রিভিউ):
+                    </p>
+                    <button type="button" id="ai-pred-btn" onclick="applyAiCode()" style="display:none; background:rgba(16, 185, 129, 0.15); border:1px solid rgba(16, 185, 129, 0.4); color:#34d399; padding:0.25rem 0.65rem; border-radius:6px; font-size:0.82rem; font-weight:700; cursor:pointer;">
+                        🤖 AI সমাধান: <b id="ai-pred-code">....</b> (বসাতে ক্লিক করুন)
+                    </button>
+                </div>
+                <div class="captcha-inner">
+                    <div class="captcha-img-wrap">
+                        <img id="archive-captcha-img" src="" alt="Captcha" title="ক্যাপচা ছবি (হাই-কনট্রাস্ট জুম)">
+                        <button type="button" class="btn-reload-captcha" title="নতুন পরিষ্কার ক্যাপচা লোড করুন" onclick="reloadCaptcha()">🔄</button>
+                    </div>
+                    <input type="text" id="archive-captcha-input" class="custom-input" style="max-width:180px; font-weight:800; text-align:center; font-size:1.25rem; letter-spacing:0.18em; color:#38bdf8;" placeholder="যেমন: 4829" maxlength="4">
+                </div>
+                <p style="font-size:0.8rem; color:#94a3b8; margin-top:0.4rem;">
+                    💡 কোড পরিষ্কার না বোঝা গেলে 🔄 বাটনে ক্লিক করে নতুন কোড আনুন অথবা ফাঁকা রেখে সরাসরি নিচের বাটনে চাপুন (AI নিজে সমাধান করবে)।
+                </p>
+            </div>
+
+            <button type="submit" class="btn-submit" id="student-btn">
+                <span class="spinner"></span>
+                <span class="btn-text">⚡ রেজাল্ট বের করুন</span>
+            </button>
+        </form>
+    </section>
+
+    <!-- TAB 2: Institute Search Form -->
+    <section class="glass-card" id="institute-section" style="display:none;">
+        <form id="institute-form" onsubmit="handleInstituteSubmit(event)">
+            <div class="form-grid">
+                <div class="input-group">
+                    <label class="input-label">
+                        <span>শিক্ষা বোর্ড</span>
+                    </label>
+                    <select id="inst_board_select" class="custom-input">
+                        <option value="dinajpur" selected>🟢 দিনাজপুর বোর্ড</option>
+                        <option value="madrasah">🕌 মাদ্রাসা শিক্ষা বোর্ড</option>
+                    </select>
+                </div>
+
+                <div class="input-group">
+                    <label class="input-label">
+                        <span>পরীক্ষার নাম</span>
+                    </label>
+                    <select id="inst_exam_select" class="custom-input">
+                        <option value="HSC" selected>🎓 এইচএসসি / আলিম</option>
+                        <option value="SSC">🏫 এসএসসি / দাখিল</option>
+                    </select>
+                </div>
+
+                <div class="input-group">
+                    <label class="input-label">
+                        <span>পাসের সাল</span>
+                    </label>
+                    <select id="inst_year_select" class="custom-input">
+                        <option value="2026">২০২৬ [লাইভ]</option>
+                        <option value="2025" selected>২০২৫</option>
+                        <option value="2024">২০২৪</option>
+                        <option value="2023">২০২৩</option>
+                        <option value="2022">২০২২ [আর্কাইভ]</option>
+                        <option value="2021">২০২১ [আর্কাইভ]</option>
+                        <option value="2020">২০২০ [আর্কাইভ]</option>
+                        <option value="2019">২০১৯ [আর্কাইভ]</option>
+                        <option value="2018">২০১৮ [আর্কাইভ]</option>
+                        <option value="2017">২০১৭ [আর্কাইভ]</option>
+                        <option value="2016">২০১৬ [আর্কাইভ]</option>
+                        <option value="2015">২০১৫ [আর্কাইভ]</option>
+                    </select>
+                </div>
+
+                <div class="input-group" style="grid-column: 1 / -1;">
+                    <label class="input-label">
+                        <span>প্রতিষ্ঠানের EIIN নম্বর (৬ সংখ্যা)</span>
+                        <span class="req">* আবশ্যক</span>
+                    </label>
+                    <input type="number" id="eiin_input" class="custom-input" placeholder="যেমন: সৈয়দপুর সায়েন্স কলেজ = 125242" required>
+                </div>
+            </div>
+
+            <button type="submit" class="btn-submit" id="institute-btn">
+                <span class="spinner"></span>
+                <span class="btn-text">🏫 পুরো প্রতিষ্ঠানের রেজাল্ট শিট দেখুন</span>
+            </button>
+        </form>
+    </section>
+
+    <!-- TAB 3: SMS Guide -->
+    <section class="glass-card" id="sms-section" style="display:none;">
+        <h3 style="font-size:1.15rem; margin-bottom:0.75rem; color:#f8fafc;">📱 টেলিটক প্রি-রেজিস্ট্রেশন ফরম্যাট (দিনাজপুর বোর্ড)</h3>
+        <p style="color:var(--text-muted); font-size:0.95rem; line-height:1.6;">
+            রেজাল্ট প্রকাশের আগে আপনি প্রি-রেজিস্ট্রেশন করে রাখলে রেজাল্ট বের হওয়ার সাথে সাথে আপনার ফোনে স্বয়ংক্রিয় SMS চলে আসবে:
+        </p>
+        <div class="sms-box">
+            <span style="font-size:0.85rem; color:#94a3b8; text-transform:uppercase; letter-spacing:0.05em;">মেসেজ ফরম্যাট:</span>
+            <div class="sms-code">
+                <span>HSC DIN &lt;রোল নম্বর&gt; 2026</span>
+                <span style="font-size:0.85rem; color:#a7f3d0;">পাঠান: 16222</span>
+            </div>
+            <p style="color:#6ee7b7; font-size:0.88rem; margin-top:0.5rem;">
+                💡 টিপস: টেলিটক সিম ব্যবহার করলে সার্ভার জ্যাম এড়িয়ে সবার আগে রেজাল্ট পুশ মেসেজে পাওয়া যায়।
+            </p>
+        </div>
+    </section>
+
+    <!-- RESULT CONTAINER -->
+    <div class="result-container" id="result-container"></div>
+
+    <footer class="app-footer">
+        <p>দিনাজপুর শিক্ষা বোর্ড অল-ইয়ার রেজাল্ট ইঞ্জিন (২০১৫ - ২০২৬) · নিজস্ব ক্লাউড গেটওয়ে দ্বারা চালিত</p>
+    </footer>
+</div>
+
+<script>
+    function switchTab(tab) {
+        document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+        document.getElementById(`tab-${tab}`).classList.add('active');
+
+        document.getElementById('student-section').style.display = (tab === 'student') ? 'block' : 'none';
+        document.getElementById('institute-section').style.display = (tab === 'institute') ? 'block' : 'none';
+        document.getElementById('sms-section').style.display = (tab === 'sms') ? 'block' : 'none';
+        hideError();
+    }
+
+    function showError(msg) {
+        const banner = document.getElementById('error-banner');
+        document.getElementById('error-msg').innerText = msg;
+        banner.style.display = 'flex';
+        banner.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }
+
+    function hideError() {
+        document.getElementById('error-banner').style.display = 'none';
+    }
+
+    function isDirectPortal(exam, year, board) {
+        if ((board || '').toLowerCase() === 'madrasah') return false; // Madrasah uses eBoard with AI auto-bypass!
+        const y = parseInt(year, 10);
+        const ex = (exam || '').toUpperCase();
+        if (ex === 'HSC' && (y === 2025 || y === 2026)) return true;
+        if (ex === 'SSC' && (y >= 2023 && y <= 2026)) return true;
+        return false;
+    }
+
+    let currentAiCode = '';
+
+    function handleBoardChange() {
+        const board = document.getElementById('board_select').value;
+        const examSelect = document.getElementById('exam_select');
+        const instExamSelect = document.getElementById('inst_exam_select');
+        
+        if (board === 'madrasah') {
+            examSelect.innerHTML = `
+                <option value="HSC" selected>🕌 আলিম পরীক্ষা (Alim / Equivalent)</option>
+                <option value="SSC">📖 দাখিল পরীক্ষা (Dakhil / Equivalent)</option>
+                <option value="JSC">📜 জেডিসি পরীক্ষা (JDC)</option>
+            `;
+            if (instExamSelect) {
+                instExamSelect.innerHTML = `
+                    <option value="HSC" selected>🕌 আলিম (Alim)</option>
+                    <option value="SSC">📖 দাখিল (Dakhil)</option>
+                `;
+            }
+        } else {
+            examSelect.innerHTML = `
+                <option value="HSC" selected>🎓 এইচএসসি / আলিম (HSC / Alim)</option>
+                <option value="SSC">🏫 এসএসসি / দাখিল (SSC / Dakhil)</option>
+                <option value="JSC">📖 জেএসসি / জেডিসি (JSC / JDC)</option>
+            `;
+            if (instExamSelect) {
+                instExamSelect.innerHTML = `
+                    <option value="HSC" selected>🎓 এইচএসসি</option>
+                    <option value="SSC">🏫 এসএসসি</option>
+                `;
+            }
+        }
+        updateExamYearState();
+    }
+
+    function toggleManualCaptcha() {
+        const box = document.getElementById('archive-captcha-box');
+        if (box.style.display === 'none' || !box.style.display) {
+            box.style.display = 'block';
+            reloadCaptcha();
+        } else {
+            box.style.display = 'none';
+        }
+    }
+
+    function applyAiCode() {
+        if (currentAiCode) {
+            document.getElementById('archive-captcha-input').value = currentAiCode;
+        }
+    }
+
+    function updateExamYearState() {
+        const board = document.getElementById('board_select').value;
+        const exam = document.getElementById('exam_select').value;
+        const year = document.getElementById('year_select').value;
+        const direct = isDirectPortal(exam, year, board);
+        const regBadge = document.getElementById('reg_badge');
+        const regInput = document.getElementById('reg_input');
+        const infoNote = document.getElementById('archive-info-note');
+        const bypassIndicator = document.getElementById('ai-bypass-indicator');
+        const captchaBox = document.getElementById('archive-captcha-box');
+        const btnText = document.querySelector('#student-btn .btn-text');
+
+        if (direct) {
+            regBadge.className = 'opt';
+            regBadge.style.color = '#10b981';
+            regBadge.textContent = 'ঐচ্ছিক (শুধু রোল দিলেই চলবে)';
+            regInput.placeholder = 'ঐচ্ছিক (পূর্ণ নম্বর দেখতে)';
+            if (infoNote) infoNote.style.display = 'none';
+            if (bypassIndicator) bypassIndicator.style.display = 'none';
+            if (captchaBox) captchaBox.style.display = 'none';
+            if (btnText) btnText.innerHTML = '⚡ রেজাল্ট বের করুন';
+        } else {
+            regBadge.className = 'req';
+            regBadge.style.color = '#f59e0b';
+            regBadge.textContent = '* সেন্ট্রাল আর্কাইভে আবশ্যক';
+            regInput.placeholder = '১০ সংখ্যার রেজিস্ট্রেশন নম্বর (যেমন: 1417xxxxxx)';
+            if (infoNote) infoNote.style.display = 'block';
+            if (bypassIndicator) bypassIndicator.style.display = 'flex';
+            if (captchaBox) captchaBox.style.display = 'none'; // Auto-bypass handles it!
+            if (btnText) btnText.innerHTML = '⚡ রেজাল্ট বের করুন <span style="font-size:0.85rem; opacity:0.9;">(🤖 AI অটো-বাইপাস)</span>';
+            reloadCaptcha();
+        }
+    }
+
+    async function reloadCaptcha() {
+        try {
+            const res = await fetch('/api/captcha');
+            const data = await res.json();
+            if (data.success && data.captcha_img) {
+                document.getElementById('archive-captcha-img').src = 'data:image/jpeg;base64,' + data.captcha_img;
+                currentAiCode = data.suggested_captcha || '';
+                const predBtn = document.getElementById('ai-pred-btn');
+                const predVal = document.getElementById('ai-pred-code');
+                if (currentAiCode) {
+                    predVal.textContent = currentAiCode;
+                    predBtn.style.display = 'inline-flex';
+                } else {
+                    predBtn.style.display = 'none';
+                }
+            }
+        } catch (e) {
+            console.error('Failed to load captcha', e);
+        }
+    }
+
+    async function handleStudentSubmit(e) {
+        e.preventDefault();
+        hideError();
+        const board = document.getElementById('board_select').value;
+        const roll = document.getElementById('roll_input').value.trim();
+        const reg = document.getElementById('reg_input').value.trim();
+        const exam = document.getElementById('exam_select').value;
+        const year = document.getElementById('year_select').value;
+        const captcha = document.getElementById('archive-captcha-input').value.trim();
+        const btn = document.getElementById('student-btn');
+        const btnText = btn.querySelector('.btn-text');
+        const direct = isDirectPortal(exam, year, board);
+
+        if (!roll) {
+            showError('অনুগ্রহ করে আপনার রোল নম্বর লিখুন।');
+            document.getElementById('roll_input').focus();
+            return;
+        }
+
+        // Frontend validation for central archive:
+        if (!direct && !reg) {
+            const boardName = board === 'madrasah' ? 'মাদ্রাসা' : 'দিনাজপুর';
+            showError(`⚠️ শিক্ষা বোর্ডের নিয়মানুযায়ী ${boardName} বোর্ডের ${year} সালের সেন্ট্রাল আর্কাইভে রেজাল্ট দেখতে রোল নম্বরের সাথে রেজিস্ট্রেশন নম্বর দেওয়া বাধ্যতামূলক। অনুগ্রহ করে রেজিস্ট্রেশন নম্বর লিখুন (অথবা রেজিস্ট্রেশন নম্বর না থাকলে পাশের 'পুরো প্রতিষ্ঠানের রেজাল্ট (EIIN)' ট্যাব ব্যবহার করুন)।`);
+            document.getElementById('reg_input').focus();
+            return;
+        }
+
+        btn.classList.add('loading');
+        btn.disabled = true;
+
+        const originalBtnHtml = btnText.innerHTML;
+        let cycleInterval = null;
+        if (!direct && !captcha) {
+            const steps = [
+                '🤖 AI দিয়ে ক্যাপচা বাইপাস হচ্ছে...',
+                '⚡ সরকারি সার্ভারে অনুসন্ধান চলছে...',
+                '✨ রেজাল্ট ডেটা সাজানো হচ্ছে...'
+            ];
+            let stepIdx = 0;
+            btnText.innerHTML = steps[0];
+            cycleInterval = setInterval(() => {
+                stepIdx = (stepIdx + 1) % steps.length;
+                btnText.innerHTML = steps[stepIdx];
+            }, 1300);
+        }
+
+        try {
+            const res = await fetch('/api/student', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ roll, reg, exam, year, board, captcha })
+            });
+            const data = await res.json();
+
+            if (!data.success) {
+                if (data.need_captcha) {
+                    document.getElementById('archive-captcha-box').style.display = 'block';
+                    if (data.captcha_img) {
+                        document.getElementById('archive-captcha-img').src = 'data:image/jpeg;base64,' + data.captcha_img;
+                    }
+                    if (data.suggested_captcha) {
+                        currentAiCode = data.suggested_captcha;
+                        document.getElementById('ai-pred-code').textContent = data.suggested_captcha;
+                        document.getElementById('ai-pred-btn').style.display = 'inline-flex';
+                        document.getElementById('archive-captcha-input').value = data.suggested_captcha;
+                    } else {
+                        document.getElementById('archive-captcha-input').value = '';
+                    }
+                    document.getElementById('archive-captcha-input').focus();
+                }
+                showError(data.error || 'রেজাল্ট আনতে ব্যর্থ হয়েছে।');
+                document.getElementById('result-container').style.display = 'none';
+            } else {
+                renderStudentResult(data);
+                if (data.gpa === '5.00' && window.confetti) {
+                    confetti({ particleCount: 120, spread: 70, origin: { y: 0.6 } });
+                }
+            }
+        } catch (err) {
+            showError('সার্ভারের সাথে যোগাযোগে ত্রুটি হয়েছে: ' + err.message);
+        } finally {
+            if (cycleInterval) clearInterval(cycleInterval);
+            btn.classList.remove('loading');
+            btn.disabled = false;
+            btnText.innerHTML = originalBtnHtml;
+        }
+    }
+
+    async function handleInstituteSubmit(e) {
+        e.preventDefault();
+        hideError();
+        const board = document.getElementById('inst_board_select') ? document.getElementById('inst_board_select').value : 'dinajpur';
+        const eiin = document.getElementById('eiin_input').value.trim();
+        const exam = document.getElementById('inst_exam_select').value;
+        const year = document.getElementById('inst_year_select').value;
+        const btn = document.getElementById('institute-btn');
+
+        if (!eiin) return;
+
+        btn.classList.add('loading');
+        btn.disabled = true;
+
+        try {
+            const res = await fetch('/api/institute', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ eiin, exam, year, board })
+            });
+            const data = await res.json();
+
+            if (!data.success) {
+                showError(data.error || 'প্রতিষ্ঠানের রেজাল্ট পাওয়া যায়নি।');
+                document.getElementById('result-container').style.display = 'none';
+            } else {
+                renderInstituteResult(data);
+            }
+        } catch (err) {
+            showError('সার্ভারের সাথে যোগাযোগে ত্রুটি হয়েছে: ' + err.message);
+        } finally {
+            btn.classList.remove('loading');
+            btn.disabled = false;
+        }
+    }
+
+    function renderStudentResult(data) {
+        const container = document.getElementById('result-container');
+        const isGpa5 = data.gpa === '5.00';
+
+        let subRowsHtml = '';
+        if (data.subjects && data.subjects.length > 0) {
+            subRowsHtml = data.subjects.map(s => {
+                let badgeClass = 'grade-A';
+                if (s.grade.includes('A+')) badgeClass = 'grade-A-plus';
+                else if (s.grade.includes('A-')) badgeClass = 'grade-A-minus';
+                else if (s.grade.includes('B')) badgeClass = 'grade-B';
+                else if (s.grade.includes('C') || s.grade.includes('D')) badgeClass = 'grade-C';
+                else if (s.grade.includes('F')) badgeClass = 'grade-F';
+
+                return `
+                    <tr>
+                        <td style="font-family:monospace; font-weight:700;">${s.code}</td>
+                        <td style="font-weight:600;">${s.name}</td>
+                        <td style="text-align:center;">
+                            <span class="grade-badge ${badgeClass}">${s.grade}</span>
+                        </td>
+                    </tr>
+                `;
+            }).join('');
+        }
+
+        container.innerHTML = `
+            <div class="sheet-card">
+                <div class="sheet-header">
+                    <div class="board-info">
+                        <h2>BOARD OF INTERMEDIATE & SECONDARY EDUCATION, DINAJPUR</h2>
+                        <h4>${data.exam_title || 'RESULT SHEET'}</h4>
+                    </div>
+                    <button class="btn-print" onclick="window.print()">
+                        🖨️ প্রিন্ট / PDF সংরক্ষণ
+                    </button>
+                </div>
+
+                <div class="sheet-body">
+                    <div class="score-banner">
+                        <div class="score-item-lead">
+                            <div class="gpa-circle ${isGpa5 ? 'gold' : ''}">
+                                ${data.gpa || 'N/A'}
+                            </div>
+                            <div class="score-meta">
+                                <h3>GPA ${data.gpa || 'N/A'} ${isGpa5 ? '🌟 গোল্ডেন / এ+' : ''}</h3>
+                                <p>ফলাফল: <b>${data.gpa === '0.00' ? 'অকৃতকার্য' : 'কৃতকার্য (Passed)'}</b></p>
+                            </div>
+                        </div>
+                        ${data.total_marks ? `<div class="marks-pill">মোট নম্বর: ${data.total_marks}</div>` : ''}
+                    </div>
+
+                    <div class="bio-grid">
+                        <div class="bio-row"><span class="bio-lbl">শিক্ষার্থীর নাম:</span><span class="bio-val">${data.name || 'N/A'}</span></div>
+                        <div class="bio-row"><span class="bio-lbl">পিতার নাম:</span><span class="bio-val">${data.father || 'N/A'}</span></div>
+                        <div class="bio-row"><span class="bio-lbl">মাতার নাম:</span><span class="bio-val">${data.mother || 'N/A'}</span></div>
+                        <div class="bio-row"><span class="bio-lbl">রোল নম্বর:</span><span class="bio-val">${data.roll || 'N/A'}</span></div>
+                        <div class="bio-row"><span class="bio-lbl">রেজিস্ট্রেশন নম্বর:</span><span class="bio-val">${data.reg || '[HIDDEN]'}</span></div>
+                        <div class="bio-row"><span class="bio-lbl">বিভাগ / গ্রুপ:</span><span class="bio-val">${data.group || 'N/A'}</span></div>
+                        <div class="bio-row" style="grid-column: 1 / -1;"><span class="bio-lbl">প্রতিষ্ঠানের নাম:</span><span class="bio-val">${data.institute || 'N/A'}</span></div>
+                    </div>
+
+                    <h4 style="margin-bottom:0.75rem; font-size:1.05rem; font-weight:700; color:#0f172a;">বিষয়ভিত্তিক ফলাফল ও গ্রেড:</h4>
+                    <div class="marks-table-wrap">
+                        <table class="marks-table">
+                            <thead>
+                                <tr>
+                                    <th style="width:100px;">কোড</th>
+                                    <th>বিষয়ের নাম</th>
+                                    <th style="width:110px; text-align:center;">গ্রেড</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                ${subRowsHtml || '<tr><td colspan="3" style="text-align:center;">বিষয়ভিত্তিক তথ্য উপলব্ধ নয়।</td></tr>'}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        `;
+
+        container.style.display = 'block';
+        container.scrollIntoView({ behavior: 'smooth' });
+    }
+
+    function renderInstituteResult(data) {
+        const container = document.getElementById('result-container');
+
+        let groupsHtml = '';
+        if (data.groups) {
+            for (const [groupName, items] of Object.entries(data.groups)) {
+                const chips = items.map(item => `<span class="roll-chip" onclick="searchThisRoll('${item.split('[')[0]}')">${item}</span>`).join('');
+                groupsHtml += `
+                    <div>
+                        <div class="group-tag">📌 ${groupName} (${items.length} জন শিক্ষার্থী)</div>
+                        <div class="rolls-cloud">
+                            ${chips || 'কোনো রোল নেই'}
+                        </div>
+                    </div>
+                `;
+            }
+        }
+
+        container.innerHTML = `
+            <div class="sheet-card">
+                <div class="sheet-header">
+                    <div class="board-info">
+                        <h2>${data.institute || 'INSTITUTE RESULT'}</h2>
+                        <h4>EIIN: ${data.eiin} · ${data.exam_title || ''}</h4>
+                    </div>
+                    <button class="btn-print" onclick="window.print()">
+                        🖨️ প্রিন্ট / PDF সংরক্ষণ
+                    </button>
+                </div>
+
+                <div class="sheet-body">
+                    <div class="inst-stats">
+                        <div class="stat-box">
+                            <div class="num" style="color:#0284c7;">${data.appeared || '0'}</div>
+                            <div class="lbl">পরীক্ষার্থী</div>
+                        </div>
+                        <div class="stat-box">
+                            <div class="num" style="color:#16a34a;">${data.passed || '0'}</div>
+                            <div class="lbl">উত্তীর্ণ</div>
+                        </div>
+                        <div class="stat-box">
+                            <div class="num" style="color:#d97706;">${data.gpa5 || '0'}</div>
+                            <div class="lbl">GPA 5.00</div>
+                        </div>
+                        <div class="stat-box">
+                            <div class="num" style="color:#0f766e;">${data.pass_pct || '0'}%</div>
+                            <div class="lbl">পাস রেট</div>
+                        </div>
+                    </div>
+
+                    <h4 style="margin:1.5rem 0 0.5rem; font-size:1.05rem; font-weight:700; color:#0f172a;">গ্রুপভিত্তিক শিক্ষার্থীদের ফলাফল তালিকা:</h4>
+                    <p style="font-size:0.85rem; color:#64748b; margin-bottom:1rem;">(যেকোনো রোলে ক্লিক করলে তাৎক্ষণিক তার একক মার্কশিট লোড হবে)</p>
+                    ${groupsHtml}
+                </div>
+            </div>
+        `;
+
+        container.style.display = 'block';
+        container.scrollIntoView({ behavior: 'smooth' });
+    }
+
+    function searchThisRoll(roll) {
+        switchTab('student');
+        document.getElementById('roll_input').value = roll;
+        document.getElementById('student-btn').click();
+    }
+
+    // Initialize state on page load
+    document.addEventListener('DOMContentLoaded', () => {
+        updateExamYearState();
+    });
+</script>
+</body>
+</html>
