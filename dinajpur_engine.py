@@ -37,6 +37,36 @@ class DinajpurUnifiedEngine:
         ('SSC', '2023'): {'exam_id': '5', 'archive': '1', 'title': 'SSC EXAMINATION 2023'},
     }
 
+    BOARD_DISPLAY_MAP = {
+        'dhaka': 'BOARD OF INTERMEDIATE & SECONDARY EDUCATION, DHAKA',
+        'dinajpur': 'BOARD OF INTERMEDIATE & SECONDARY EDUCATION, DINAJPUR',
+        'chittagong': 'BOARD OF INTERMEDIATE & SECONDARY EDUCATION, CHITTAGONG',
+        'rajshahi': 'BOARD OF INTERMEDIATE & SECONDARY EDUCATION, RAJSHAHI',
+        'comilla': 'BOARD OF INTERMEDIATE & SECONDARY EDUCATION, COMILLA',
+        'jessore': 'BOARD OF INTERMEDIATE & SECONDARY EDUCATION, JESSORE',
+        'barisal': 'BOARD OF INTERMEDIATE & SECONDARY EDUCATION, BARISAL',
+        'sylhet': 'BOARD OF INTERMEDIATE & SECONDARY EDUCATION, SYLHET',
+        'mymensingh': 'BOARD OF INTERMEDIATE & SECONDARY EDUCATION, MYMENSINGH',
+        'madrasah': 'BANGLADESH MADRASAH EDUCATION BOARD, DHAKA',
+        'tec': 'BANGLADESH TECHNICAL EDUCATION BOARD, DHAKA',
+        'technical': 'BANGLADESH TECHNICAL EDUCATION BOARD, DHAKA',
+    }
+
+    BOARD_NAME_BN = {
+        'dhaka': 'ঢাকা',
+        'dinajpur': 'দিনাজপুর',
+        'chittagong': 'চট্টগ্রাম',
+        'rajshahi': 'রাজশাহী',
+        'comilla': 'কুমিল্লা',
+        'jessore': 'যশোর',
+        'barisal': 'বরিশাল',
+        'sylhet': 'সিলেট',
+        'mymensingh': 'ময়মনসিংহ',
+        'madrasah': 'মাদ্রাসা',
+        'tec': 'কারিগরি (Technical)',
+        'technical': 'কারিগরি (Technical)',
+    }
+
     def __init__(self):
         self.ctx = ssl.create_default_context()
         self.ctx.check_hostname = False
@@ -342,6 +372,7 @@ class DinajpurUnifiedEngine:
             self._bypass_eboard_robot()
 
         board_clean = str(board).strip().lower() if board else "dinajpur"
+        if board_clean == "technical": board_clean = "tec"
         exam_code = exam.lower()
         if 'hsc' in exam_code or 'alim' in exam_code: exam_code = 'hsc'
         elif 'ssc' in exam_code or 'dakhil' in exam_code: exam_code = 'ssc'
@@ -403,12 +434,15 @@ class DinajpurUnifiedEngine:
                             g_info = parts[1].split('=')[-1].strip()
                             subjects.append({'code': code, 'name': f'Subject {code}', 'grade': g_info})
 
-                board_display = "BANGLADESH MADRASAH EDUCATION BOARD, DHAKA" if board_clean == "madrasah" else f"BOARD OF INTERMEDIATE & SECONDARY EDUCATION, {board_clean.upper()}"
+                board_display = self.BOARD_DISPLAY_MAP.get(board_clean, f"BOARD OF INTERMEDIATE & SECONDARY EDUCATION, {board_clean.upper()}")
                 exam_display = exam.upper()
                 if board_clean == "madrasah":
                     if exam_code == 'hsc': exam_display = 'ALIM'
                     elif exam_code == 'ssc': exam_display = 'DAKHIL'
                     elif exam_code == 'jsc': exam_display = 'JDC'
+                elif board_clean in ['tec', 'technical']:
+                    if exam_code == 'hsc': exam_display = 'HSC (VOCATIONAL / BM)'
+                    elif exam_code == 'ssc': exam_display = 'SSC (VOCATIONAL)'
 
                 return {
                     "success": True,
@@ -436,7 +470,7 @@ class DinajpurUnifiedEngine:
 
             # If the error is NOT captcha-related (e.g. invalid reg, result not found), STOP immediately!
             if "SECURITY" not in msg_upper and "CAPTCHA" not in msg_upper and "KEY" not in msg_upper:
-                board_label = "মাদ্রাসা" if board_clean == "madrasah" else "দিনাজপুর"
+                board_label = self.BOARD_NAME_BN.get(board_clean, board_clean)
                 if "REGISTRATION" in msg_upper:
                     bn_err = f"{board_label} বোর্ডের সেন্ট্রাল আর্কাইভে একক রেজাল্ট দেখতে রোল {roll_clean} এর সাথে সঠিক রেজিস্ট্রেশন নম্বর আবশ্যক।"
                 elif "NOT FOUND" in msg_upper or "INVALID" in msg_upper:
@@ -468,6 +502,7 @@ class DinajpurUnifiedEngine:
     # =========================================================================
     def get_student_result(self, roll_no, regi_no="", exam="HSC", year="2025", board="dinajpur", captcha=""):
         board_clean = str(board).strip().lower() if board else "dinajpur"
+        if board_clean == "technical": board_clean = "tec"
         y = int(year) if str(year).isdigit() else 2025
         roll_clean = str(roll_no).strip()
         reg_clean = str(regi_no).strip() if regi_no else ""
@@ -481,10 +516,10 @@ class DinajpurUnifiedEngine:
                 if res.get('success'):
                     return res
 
-        # For Central eBoard Archive (all years for Madrasah, and 2015-2024 for Dinajpur):
+        # For Central eBoard Archive (All Bangladesh Boards):
         # Registration number is strictly required by the central government archive:
         if not reg_clean:
-            board_label = "মাদ্রাসা" if board_clean == "madrasah" else "দিনাজপুর"
+            board_label = self.BOARD_NAME_BN.get(board_clean, board_clean)
             return {
                 "success": False,
                 "need_captcha": False,
