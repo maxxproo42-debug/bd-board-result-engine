@@ -124,6 +124,8 @@ class DinajpurUnifiedEngine:
         ]
         self._eboard_ready = False
         self._last_pdf_name = ""
+        self._student_cache = {}
+        self._institute_cache = {}
 
         # Sessions are ready to initialize on demand
 
@@ -215,12 +217,15 @@ class DinajpurUnifiedEngine:
                     res = self.dinajpur_opener.open(req, timeout=10)
                     html = res.read().decode('utf-8', errors='ignore')
 
+                if 'result-timer' in html or 'publishes in' in html.lower() or ('<form' not in html and 'heading' in html.lower()):
+                    return {"success": False, "not_in_direct": True}
+
                 token_m = re.search(r'name="_token"\s+value="([^"]+)"', html)
                 if not token_m:
                     if attempt == 0:
                         self._ensure_dinajpur_session()
                         continue
-                    return {"success": False, "error": "সার্ভার টোকেন পাওয়া যায়নি, অনুগ্রহ করে পুনরায় চেষ্টা করুন।"}
+                    return {"success": False, "error": f"দিনাজপুর বোর্ডের {year} সালের {exam} পরীক্ষার ফলাফল সার্ভার এখনও উন্মুক্ত করেনি। অনুগ্রহ করে সাল বা পরীক্ষা সঠিক আছে কি না মিলিয়ে নিন।"}
                 token = token_m.group(1)
 
                 cap_match = re.search(r'class="board-captcha-q"[^>]*>(\d+)\s*([\+\-\*])\s*(\d+)\s*=\s*\?</span>', html)
@@ -561,12 +566,20 @@ class DinajpurUnifiedEngine:
         reg_clean = str(regi_no).strip() if regi_no else ""
         exam_upper = exam.upper()
 
+        cache_key = f"{board_clean}:{exam_upper}:{year}:{roll_clean}:{reg_clean}"
+        if not captcha and cache_key in self._student_cache:
+            ts, cached_res = self._student_cache[cache_key]
+            if time.time() - ts < 3600:
+                return cached_res
+
         # If board is Dinajpur and directly supported on Dinajpur Direct Portal:
         if board_clean == "dinajpur":
             is_direct = (exam_upper, str(year)) in self.EXAM_MAP_DINAJPUR
             if is_direct and not captcha:
                 res = self._get_dinajpur_direct_result(roll_clean, reg_clean, exam, year)
                 if res.get('success') or not res.get('not_in_direct'):
+                    if res.get('success'):
+                        self._student_cache[cache_key] = (time.time(), res)
                     return res
 
         # For Central eBoard Archive (All Bangladesh Boards):
@@ -581,7 +594,10 @@ class DinajpurUnifiedEngine:
             }
 
         # 🌟 Seamless Auto-Bypass: Call _get_eboard_archive_result directly!
-        return self._get_eboard_archive_result(roll_clean, reg_clean, exam, year, board=board_clean, captcha=captcha)
+        res = self._get_eboard_archive_result(roll_clean, reg_clean, exam, year, board=board_clean, captcha=captcha)
+        if res.get('success'):
+            self._student_cache[cache_key] = (time.time(), res)
+        return res
 
     # =========================================================================
     # Universal Public Router (Institution - All 11 Boards)
@@ -612,6 +628,15 @@ class DinajpurUnifiedEngine:
             elif 'ssc' in exam_code or 'dakhil' in exam_code: exam_code = 'ssc'
             elif 'jsc' in exam_code or 'jdc' in exam_code: exam_code = 'jsc'
 
+        cache_key = f"{board_clean}:{exam_code}:{year}:{eiin_clean}"
+        if cache_key in self._institute_cache:
+            ts, cached_res, cached_pdf, cached_pdf_name = self._institute_cache[cache_key]
+            if time.time() - ts < 3600:
+                if cached_pdf:
+                    self._last_pdf_bytes = cached_pdf
+                    self._last_pdf_name = cached_pdf_name
+                return cached_res
+
         # Check Dinajpur Direct Portal if applicable
         if board_clean == "dinajpur" and (exam_upper, str(year)) in self.EXAM_MAP_DINAJPUR:
             cfg = self.EXAM_MAP_DINAJPUR.get((exam_upper, str(year)))
@@ -635,52 +660,54 @@ class DinajpurUnifiedEngine:
                     res = self.dinajpur_opener.open(req, timeout=8)
                     html = res.read().decode('utf-8', errors='ignore')
 
-                token_m = re.search(r'name="_token"\s+value="([^"]+)"', html)
-                if token_m:
-                    token = token_m.group(1)
-                    post_data_dict = {
-                        '_token': token,
-                        'eiin_no': eiin_clean
-                    }
-                    if archive: post_data_dict['archive'] = archive
-                    if exam_id: post_data_dict['exam_id'] = exam_id
-                    
-                    p_data = urllib.parse.urlencode(post_data_dict).encode('utf-8')
-                    req_p = urllib.request.Request(f"{self.dinajpur_base}/search/institute", data=p_data)
-                    res_p = self.dinajpur_opener.open(req_p, timeout=12)
-                    html_post = res_p.read().decode('utf-8', errors='ignore')
-                    
-                    if "No Result Found" not in html_post and "not found" not in html_post.lower():
-                        m_inst = re.search(r'Institute</td>\s*<td[^>]*><b>([^<]+)</b>', html_post)
-                        if m_inst:
-                            data = {
-                                "success": True,
-                                "source": "dinajpur_direct",
-                                "eiin": eiin_clean,
-                                "institute": m_inst.group(1).strip(),
-                                "exam_title": f"INSTITUTE RESULT · {cfg.get('title', exam)}",
-                                "exam": exam,
-                                "year": str(year),
-                                "board": self.BOARD_DISPLAY_MAP.get(board_clean, 'BOARD OF INTERMEDIATE & SECONDARY EDUCATION, DINAJPUR')
-                            }
-                            m_thana = re.search(r'Thana/Upazilla</td>\s*<td[^>]*>([^<]+)</td>', html_post)
-                            data['thana'] = m_thana.group(1).strip() if m_thana else ''
-                            for key, pat in [('gpa5', r'GPA 5\.00</td>\s*<td><b>([^<]+)</b>'),
-                                             ('appeared', r'Appeared</td>\s*<td><b>([^<]+)</b>'),
-                                             ('passed', r'Passed</td>\s*<td><b>([^<]+)</b>'),
-                                             ('pass_pct', r'Pass %</td>\s*<td><b>([^<]+)</b>')]:
-                                m = re.search(pat, html_post)
-                                data[key] = m.group(1).strip() if m else ''
-                            
-                            sections = {}
-                            sec_blocks = re.findall(r'<div class="result-section">(.*?)(?=<div class="result-section"|<div class="nav-row|\Z)', html_post, re.DOTALL)
-                            for blk in sec_blocks:
-                                title_m = re.search(r'<div class="section-title">\s*<span>:\s*([^:]+)\s*:</span>', blk)
-                                title = title_m.group(1).strip() if title_m else 'General'
-                                items = re.findall(r'<span class="rest-item">([^<,]+)', blk)
-                                sections[title] = items
-                            data['groups'] = sections
-                            return data
+                if 'result-timer' not in html and 'publishes in' not in html.lower() and ('<form' in html or 'heading' not in html.lower()):
+                    token_m = re.search(r'name="_token"\s+value="([^"]+)"', html)
+                    if token_m:
+                        token = token_m.group(1)
+                        post_data_dict = {
+                            '_token': token,
+                            'eiin_no': eiin_clean
+                        }
+                        if archive: post_data_dict['archive'] = archive
+                        if exam_id: post_data_dict['exam_id'] = exam_id
+                        
+                        p_data = urllib.parse.urlencode(post_data_dict).encode('utf-8')
+                        req_p = urllib.request.Request(f"{self.dinajpur_base}/search/institute", data=p_data)
+                        res_p = self.dinajpur_opener.open(req_p, timeout=12)
+                        html_post = res_p.read().decode('utf-8', errors='ignore')
+                        
+                        if "No Result Found" not in html_post and "not found" not in html_post.lower():
+                            m_inst = re.search(r'Institute</td>\s*<td[^>]*><b>([^<]+)</b>', html_post)
+                            if m_inst:
+                                data = {
+                                    "success": True,
+                                    "source": "dinajpur_direct",
+                                    "eiin": eiin_clean,
+                                    "institute": m_inst.group(1).strip(),
+                                    "exam_title": f"INSTITUTE RESULT · {cfg.get('title', exam)}",
+                                    "exam": exam,
+                                    "year": str(year),
+                                    "board": self.BOARD_DISPLAY_MAP.get(board_clean, 'BOARD OF INTERMEDIATE & SECONDARY EDUCATION, DINAJPUR')
+                                }
+                                m_thana = re.search(r'Thana/Upazilla</td>\s*<td[^>]*>([^<]+)</td>', html_post)
+                                data['thana'] = m_thana.group(1).strip() if m_thana else ''
+                                for key, pat in [('gpa5', r'GPA 5\.00</td>\s*<td><b>([^<]+)</b>'),
+                                                 ('appeared', r'Appeared</td>\s*<td><b>([^<]+)</b>'),
+                                                 ('passed', r'Passed</td>\s*<td><b>([^<]+)</b>'),
+                                                 ('pass_pct', r'Pass %</td>\s*<td><b>([^<]+)</b>')]:
+                                    m = re.search(pat, html_post)
+                                    data[key] = m.group(1).strip() if m else ''
+                                
+                                sections = {}
+                                sec_blocks = re.findall(r'<div class="result-section">(.*?)(?=<div class="result-section"|<div class="nav-row|\Z)', html_post, re.DOTALL)
+                                for blk in sec_blocks:
+                                    title_m = re.search(r'<div class="section-title">\s*<span>:\s*([^:]+)\s*:</span>', blk)
+                                    title = title_m.group(1).strip() if title_m else 'General'
+                                    items = re.findall(r'<span class="rest-item">([^<,]+)', blk)
+                                    sections[title] = items
+                                data['groups'] = sections
+                                self._institute_cache[cache_key] = (time.time(), data, None, '')
+                                return data
             except Exception as e:
                 print(f"[Dinajpur Direct Institute Error]: {e}")
 
@@ -791,7 +818,7 @@ class DinajpurUnifiedEngine:
                     except Exception as e:
                         print(f"[PDF Extract Warning]: {e}")
 
-                return {
+                res_dict = {
                     "success": True,
                     "source": "eboard_archive",
                     "eiin": eiin_clean,
@@ -808,6 +835,8 @@ class DinajpurUnifiedEngine:
                     "groups": groups,
                     "has_pdf": has_pdf
                 }
+                self._institute_cache[cache_key] = (time.time(), res_dict, getattr(self, '_last_pdf_bytes', None), getattr(self, '_last_pdf_name', ''))
+                return res_dict
 
             msg = raw_resp.get('msg', '')
             msg_upper = msg.upper()

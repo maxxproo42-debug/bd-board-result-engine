@@ -4,9 +4,18 @@ from flask import Flask, render_template, request, jsonify
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from dinajpur_engine import DinajpurUnifiedEngine
+from institutes_data import search_institutes, INSTITUTES
 
 app = Flask(__name__)
 engine = DinajpurUnifiedEngine()
+
+@app.route('/api/institutes')
+def api_institutes():
+    query = request.args.get('q', '').strip()
+    board = request.args.get('board', '').strip()
+    district = request.args.get('district', '').strip()
+    res = search_institutes(query=query, board=board, district=district)
+    return jsonify({"success": True, "count": len(res), "institutes": res})
 
 @app.route('/')
 def home():

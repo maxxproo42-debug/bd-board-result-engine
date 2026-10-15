@@ -489,15 +489,488 @@
         .sms-code { background: #000000; padding: 0.85rem 1.25rem; border-radius: 10px; font-family: monospace; font-size: 1.1rem; color: #34d399; display: flex; align-items: center; justify-content: space-between; margin: 0.75rem 0; border: 1px solid rgba(255, 255, 255, 0.1); }
         .app-footer { text-align: center; padding: 2rem 0 1rem; color: var(--text-dim); font-size: 0.88rem; border-top: 1px solid var(--border-glass); margin-top: auto; }
 
+        /* ============================================================ */
+        /* TOP NAVIGATION MENU BAR                                      */
+        /* ============================================================ */
+        .top-nav {
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            background: rgba(10, 14, 23, 0.85);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border-glass);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.35);
+        }
+
+        .nav-content {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 0.75rem 1.25rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 1rem;
+        }
+
+        .nav-brand {
+            display: flex;
+            align-items: center;
+            gap: 0.65rem;
+            text-decoration: none;
+            color: #ffffff;
+            font-weight: 800;
+            font-size: 1.05rem;
+            letter-spacing: -0.01em;
+            cursor: pointer;
+        }
+
+        .nav-brand-logo {
+            font-size: 1.35rem;
+            display: flex;
+            align-items: center;
+        }
+
+        .nav-brand-text {
+            background: linear-gradient(135deg, #ffffff 0%, #cbd5e1 60%, #10b981 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 0.35rem;
+            list-style: none;
+        }
+
+        .nav-link-btn {
+            background: transparent;
+            border: 1px solid transparent;
+            color: var(--text-muted);
+            font-family: var(--font-main);
+            font-size: 0.88rem;
+            font-weight: 600;
+            padding: 0.5rem 0.85rem;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+            text-decoration: none;
+            white-space: nowrap;
+        }
+
+        .nav-link-btn:hover {
+            color: var(--text-main);
+            background: rgba(255, 255, 255, 0.05);
+            border-color: rgba(255, 255, 255, 0.1);
+        }
+
+        .nav-link-btn.active {
+            color: #ffffff;
+            background: rgba(16, 185, 129, 0.15);
+            border-color: rgba(16, 185, 129, 0.3);
+            box-shadow: 0 0 12px rgba(16, 185, 129, 0.2);
+        }
+
+        .nav-pill-badge {
+            font-size: 0.7rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #06b6d4, #10b981);
+            color: #ffffff;
+            padding: 0.12rem 0.45rem;
+            border-radius: 9999px;
+            letter-spacing: 0.02em;
+        }
+
+        .nav-creator-btn {
+            background: rgba(56, 189, 248, 0.12);
+            border: 1px solid rgba(56, 189, 248, 0.3);
+            color: #38bdf8;
+            font-size: 0.82rem;
+            font-weight: 700;
+            padding: 0.45rem 0.85rem;
+            border-radius: 10px;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 0.35rem;
+            transition: all 0.2s ease;
+        }
+
+        .nav-creator-btn:hover {
+            background: rgba(56, 189, 248, 0.25);
+            border-color: #38bdf8;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 15px rgba(56, 189, 248, 0.25);
+        }
+
+        .nav-hamburger {
+            display: none;
+            background: rgba(255, 255, 255, 0.06);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            color: #ffffff;
+            font-size: 1.3rem;
+            padding: 0.4rem 0.65rem;
+            border-radius: 8px;
+            cursor: pointer;
+            line-height: 1;
+        }
+
+        .mobile-nav-drawer {
+            display: none;
+            background: rgba(10, 14, 23, 0.98);
+            border-bottom: 1px solid var(--border-glass);
+            padding: 1rem 1.25rem 1.5rem;
+            flex-direction: column;
+            gap: 0.6rem;
+            backdrop-filter: blur(20px);
+        }
+
+        .mobile-nav-drawer.open {
+            display: flex;
+            animation: fadeIn 0.25s ease-out;
+        }
+
+        @media (max-width: 768px) {
+            .nav-links { display: none; }
+            .nav-creator-btn { display: none; }
+            .nav-hamburger { display: block; }
+        }
+
+        /* ============================================================ */
+        /* EIIN DIRECTORY SECTION STYLES                                */
+        /* ============================================================ */
+        .dir-search-wrap {
+            position: relative;
+            margin: 1.25rem 0 1rem;
+        }
+
+        .dir-search-input {
+            width: 100%;
+            padding: 0.95rem 1.1rem 0.95rem 2.85rem;
+            background: rgba(10, 14, 23, 0.85);
+            border: 1.5px solid rgba(255, 255, 255, 0.14);
+            border-radius: 14px;
+            color: #ffffff;
+            font-family: var(--font-main);
+            font-size: 1.02rem;
+            transition: all 0.25s ease;
+        }
+
+        .dir-search-input:focus {
+            outline: none;
+            border-color: var(--accent-cyan);
+            background: rgba(10, 14, 23, 0.95);
+            box-shadow: 0 0 0 3px rgba(6, 182, 212, 0.2);
+        }
+
+        .dir-search-icon {
+            position: absolute;
+            left: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-dim);
+            font-size: 1.15rem;
+            pointer-events: none;
+        }
+
+        .dir-clear-btn {
+            position: absolute;
+            right: 0.85rem;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(255, 255, 255, 0.1);
+            border: none;
+            color: var(--text-muted);
+            width: 26px;
+            height: 26px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 0.85rem;
+            transition: all 0.2s;
+        }
+
+        .dir-clear-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+            color: #ffffff;
+        }
+
+        .dir-board-filters {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.45rem;
+            margin-bottom: 1.25rem;
+        }
+
+        .board-chip {
+            background: rgba(15, 23, 42, 0.7);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            color: var(--text-muted);
+            padding: 0.4rem 0.85rem;
+            border-radius: 9999px;
+            font-family: var(--font-main);
+            font-size: 0.84rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            white-space: nowrap;
+        }
+
+        .board-chip:hover {
+            background: rgba(255, 255, 255, 0.06);
+            color: var(--text-main);
+            border-color: rgba(255, 255, 255, 0.15);
+        }
+
+        .board-chip.active {
+            background: linear-gradient(135deg, rgba(6, 182, 212, 0.25), rgba(16, 185, 129, 0.25));
+            border-color: var(--accent-cyan);
+            color: #ffffff;
+            box-shadow: 0 2px 10px rgba(6, 182, 212, 0.25);
+        }
+
+        .dir-counter {
+            font-size: 0.85rem;
+            font-weight: 700;
+            color: var(--accent-cyan);
+            background: rgba(6, 182, 212, 0.1);
+            border: 1px solid rgba(6, 182, 212, 0.25);
+            padding: 0.35rem 0.85rem;
+            border-radius: 9999px;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+        }
+
+        .dir-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(295px, 1fr));
+            gap: 1rem;
+            margin-top: 1rem;
+            max-height: 700px;
+            overflow-y: auto;
+            padding-right: 0.35rem;
+        }
+
+        .dir-grid::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .dir-grid::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 3px;
+        }
+
+        .inst-card {
+            background: rgba(15, 23, 42, 0.75);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 14px;
+            padding: 1.15rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            gap: 0.85rem;
+            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .inst-card:hover {
+            transform: translateY(-3px);
+            border-color: rgba(16, 185, 129, 0.4);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.35), 0 0 20px rgba(16, 185, 129, 0.1);
+            background: rgba(22, 32, 54, 0.85);
+        }
+
+        .inst-card-top {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            gap: 0.5rem;
+        }
+
+        .inst-name {
+            font-size: 0.98rem;
+            font-weight: 700;
+            color: #ffffff;
+            line-height: 1.4;
+            letter-spacing: -0.01em;
+        }
+
+        .inst-type-pill {
+            font-size: 0.72rem;
+            font-weight: 700;
+            padding: 0.18rem 0.55rem;
+            border-radius: 6px;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+            white-space: nowrap;
+        }
+
+        .inst-type-School { background: rgba(59, 130, 246, 0.15); color: #60a5fa; border: 1px solid rgba(59, 130, 246, 0.3); }
+        .inst-type-College { background: rgba(16, 185, 129, 0.15); color: #34d399; border: 1px solid rgba(16, 185, 129, 0.3); }
+        .inst-type-Cadet { background: rgba(245, 158, 11, 0.15); color: #fbbf24; border: 1px solid rgba(245, 158, 11, 0.3); }
+        .inst-type-Madrasah { background: rgba(168, 85, 247, 0.15); color: #c084fc; border: 1px solid rgba(168, 85, 247, 0.3); }
+        .inst-type-Technical { background: rgba(244, 63, 94, 0.15); color: #fb7185; border: 1px solid rgba(244, 63, 94, 0.3); }
+
+        .inst-meta {
+            display: flex;
+            flex-direction: column;
+            gap: 0.35rem;
+            font-size: 0.82rem;
+            color: var(--text-muted);
+        }
+
+        .inst-meta-item {
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+        }
+
+        .inst-eiin-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 0.5rem;
+            background: rgba(10, 14, 23, 0.6);
+            border: 1px dashed rgba(255, 255, 255, 0.12);
+            border-radius: 8px;
+            padding: 0.4rem 0.65rem;
+        }
+
+        .inst-eiin-code {
+            font-family: monospace;
+            font-size: 1.05rem;
+            font-weight: 800;
+            color: #38bdf8;
+            letter-spacing: 0.08em;
+        }
+
+        .btn-copy-eiin {
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            color: var(--text-muted);
+            padding: 0.22rem 0.55rem;
+            border-radius: 6px;
+            font-size: 0.75rem;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 0.3rem;
+        }
+
+        .btn-copy-eiin:hover {
+            background: rgba(255, 255, 255, 0.18);
+            color: #ffffff;
+        }
+
+        .btn-inst-action {
+            width: 100%;
+            padding: 0.6rem 0.9rem;
+            border-radius: 8px;
+            border: 1px solid rgba(16, 185, 129, 0.4);
+            background: linear-gradient(135deg, rgba(16, 185, 129, 0.2), rgba(6, 182, 212, 0.2));
+            color: #34d399;
+            font-family: var(--font-main);
+            font-size: 0.88rem;
+            font-weight: 700;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.45rem;
+            transition: all 0.2s ease;
+        }
+
+        .btn-inst-action:hover {
+            background: linear-gradient(135deg, #10b981, #059669);
+            color: #ffffff;
+            border-color: #10b981;
+            box-shadow: 0 4px 15px rgba(16, 185, 129, 0.35);
+            transform: translateY(-1px);
+        }
+
         @media print {
             body { background: #ffffff !important; color: #000000 !important; }
-            .app-header, .tabs-nav, .glass-card, .btn-print, .app-footer, .no-print { display: none !important; }
+            .top-nav, .app-header, .tabs-nav, .glass-card, .btn-print, .app-footer, .no-print { display: none !important; }
             .result-container { display: block !important; }
             .sheet-card { box-shadow: none !important; border: 1px solid #000000 !important; }
         }
     </style>
 </head>
 <body>
+
+<!-- TOP STICKY NAVIGATION MENU -->
+<nav class="top-nav">
+    <div class="nav-content">
+        <div class="nav-brand" onclick="switchTab('student')">
+            <span class="nav-brand-logo">🎓</span>
+            <div>
+                <span class="nav-brand-text">BD Result Engine</span>
+                <span style="font-size:0.7rem; color:var(--accent-green); font-weight:700; margin-left:0.4rem; padding:0.1rem 0.4rem; background:rgba(16,185,129,0.15); border:1px solid rgba(16,185,129,0.3); border-radius:9999px;">● LIVE</span>
+            </div>
+        </div>
+
+        <ul class="nav-links">
+            <li>
+                <button type="button" class="nav-link-btn active" id="nav-item-student" onclick="switchTab('student')">
+                    🎓 একক রেজাল্ট
+                </button>
+            </li>
+            <li>
+                <button type="button" class="nav-link-btn" id="nav-item-institute" onclick="switchTab('institute')">
+                    🏫 প্রতিষ্ঠান রেজাল্ট
+                </button>
+            </li>
+            <li>
+                <button type="button" class="nav-link-btn" id="nav-item-directory" onclick="switchTab('directory')">
+                    🔍 EIIN ডিরেক্টরি <span class="nav-pill-badge" id="nav-dir-badge">৪৮০০+ প্রতিষ্ঠান</span>
+                </button>
+            </li>
+            <li>
+                <button type="button" class="nav-link-btn" id="nav-item-sms" onclick="switchTab('sms')">
+                    📱 SMS গাইড
+                </button>
+            </li>
+        </ul>
+
+        <div style="display:flex; align-items:center; gap:0.6rem;">
+            <a href="https://t.me/ShaifulXD" target="_blank" rel="noopener noreferrer" class="nav-creator-btn" title="Contact Developer on Telegram: @ShaifulXD">
+                ⚡ by ShaifulXRD ↗
+            </a>
+            <button type="button" class="nav-hamburger" onclick="toggleMobileNav()" title="মেনু খুলুন">
+                ☰
+            </button>
+        </div>
+    </div>
+
+    <!-- Mobile Drawer Menu -->
+    <div class="mobile-nav-drawer" id="mobile-nav-drawer">
+        <button type="button" class="nav-link-btn" onclick="switchTab('student'); closeMobileNav();">
+            🎓 একক রেজাল্ট (মার্কশিট)
+        </button>
+        <button type="button" class="nav-link-btn" onclick="switchTab('institute'); closeMobileNav();">
+            🏫 পুরো প্রতিষ্ঠানের রেজাল্ট (EIIN)
+        </button>
+        <button type="button" class="nav-link-btn" onclick="switchTab('directory'); closeMobileNav();">
+            🔍 EIIN ডিরেক্টরি (স্কুল ও কলেজ খুঁজুন)
+        </button>
+        <button type="button" class="nav-link-btn" onclick="switchTab('sms'); closeMobileNav();">
+            📱 SMS ব্যাকআপ নির্দেশিকা
+        </button>
+        <a href="https://t.me/ShaifulXD" target="_blank" rel="noopener noreferrer" class="nav-creator-btn" style="display:inline-flex; justify-content:center; margin-top:0.5rem;">
+            ⚡ Contact Developer: @ShaifulXD ↗
+        </a>
+    </div>
+</nav>
 
 <div class="app-container">
     <header class="app-header">
@@ -515,6 +988,9 @@
         </button>
         <button class="tab-btn" id="tab-institute" onclick="switchTab('institute')">
             🏫 পুরো প্রতিষ্ঠানের রেজাল্ট (EIIN)
+        </button>
+        <button class="tab-btn" id="tab-directory" onclick="switchTab('directory')">
+            🔍 EIIN ডিরেক্টরি (সকল বোর্ড)
         </button>
         <button class="tab-btn" id="tab-sms" onclick="switchTab('sms')">
             📱 SMS ব্যাকআপ
@@ -569,8 +1045,8 @@
                         <span class="req">*</span>
                     </label>
                     <select id="year_select" class="custom-input" onchange="updateExamYearState()">
-                        <option value="2026">⚡ ২০২৬ (2026) [নতুন আসন্ন লাইভ]</option>
-                        <option value="2025" selected>২০২৫ (2025)</option>
+                        <option value="2026">⚡ ২০২৬ (2026) [নতুন আসন্ন পরীক্ষা]</option>
+                        <option value="2025" selected>২০২৫ (2025) [সর্বশেষ প্রকাশিত ফলাফল]</option>
                         <option value="2024">২০২৪ (2024)</option>
                         <option value="2023">২০২৩ (2023)</option>
                         <option value="2022">২০২২ (2022) [আর্কাইভ]</option>
@@ -684,8 +1160,8 @@
                         <span>পাসের সাল</span>
                     </label>
                     <select id="inst_year_select" class="custom-input" onchange="syncInstToStudent()">
-                        <option value="2026">২০২৬ [লাইভ]</option>
-                        <option value="2025" selected>২০২৫</option>
+                        <option value="2026">২০২৬ [নতুন আসন্ন পরীক্ষা]</option>
+                        <option value="2025" selected>২০২৫ [সর্বশেষ প্রকাশিত]</option>
                         <option value="2024">২০২৪</option>
                         <option value="2023">২০২৩</option>
                         <option value="2022">২০২২ [আর্কাইভ]</option>
@@ -705,6 +1181,12 @@
                         <span class="req">* আবশ্যক</span>
                     </label>
                     <input type="number" id="eiin_input" class="custom-input" placeholder="যেমন: সৈয়দপুর সায়েন্স কলেজ = 125242" required>
+                    <div style="margin-top:0.45rem; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:0.4rem;">
+                        <span style="font-size:0.83rem; color:var(--text-muted);">💡 আপনার স্কুল বা কলেজের EIIN নম্বর জানা নেই?</span>
+                        <button type="button" onclick="switchTab('directory')" style="background:rgba(6,182,212,0.12); border:1px solid rgba(6,182,212,0.3); color:#38bdf8; font-size:0.83rem; font-weight:700; padding:0.25rem 0.7rem; border-radius:8px; cursor:pointer; transition:all 0.2s;" onmouseover="this.style.background='rgba(6,182,212,0.25)'" onmouseout="this.style.background='rgba(6,182,212,0.12)'">
+                            🔍 EIIN ডিরেক্টরি থেকে নাম দিয়ে খুঁজুন ↗
+                        </button>
+                    </div>
                 </div>
             </div>
 
@@ -742,6 +1224,74 @@
         </div>
     </section>
 
+    <!-- TAB 4: EIIN Directory -->
+    <section class="glass-card" id="directory-section" style="display:none;">
+        <div class="dir-header">
+            <div style="display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:0.75rem; margin-bottom:0.75rem;">
+                <div>
+                    <h3 style="font-size:1.25rem; font-weight:800; color:#ffffff; display:flex; align-items:center; gap:0.5rem;">
+                        <span>🔍 বাংলাদেশ সকল শিক্ষা বোর্ডের EIIN ডিরেক্টরি</span>
+                    </h3>
+                    <p style="color:var(--text-muted); font-size:0.9rem; margin-top:0.25rem;">
+                        নাম, থানা, জেলা বা EIIN কোড দিয়ে যেকোনো স্কুল, কলেজ বা মাদ্রাসার তথ্য খুঁজুন এবং এক ক্লিকে পুরো প্রতিষ্ঠানের ফলাফল দেখুন।
+                    </p>
+                </div>
+                <div id="dir-count-badge" class="dir-counter">
+                    মোট ৪৮০০+ টি প্রতিষ্ঠান
+                </div>
+            </div>
+
+            <!-- Search Bar -->
+            <div class="dir-search-wrap">
+                <span class="dir-search-icon">🔍</span>
+                <input type="text" id="dir-search-input" class="dir-search-input" placeholder="স্কুল/কলেজের নাম, EIIN নম্বর, উপজেলা বা জেলা লিখুন (যেমন: Harish Chandrapur, 120311, Notre Dame, সৈয়দপুর)..." oninput="handleDirSearch()">
+                <button type="button" id="dir-clear-btn" class="dir-clear-btn" onclick="clearDirSearch()" style="display:none;" title="মুছে ফেলুন">✕</button>
+            </div>
+
+            <!-- Board Filter Chips -->
+            <div class="dir-board-filters" id="dir-board-filters">
+                <button type="button" class="board-chip active" onclick="filterByBoard('all', this)">🌐 সকল বোর্ড (All)</button>
+                <button type="button" class="board-chip" onclick="filterByBoard('dinajpur', this)">🟢 দিনাজপুর</button>
+                <button type="button" class="board-chip" onclick="filterByBoard('dhaka', this)">🏛️ ঢাকা</button>
+                <button type="button" class="board-chip" onclick="filterByBoard('chittagong', this)">🌊 চট্টগ্রাম</button>
+                <button type="button" class="board-chip" onclick="filterByBoard('rajshahi', this)">🌾 রাজশাহী</button>
+                <button type="button" class="board-chip" onclick="filterByBoard('comilla', this)">🌺 কুমিল্লা</button>
+                <button type="button" class="board-chip" onclick="filterByBoard('jessore', this)">🌳 যশোর</button>
+                <button type="button" class="board-chip" onclick="filterByBoard('barisal', this)">⛵ বরিশাল</button>
+                <button type="button" class="board-chip" onclick="filterByBoard('sylhet', this)">🍵 সিলেট</button>
+                <button type="button" class="board-chip" onclick="filterByBoard('mymensingh', this)">🌿 ময়মনসিংহ</button>
+                <button type="button" class="board-chip" onclick="filterByBoard('madrasah', this)">🕌 মাদ্রাসা</button>
+                <button type="button" class="board-chip" onclick="filterByBoard('tec', this)">⚙️ কারিগরি</button>
+            </div>
+        </div>
+
+        <!-- Directory Cards Grid -->
+        <div class="dir-grid" id="dir-cards-grid">
+            <!-- Loaded dynamically via JavaScript from ALL_INSTITUTES -->
+        </div>
+
+        <div id="dir-empty-state" style="display:none; text-align:center; padding:2.5rem 1rem; color:var(--text-muted); background:rgba(15,23,42,0.6); border:1px dashed rgba(255,255,255,0.12); border-radius:14px; margin-top:1.5rem;">
+            <span style="font-size:2.5rem; display:block; margin-bottom:0.75rem;">🔎</span>
+            <h4 style="font-size:1.2rem; color:#ffffff; margin-bottom:0.5rem;" id="empty-title">আপনার কাঙ্ক্ষিত প্রতিষ্ঠানটি পাওয়া যায়নি?</h4>
+            <p style="font-size:0.92rem; max-width:600px; margin:0 auto 1.25rem; line-height:1.6; color:#94a3b8;" id="empty-desc">
+                বোর্ডের ফিল্টারে <b>"🌐 সকল বোর্ড (All)"</b> নির্বাচন করা আছে কি না যাচাই করুন। এছাড়াও আপনার স্কুলের ৬ সংখ্যার EIIN জানা থাকলে সরাসরি নিচে লিখুন:
+            </p>
+
+            <div style="max-width:420px; margin:0 auto; display:flex; gap:0.5rem; flex-wrap:wrap; justify-content:center;">
+                <input type="number" id="quick-eiin-input" class="custom-input" style="max-width:200px; text-align:center; font-family:monospace; font-size:1.1rem; font-weight:700;" placeholder="যেমন: 120283">
+                <button type="button" class="btn-submit" style="width:auto; padding:0.75rem 1.25rem; font-size:0.92rem;" onclick="quickSearchByEiin()">
+                    ⚡ রেজাল্ট দেখুন
+                </button>
+            </div>
+
+            <div style="margin-top:1.25rem;">
+                <a id="google-search-eiin" href="#" target="_blank" rel="noopener noreferrer" style="display:inline-flex; align-items:center; gap:0.4rem; color:#38bdf8; font-size:0.88rem; text-decoration:none; font-weight:600; padding:0.4rem 0.85rem; border-radius:8px; background:rgba(56,189,248,0.1); border:1px solid rgba(56,189,248,0.25);">
+                    🔍 গুগলে প্রতিষ্ঠানের EIIN কোড খুঁজুন ↗
+                </a>
+            </div>
+        </div>
+    </section>
+
     <!-- RESULT CONTAINER -->
     <div class="result-container" id="result-container"></div>
 
@@ -750,13 +1300,29 @@
     </footer>
 </div>
 
+<script src="/static/institutes_bundle.js?v=20261015_6"></script>
 <script>
+    if (typeof ALL_INSTITUTES !== 'undefined' && ALL_INSTITUTES.length) {
+        document.addEventListener('DOMContentLoaded', () => {
+            const nb = document.getElementById('nav-dir-badge');
+            if (nb) nb.innerText = `${ALL_INSTITUTES.length}+ প্রতিষ্ঠান`;
+            const db = document.getElementById('dir-count-badge');
+            if (db) db.innerText = `মোট ${ALL_INSTITUTES.length} টি প্রতিষ্ঠান`;
+        });
+    }
     function switchTab(tab) {
         document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
-        document.getElementById(`tab-${tab}`).classList.add('active');
+        const activeTabBtn = document.getElementById(`tab-${tab}`);
+        if (activeTabBtn) activeTabBtn.classList.add('active');
+
+        // Sync top nav menu active button
+        document.querySelectorAll('.nav-link-btn').forEach(btn => btn.classList.remove('active'));
+        const navBtn = document.getElementById(`nav-item-${tab}`);
+        if (navBtn) navBtn.classList.add('active');
 
         document.getElementById('student-section').style.display = (tab === 'student') ? 'block' : 'none';
         document.getElementById('institute-section').style.display = (tab === 'institute') ? 'block' : 'none';
+        document.getElementById('directory-section').style.display = (tab === 'directory') ? 'block' : 'none';
         document.getElementById('sms-section').style.display = (tab === 'sms') ? 'block' : 'none';
         hideError();
 
@@ -764,6 +1330,324 @@
             syncStudentToInst();
         } else if (tab === 'student') {
             syncInstToStudent();
+        } else if (tab === 'directory') {
+            initEiinDirectory();
+        }
+    }
+
+    // ============================================================
+    // MOBILE NAV DRAWER CONTROLS
+    // ============================================================
+    function toggleMobileNav() {
+        const drawer = document.getElementById('mobile-nav-drawer');
+        drawer.classList.toggle('open');
+    }
+
+    function closeMobileNav() {
+        const drawer = document.getElementById('mobile-nav-drawer');
+        drawer.classList.remove('open');
+    }
+
+    // ============================================================
+    // EIIN DIRECTORY SEARCH & SELECTION LOGIC
+    // ============================================================
+    let activeBoardFilter = 'all';
+    let dirInitialized = false;
+
+    const BOARD_NAME_MAP = {
+        'dinajpur': 'দিনাজপুর বোর্ড',
+        'dhaka': 'ঢাকা বোর্ড',
+        'chittagong': 'চট্টগ্রাম বোর্ড',
+        'rajshahi': 'রাজশাহী বোর্ড',
+        'comilla': 'কুমিল্লা বোর্ড',
+        'jessore': 'যশোর বোর্ড',
+        'barisal': 'বরিশাল বোর্ড',
+        'sylhet': 'সিলেট বোর্ড',
+        'mymensingh': 'ময়মনসিংহ বোর্ড',
+        'madrasah': 'মাদ্রাসা বোর্ড',
+        'tec': 'কারিগরি বোর্ড'
+    };
+
+    function initEiinDirectory() {
+        if (!dirInitialized) {
+            dirInitialized = true;
+            renderInstitutes(typeof ALL_INSTITUTES !== 'undefined' ? ALL_INSTITUTES : []);
+        }
+    }
+
+    let dirRenderLimit = 80;
+    let currentDirList = [];
+
+    function renderInstitutes(list) {
+        currentDirList = list || [];
+        const grid = document.getElementById('dir-cards-grid');
+        const emptyState = document.getElementById('dir-empty-state');
+        const countBadge = document.getElementById('dir-count-badge');
+        let loadMoreWrap = document.getElementById('dir-load-more-wrap');
+
+        if (!currentDirList || currentDirList.length === 0) {
+            grid.innerHTML = '';
+            emptyState.style.display = 'block';
+            countBadge.innerText = '০ টি প্রতিষ্ঠান';
+            if (loadMoreWrap) loadMoreWrap.style.display = 'none';
+            return;
+        }
+
+        emptyState.style.display = 'none';
+        countBadge.innerText = `${currentDirList.length} টি প্রতিষ্ঠান`;
+
+        const visibleItems = currentDirList.slice(0, dirRenderLimit);
+
+        const cardsHtml = visibleItems.map(inst => {
+            const boardName = BOARD_NAME_MAP[inst.board] || inst.board;
+            const typeClass = `inst-type-${inst.type || 'School'}`;
+            return `
+                <div class="inst-card">
+                    <div class="inst-card-top">
+                        <h4 class="inst-name">${inst.name}</h4>
+                        <span class="inst-type-pill ${typeClass}">${inst.type || 'Institute'}</span>
+                    </div>
+
+                    <div class="inst-meta">
+                        <div class="inst-meta-item">
+                            <span>🏛️</span>
+                            <span style="color:#e2e8f0; font-weight:600;">${boardName}</span>
+                        </div>
+                        <div class="inst-meta-item">
+                            <span>📍</span>
+                            <span>${inst.thana ? inst.thana + ', ' : ''}${inst.district}</span>
+                        </div>
+                    </div>
+
+                    <div class="inst-eiin-row">
+                        <span style="font-size:0.8rem; color:var(--text-muted); font-weight:600;">EIIN নম্বর:</span>
+                        <div style="display:flex; align-items:center; gap:0.4rem;">
+                            <span class="inst-eiin-code">${inst.eiin}</span>
+                            <button type="button" class="btn-copy-eiin" onclick="copyEiin('${inst.eiin}', this)" title="EIIN কোড কপি করুন">
+                                📋 কপি
+                            </button>
+                        </div>
+                    </div>
+
+                    <button type="button" class="btn-inst-action" onclick="selectInstitute('${inst.eiin}', '${inst.board}')">
+                        <span>⚡ এই প্রতিষ্ঠানের রেজাল্ট দেখুন</span>
+                        <span>➔</span>
+                    </button>
+                </div>
+            `;
+        }).join('');
+
+        grid.innerHTML = cardsHtml;
+
+        // Load More button container
+        if (!loadMoreWrap) {
+            loadMoreWrap = document.createElement('div');
+            loadMoreWrap.id = 'dir-load-more-wrap';
+            loadMoreWrap.style.textAlign = 'center';
+            loadMoreWrap.style.margin = '2rem 0 1rem 0';
+            grid.parentNode.appendChild(loadMoreWrap);
+        }
+
+        if (currentDirList.length > dirRenderLimit) {
+            loadMoreWrap.style.display = 'block';
+            loadMoreWrap.innerHTML = `
+                <button type="button" onclick="loadMoreDirInstitutes()" style="background:var(--primary-gradient); color:#ffffff; font-weight:700; border:none; border-radius:12px; padding:0.85rem 2.2rem; cursor:pointer; font-size:1rem; box-shadow:0 4px 18px rgba(37,99,235,0.4); transition:all 0.2s;">
+                    ⚡ আরো প্রতিষ্ঠান লোড করুন (দেখাচ্ছে ${visibleItems.length} / মোট ${currentDirList.length}) ➔
+                </button>
+            `;
+        } else {
+            loadMoreWrap.style.display = 'none';
+        }
+    }
+
+    function loadMoreDirInstitutes() {
+        dirRenderLimit += 100;
+        renderInstitutes(currentDirList);
+    }
+
+    function handleDirSearch() {
+        const query = document.getElementById('dir-search-input').value.trim().toLowerCase();
+        const clearBtn = document.getElementById('dir-clear-btn');
+        clearBtn.style.display = query ? 'flex' : 'none';
+        filterInstitutes();
+    }
+
+    function clearDirSearch() {
+        document.getElementById('dir-search-input').value = '';
+        document.getElementById('dir-clear-btn').style.display = 'none';
+        filterInstitutes();
+    }
+
+    function filterByBoard(board, elem) {
+        activeBoardFilter = board;
+        document.querySelectorAll('#dir-board-filters .board-chip').forEach(c => c.classList.remove('active'));
+        elem.classList.add('active');
+        filterInstitutes();
+    }
+
+    function filterInstitutes() {
+        if (typeof ALL_INSTITUTES === 'undefined') return;
+        dirRenderLimit = 80;
+        const rawQ = (document.getElementById('dir-search-input').value || '').trim().toLowerCase();
+        const b = activeBoardFilter;
+
+        const districtMap = {
+            'dinajpur': ['দিনাজপুর', 'রংপুর', 'নীলফামারী', 'ঠাকুরগাঁও', 'পঞ্চগড়', 'গাইবান্ধা', 'কুড়িগ্রাম', 'লালমনিরহাট'],
+            'dhaka': ['ঢাকা', 'গাজীপুর', 'নারায়ণগঞ্জ', 'টাঙ্গাইল', 'ফরিদপুর', 'নরসিংদী', 'মানিকগঞ্জ', 'মুন্সীগঞ্জ'],
+            'chittagong': ['চট্টগ্রাম', 'কক্সবাজার', 'রাঙ্গামাটি', 'খাগড়াছড়ি', 'বান্দরবান'],
+            'rajshahi': ['রাজশাহী', 'বগুড়া', 'পাবনা', 'সিরাজগঞ্জ', 'নাটোর', 'নওগাঁ', 'জয়পুরহাট', 'চাঁপাইনবাবগঞ্জ'],
+            'comilla': ['কুমিল্লা', 'ফেনী', 'ব্রাহ্মণবাড়িয়া', 'চাঁদপুর', 'নোয়াখালী', 'লক্ষ্মীপুর'],
+            'jessore': ['যশোর', 'খুলনা', 'কুষ্টিয়া', 'ঝিনাইদহ', 'চুয়াডাঙ্গা', 'মাগুরা', 'মেহেরপুর', 'সাতক্ষীরা', 'বাগেরহাট', 'নড়াইল'],
+            'barisal': ['বরিশাল', 'পটুয়াখালী', 'পিরোজপুর', 'ভোলা', 'বরগুনা', 'ঝালকাঠি'],
+            'sylhet': ['সিলেট', 'মৌলভীবাজার', 'হবিগঞ্জ', 'সুনামগঞ্জ'],
+            'mymensingh': ['ময়মনসিংহ', 'জামালপুর', 'নেত্রকোণা', 'শেরপুর']
+        };
+
+        const filtered = ALL_INSTITUTES.filter(inst => {
+            if (b !== 'all') {
+                let matchBoard = (inst.board === b);
+                if (!matchBoard && districtMap[b] && districtMap[b].some(d => inst.district && inst.district.includes(d))) {
+                    matchBoard = true;
+                }
+                if (!matchBoard) return false;
+            }
+            if (rawQ) {
+                const name = (inst.name || '').toLowerCase();
+                const alt = (inst.alt_names || '').toLowerCase();
+                const dist = (inst.district || '').toLowerCase();
+                const thana = (inst.thana || '').toLowerCase();
+                const type = (inst.type || '').toLowerCase();
+
+                const cleanQ = rawQ.replace(/[\s\-_']/g, '').replace('dhanpur', 'hanpur');
+                const cleanName = name.replace(/[\s\-_']/g, '').replace('dhanpur', 'hanpur');
+                const cleanAlt = alt.replace(/[\s\-_']/g, '').replace('dhanpur', 'hanpur');
+
+                const thanaMap = {
+                    'chirirbandar': 'চিরিরবন্দর',
+                    'chirir': 'চিরিরবন্দর',
+                    'dinajpur': 'দিনাজপুর',
+                    'sadar': 'সদর',
+                    'birganj': 'বীরগঞ্জ',
+                    'kaharole': 'কাহারোল',
+                    'bochaganj': 'বোচাগঞ্জ',
+                    'setabganj': 'সেতাবগঞ্জ',
+                    'birol': 'বিরল',
+                    'parbatipur': 'পার্বতীপুর',
+                    'phulbari': 'ফুলবাড়ী',
+                    'fulbari': 'ফুলবাড়ী',
+                    'nawabganj': 'নবাবগঞ্জ',
+                    'ghoraghat': 'ঘোড়াঘাট',
+                    'hakimpur': 'হাকিমপুর',
+                    'hili': 'হিলি',
+                    'khansama': 'খানসামা',
+                    'birampur': 'বিরামপুর',
+                    'saidpur': 'সৈয়দপুর',
+                    'nilphamari': 'নীলফামারী',
+                    'rangpur': 'রংপুর',
+                    'thakurgaon': 'ঠাকুরগাঁও',
+                    'panchagarh': 'পঞ্চগড়',
+                    'gaibandha': 'গাইবান্ধা',
+                    'kurigram': 'কুড়িগ্রাম',
+                    'lalmonirhat': 'লালমনিরহাট'
+                };
+                let thanaAliasMatch = false;
+                for (const [enKey, bnVal] of Object.entries(thanaMap)) {
+                    if (rawQ.includes(enKey) && (thana.includes(bnVal) || dist.includes(bnVal) || alt.includes(bnVal))) {
+                        thanaAliasMatch = true;
+                        break;
+                    }
+                }
+
+                const match = (
+                    name.includes(rawQ) ||
+                    inst.eiin.includes(rawQ) ||
+                    dist.includes(rawQ) ||
+                    thana.includes(rawQ) ||
+                    type.includes(rawQ) ||
+                    alt.includes(rawQ) ||
+                    thanaAliasMatch ||
+                    cleanName.includes(cleanQ) ||
+                    cleanAlt.includes(cleanQ) ||
+                    (cleanQ.includes('jotram') && (cleanName.includes('jotram') || cleanAlt.includes('jotram') || inst.eiin === '120358')) ||
+                    ((cleanQ.includes('binnakuri') || cleanQ.includes('binakuri') || rawQ.includes('বিন্যা') || rawQ.includes('বিনা')) && (cleanName.includes('binnakuri') || inst.eiin === '120283')) ||
+                    ((cleanQ.includes('amena') || rawQ.includes('আমেনা')) && (cleanName.includes('amena') || inst.eiin === '120950')) ||
+                    ((cleanQ.includes('meher') || rawQ.includes('মেহের')) && (cleanName.includes('meher') || inst.eiin === '139262')) ||
+                    ((cleanQ.includes('city') || rawQ.includes('সিটি')) && (cleanName.includes('city') || inst.eiin === '138401' || inst.eiin === '138497')) ||
+                    ((cleanQ.includes('ideal') || rawQ.includes('আইডিয়াল')) && (cleanName.includes('ideal') || inst.eiin === '137617'))
+                );
+                if (!match) return false;
+            }
+            return true;
+        });
+
+        // Update google search helper link for missing schools
+        const googleLink = document.getElementById('google-search-eiin');
+        if (googleLink) {
+            googleLink.href = 'https://www.google.com/search?q=' + encodeURIComponent((rawQ || 'স্কুল') + ' EIIN school madrasah Dinajpur');
+        }
+
+        renderInstitutes(filtered);
+    }
+
+    function quickSearchByEiin() {
+        const val = (document.getElementById('quick-eiin-input').value || '').trim();
+        if (!val || val.length < 5) {
+            alert('সঠিক ৬ সংখ্যার EIIN নম্বর লিখুন (যেমন: 120283)।');
+            document.getElementById('quick-eiin-input').focus();
+            return;
+        }
+        selectInstitute(val, activeBoardFilter !== 'all' ? activeBoardFilter : 'dinajpur');
+    }
+
+    function copyEiin(eiin, btn) {
+        navigator.clipboard.writeText(eiin).then(() => {
+            const originalText = btn.innerHTML;
+            btn.innerHTML = '✅ কপিড!';
+            btn.style.color = '#34d399';
+            btn.style.borderColor = '#10b981';
+            setTimeout(() => {
+                btn.innerHTML = originalText;
+                btn.style.color = '';
+                btn.style.borderColor = '';
+            }, 1600);
+        }).catch(err => {
+            console.error('Copy failed', err);
+        });
+    }
+
+    function selectInstitute(eiin, board) {
+        // Switch to Institute tab
+        switchTab('institute');
+
+        // Select correct board
+        const boardSelect = document.getElementById('inst_board_select');
+        if (boardSelect) {
+            boardSelect.value = board;
+            syncInstToStudent();
+        }
+
+        // If madrasah and default was HSC, switch to SSC (দাখিল) by default
+        const instExamSelect = document.getElementById('inst_exam_select');
+        if (instExamSelect && board === 'madrasah') {
+            instExamSelect.value = 'SSC';
+        }
+
+        // Set EIIN input
+        const eiinInput = document.getElementById('eiin_input');
+        if (eiinInput) {
+            eiinInput.value = eiin;
+            eiinInput.focus();
+            eiinInput.style.boxShadow = '0 0 0 3px rgba(16, 185, 129, 0.5)';
+            setTimeout(() => {
+                eiinInput.style.boxShadow = '';
+            }, 1200);
+        }
+
+        // Auto trigger search
+        const instBtn = document.getElementById('institute-btn');
+        if (instBtn) {
+            instBtn.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            instBtn.click();
         }
     }
 
@@ -801,8 +1685,8 @@
         if ((board || '').toLowerCase() !== 'dinajpur') return false; // Only Dinajpur has a direct sub-portal
         const y = parseInt(year, 10);
         const ex = (exam || '').toUpperCase();
-        if (ex === 'HSC' && (y === 2025 || y === 2026)) return true;
-        if (ex === 'SSC' && (y >= 2023 && y <= 2026)) return true;
+        if (ex === 'HSC' && y === 2025) return true;
+        if (ex === 'SSC' && (y >= 2023 && y <= 2025)) return true;
         return false;
     }
 
@@ -1128,6 +2012,7 @@
                 </div>
 
                 <div class="sheet-body">
+                    ${data.year_notice ? `<div style="background:rgba(2,132,199,0.1); border:1px solid rgba(2,132,199,0.35); border-radius:10px; padding:0.65rem 1rem; margin-bottom:1.25rem; font-size:0.9rem; color:#0284c7; font-weight:700;">📌 ${data.year_notice}</div>` : ''}
                     <div class="score-banner">
                         <div class="score-item-lead">
                             <div class="gpa-circle ${isGpa5 ? 'gold' : ''}">
@@ -1174,7 +2059,10 @@
         container.scrollIntoView({ behavior: 'smooth' });
     }
 
+    let currentInstituteResult = null;
+
     function renderInstituteResult(data) {
+        currentInstituteResult = data;
         const container = document.getElementById('result-container');
 
         let groupsHtml = '';
@@ -1244,6 +2132,7 @@
                 </div>
 
                 <div class="sheet-body">
+                    ${data.year_notice ? `<div style="background:rgba(2,132,199,0.1); border:1px solid rgba(2,132,199,0.35); border-radius:10px; padding:0.65rem 1rem; margin-bottom:1.25rem; font-size:0.9rem; color:#0284c7; font-weight:700;">📌 ${data.year_notice}</div>` : ''}
                     <div class="inst-stats">
                         <div class="stat-box">
                             <div class="num" style="color:#0284c7;">${data.appeared || '0'}</div>
@@ -1275,8 +2164,17 @@
     }
 
     function searchThisRoll(roll) {
+        if (currentInstituteResult) {
+            if (currentInstituteResult.year && document.getElementById('year_select')) {
+                document.getElementById('year_select').value = currentInstituteResult.year;
+            }
+            if (currentInstituteResult.exam && document.getElementById('exam_select')) {
+                document.getElementById('exam_select').value = currentInstituteResult.exam;
+            }
+        }
         switchTab('student');
         document.getElementById('roll_input').value = roll;
+        updateExamYearState();
         document.getElementById('student-btn').click();
     }
 
