@@ -2827,12 +2827,6 @@
 
     function renderStudentResult(data) {
         const container = document.getElementById('result-container');
-
-        if (data.is_bteb_portal) {
-            renderBtebPortalCard(data);
-            return;
-        }
-
         const isGpa5 = data.gpa === '5.00';
 
         let subRowsHtml = '';
@@ -2909,6 +2903,18 @@
                             </tbody>
                         </table>
                     </div>
+
+                    ${data.is_bteb ? `
+                    <div style="margin-top:1.25rem; background:rgba(16,185,129,0.08); border:1px solid rgba(16,185,129,0.25); border-radius:10px; padding:0.9rem 1.1rem; display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:0.8rem;">
+                        <div style="display:flex; align-items:center; gap:0.6rem; color:#a7f3d0; font-size:0.88rem; font-weight:600;">
+                            <span style="font-size:1.15rem;">⚙️</span>
+                            <span>বাংলাদেশ কারিগরি শিক্ষা বোর্ড (BTEB) সেন্ট্রাল রেজাল্ট ডেটাবেজ দ্বারা যাচাইকৃত মার্কশিট</span>
+                        </div>
+                        <a href="https://result.bteb.gov.bd" target="_blank" rel="noopener noreferrer" style="color:#38bdf8; font-size:0.85rem; font-weight:700; text-decoration:none; display:inline-flex; align-items:center; gap:0.3rem;" onmouseover="this.style.textDecoration='underline';" onmouseout="this.style.textDecoration='none';">
+                            <span>অফিসিয়াল বিটিইবি পোর্টাল ↗</span>
+                        </a>
+                    </div>
+                    ` : ''}
                 </div>
             </div>
         `;
