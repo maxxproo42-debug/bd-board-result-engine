@@ -1126,132 +1126,316 @@
             backdrop-filter: blur(8px);
         }
 
+        /* Higher Education 5-Card Switcher Grid */
         .higher-cards-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
-            gap: 1.1rem;
-            margin-bottom: 2rem;
+            grid-template-columns: repeat(5, minmax(0, 1fr));
+            gap: 1rem;
+            margin-bottom: 1.25rem;
         }
 
         .higher-card {
-            background: rgba(15, 23, 42, 0.7);
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            background: rgba(15, 23, 42, 0.65);
+            border: 1.5px solid rgba(255, 255, 255, 0.08);
             border-radius: 18px;
-            padding: 1.35rem 1.15rem;
+            padding: 1.35rem 0.95rem 1.15rem;
             text-align: center;
             cursor: pointer;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            transition: all 0.28s cubic-bezier(0.34, 1.56, 0.64, 1);
             position: relative;
             overflow: hidden;
-            backdrop-filter: blur(12px);
+            backdrop-filter: blur(14px);
+            opacity: 0.68;
+            filter: saturate(0.85);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            min-height: 235px;
+            user-select: none;
         }
 
         .higher-card:hover {
+            opacity: 0.92;
+            filter: saturate(1);
             transform: translateY(-4px);
-            box-shadow: 0 12px 30px -5px rgba(0, 0, 0, 0.55);
+            border-color: rgba(255, 255, 255, 0.22);
+            box-shadow: 0 12px 28px rgba(0, 0, 0, 0.55);
         }
 
-        /* Honours Theme */
-        .higher-card.card-honours {
-            border-color: rgba(6, 182, 212, 0.3);
-        }
-        .higher-card.card-honours:hover, .higher-card.card-honours.active {
-            border-color: #06b6d4;
-            background: linear-gradient(135deg, rgba(6, 182, 212, 0.18), rgba(16, 185, 129, 0.12));
-            box-shadow: 0 0 25px rgba(6, 182, 212, 0.25), 0 10px 25px rgba(0,0,0,0.4);
-        }
-
-        /* Degree Theme */
-        .higher-card.card-degree {
-            border-color: rgba(245, 158, 11, 0.3);
-        }
-        .higher-card.card-degree:hover, .higher-card.card-degree.active {
-            border-color: #f59e0b;
-            background: linear-gradient(135deg, rgba(245, 158, 11, 0.18), rgba(234, 88, 12, 0.12));
-            box-shadow: 0 0 25px rgba(245, 158, 11, 0.25), 0 10px 25px rgba(0,0,0,0.4);
-        }
-
-        /* Masters Theme */
-        .higher-card.card-masters {
-            border-color: rgba(168, 85, 247, 0.3);
-        }
-        .higher-card.card-masters:hover, .higher-card.card-masters.active {
-            border-color: #c084fc;
-            background: linear-gradient(135deg, rgba(168, 85, 247, 0.2), rgba(236, 72, 153, 0.12));
-            box-shadow: 0 0 25px rgba(168, 85, 247, 0.25), 0 10px 25px rgba(0,0,0,0.4);
-        }
-
-        /* Fazil Theme (IAU) */
-        .higher-card.card-fazil {
-            border-color: rgba(16, 185, 129, 0.3);
-        }
-        .higher-card.card-fazil:hover, .higher-card.card-fazil.active {
-            border-color: #10b981;
-            background: linear-gradient(135deg, rgba(16, 185, 129, 0.2), rgba(5, 150, 105, 0.12));
-            box-shadow: 0 0 25px rgba(16, 185, 129, 0.25), 0 10px 25px rgba(0,0,0,0.4);
-        }
-
-        /* Kamil Theme (IAU) */
-        .higher-card.card-kamil {
-            border-color: rgba(234, 179, 8, 0.3);
-        }
-        .higher-card.card-kamil:hover, .higher-card.card-kamil.active {
-            border-color: #eab308;
-            background: linear-gradient(135deg, rgba(234, 179, 8, 0.2), rgba(217, 119, 6, 0.12));
-            box-shadow: 0 0 25px rgba(234, 179, 8, 0.25), 0 10px 25px rgba(0,0,0,0.4);
-        }
-
-        .higher-card-icon {
-            font-size: 2.3rem;
-            margin-bottom: 0.5rem;
-            display: inline-block;
-            transition: transform 0.25s ease;
-        }
-        .higher-card:hover .higher-card-icon {
-            transform: scale(1.15) rotate(3deg);
-        }
-
-        .higher-card-title {
-            font-size: 1.18rem;
-            font-weight: 800;
-            color: #ffffff;
-            margin-bottom: 0.25rem;
-            letter-spacing: -0.01em;
-        }
-
-        .higher-card-badge {
-            font-size: 0.75rem;
-            font-weight: 700;
-            padding: 0.22rem 0.65rem;
-            border-radius: 9999px;
-            display: inline-block;
-            margin-bottom: 0.45rem;
-        }
-        .card-honours .higher-card-badge { background: rgba(6,182,212,0.2); color: #38bdf8; border: 1px solid rgba(6,182,212,0.3); }
-        .card-degree .higher-card-badge { background: rgba(245,158,11,0.2); color: #fbbf24; border: 1px solid rgba(245,158,11,0.3); }
-        .card-masters .higher-card-badge { background: rgba(168,85,247,0.2); color: #c084fc; border: 1px solid rgba(168,85,247,0.3); }
-        .card-fazil .higher-card-badge { background: rgba(16,185,129,0.2); color: #34d399; border: 1px solid rgba(16,185,129,0.3); }
-        .card-kamil .higher-card-badge { background: rgba(234,179,8,0.2); color: #facc15; border: 1px solid rgba(234,179,8,0.3); }
-
-        .higher-card-desc {
-            font-size: 0.82rem;
-            color: var(--text-muted);
-            line-height: 1.45;
-        }
-
-        .higher-active-indicator {
+        /* Top Active Glowing Badge */
+        .higher-active-badge {
             display: none;
             position: absolute;
             top: 10px;
             right: 10px;
-            width: 10px;
-            height: 10px;
-            border-radius: 50%;
-            background: #10b981;
-            box-shadow: 0 0 12px #10b981;
+            align-items: center;
+            gap: 5px;
+            padding: 0.24rem 0.65rem;
+            border-radius: 9999px;
+            font-size: 0.72rem;
+            font-weight: 800;
+            letter-spacing: 0.02em;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+            z-index: 5;
         }
-        .higher-card.active .higher-active-indicator {
-            display: block;
+
+        .active-pulse-dot {
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+            background: currentColor;
+            display: inline-block;
+            animation: pulseDot 1.4s infinite ease-in-out;
+        }
+
+        @keyframes pulseDot {
+            0% { transform: scale(0.9); opacity: 0.6; }
+            50% { transform: scale(1.4); opacity: 1; }
+            100% { transform: scale(0.9); opacity: 0.6; }
+        }
+
+        .higher-card-icon {
+            font-size: 2.3rem;
+            margin-bottom: 0.45rem;
+            display: inline-block;
+            transition: transform 0.25s ease;
+        }
+
+        .higher-card-title {
+            font-size: 1.15rem;
+            font-weight: 800;
+            color: #ffffff;
+            margin-bottom: 0.35rem;
+            letter-spacing: -0.01em;
+        }
+
+        .higher-card-badge {
+            font-size: 0.74rem;
+            font-weight: 700;
+            padding: 0.22rem 0.65rem;
+            border-radius: 9999px;
+            display: inline-block;
+            margin-bottom: 0.5rem;
+        }
+
+        .card-honours .higher-card-badge { background: rgba(6,182,212,0.18); color: #38bdf8; border: 1px solid rgba(6,182,212,0.3); }
+        .card-degree .higher-card-badge { background: rgba(245,158,11,0.18); color: #fbbf24; border: 1px solid rgba(245,158,11,0.3); }
+        .card-masters .higher-card-badge { background: rgba(168,85,247,0.18); color: #c084fc; border: 1px solid rgba(168,85,247,0.3); }
+        .card-fazil .higher-card-badge { background: rgba(16,185,129,0.18); color: #34d399; border: 1px solid rgba(16,185,129,0.3); }
+        .card-kamil .higher-card-badge { background: rgba(234,179,8,0.18); color: #facc15; border: 1px solid rgba(234,179,8,0.3); }
+
+        .higher-card-desc {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            line-height: 1.45;
+            flex-grow: 1;
+        }
+
+        /* Bottom Status Indicator Tag */
+        .higher-card-status {
+            margin-top: 0.75rem;
+            padding-top: 0.6rem;
+            border-top: 1px dashed rgba(255, 255, 255, 0.1);
+        }
+
+        .status-indicator-tag {
+            display: inline-block;
+            font-size: 0.74rem;
+            font-weight: 700;
+            color: var(--text-dim);
+            padding: 0.25rem 0.7rem;
+            border-radius: 6px;
+            background: rgba(255, 255, 255, 0.04);
+            transition: all 0.2s;
+            width: 100%;
+        }
+
+        /* ACTIVE CARD STATE (Ultra-Prominent, Elevated, Radiant) */
+        .higher-card.active {
+            opacity: 1 !important;
+            filter: saturate(1.2) !important;
+            transform: translateY(-8px) scale(1.035) !important;
+            z-index: 10;
+            border-width: 2.5px !important;
+        }
+
+        .higher-card.active::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4.5px;
+            z-index: 4;
+        }
+
+        .higher-card.active .higher-active-badge {
+            display: inline-flex;
+        }
+
+        .higher-card.active .higher-card-icon {
+            transform: scale(1.22);
+            filter: drop-shadow(0 4px 12px rgba(0,0,0,0.6));
+        }
+
+        .higher-card.active .higher-card-title {
+            color: #ffffff !important;
+            text-shadow: 0 0 15px currentColor;
+        }
+
+        .higher-card.active .status-indicator-tag {
+            font-weight: 800;
+            color: #ffffff;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.35);
+        }
+
+        /* 1. HONOURS ACTIVE */
+        .card-honours.active {
+            border-color: #06b6d4 !important;
+            outline: 3.5px solid rgba(6, 182, 212, 0.6);
+            outline-offset: 3.5px;
+            background: linear-gradient(150deg, rgba(6, 182, 212, 0.26) 0%, rgba(15, 23, 42, 0.95) 100%) !important;
+            box-shadow: 0 0 35px rgba(6, 182, 212, 0.5), inset 0 0 22px rgba(6, 182, 212, 0.16), 0 20px 40px rgba(0, 0, 0, 0.7) !important;
+        }
+        .card-honours.active::before { background: linear-gradient(90deg, #06b6d4, #10b981); box-shadow: 0 0 14px #06b6d4; }
+        .card-honours .higher-active-badge { background: #06b6d4; color: #022027; }
+        .card-honours.active .status-indicator-tag { background: #06b6d4; color: #022027; }
+
+        /* 2. DEGREE ACTIVE */
+        .card-degree.active {
+            border-color: #f59e0b !important;
+            outline: 3.5px solid rgba(245, 158, 11, 0.6);
+            outline-offset: 3.5px;
+            background: linear-gradient(150deg, rgba(245, 158, 11, 0.26) 0%, rgba(15, 23, 42, 0.95) 100%) !important;
+            box-shadow: 0 0 35px rgba(245, 158, 11, 0.5), inset 0 0 22px rgba(245, 158, 11, 0.16), 0 20px 40px rgba(0, 0, 0, 0.7) !important;
+        }
+        .card-degree.active::before { background: linear-gradient(90deg, #f59e0b, #ea580c); box-shadow: 0 0 14px #f59e0b; }
+        .card-degree .higher-active-badge { background: #f59e0b; color: #2d1800; }
+        .card-degree.active .status-indicator-tag { background: #f59e0b; color: #2d1800; }
+
+        /* 3. MASTERS ACTIVE */
+        .card-masters.active {
+            border-color: #c084fc !important;
+            outline: 3.5px solid rgba(192, 132, 252, 0.6);
+            outline-offset: 3.5px;
+            background: linear-gradient(150deg, rgba(168, 85, 247, 0.26) 0%, rgba(15, 23, 42, 0.95) 100%) !important;
+            box-shadow: 0 0 35px rgba(168, 85, 247, 0.5), inset 0 0 22px rgba(168, 85, 247, 0.16), 0 20px 40px rgba(0, 0, 0, 0.7) !important;
+        }
+        .card-masters.active::before { background: linear-gradient(90deg, #c084fc, #ec4899); box-shadow: 0 0 14px #c084fc; }
+        .card-masters .higher-active-badge { background: #c084fc; color: #280547; }
+        .card-masters.active .status-indicator-tag { background: #c084fc; color: #280547; }
+
+        /* 4. FAZIL ACTIVE (IAU) */
+        .card-fazil.active {
+            border-color: #10b981 !important;
+            outline: 3.5px solid rgba(16, 185, 129, 0.6);
+            outline-offset: 3.5px;
+            background: linear-gradient(150deg, rgba(16, 185, 129, 0.28) 0%, rgba(15, 23, 42, 0.95) 100%) !important;
+            box-shadow: 0 0 35px rgba(16, 185, 129, 0.5), inset 0 0 22px rgba(16, 185, 129, 0.16), 0 20px 40px rgba(0, 0, 0, 0.7) !important;
+        }
+        .card-fazil.active::before { background: linear-gradient(90deg, #10b981, #059669); box-shadow: 0 0 14px #10b981; }
+        .card-fazil .higher-active-badge { background: #10b981; color: #022c22; }
+        .card-fazil.active .status-indicator-tag { background: #10b981; color: #022c22; }
+
+        /* 5. KAMIL ACTIVE (IAU) */
+        .card-kamil.active {
+            border-color: #eab308 !important;
+            outline: 3.5px solid rgba(234, 179, 8, 0.6);
+            outline-offset: 3.5px;
+            background: linear-gradient(150deg, rgba(234, 179, 8, 0.28) 0%, rgba(15, 23, 42, 0.95) 100%) !important;
+            box-shadow: 0 0 35px rgba(234, 179, 8, 0.5), inset 0 0 22px rgba(234, 179, 8, 0.16), 0 20px 40px rgba(0, 0, 0, 0.7) !important;
+        }
+        .card-kamil.active::before { background: linear-gradient(90deg, #eab308, #d97706); box-shadow: 0 0 14px #eab308; }
+        .card-kamil .higher-active-badge { background: #eab308; color: #2c2002; }
+        .card-kamil.active .status-indicator-tag { background: #eab308; color: #2c2002; }
+
+        /* Dedicated Dynamic Selection Ribbon Banner */
+        .higher-selection-banner {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: rgba(15, 23, 42, 0.88);
+            border: 1.5px solid rgba(255, 255, 255, 0.12);
+            border-radius: 14px;
+            padding: 0.9rem 1.35rem;
+            margin-bottom: 2rem;
+            backdrop-filter: blur(12px);
+            transition: all 0.3s ease;
+            flex-wrap: wrap;
+            gap: 0.75rem;
+        }
+
+        .sel-banner-left {
+            display: flex;
+            align-items: center;
+            gap: 0.85rem;
+            flex-wrap: wrap;
+        }
+
+        .sel-status-badge {
+            font-size: 0.75rem;
+            font-weight: 800;
+            color: #ffffff;
+            background: rgba(255, 255, 255, 0.12);
+            padding: 0.26rem 0.75rem;
+            border-radius: 9999px;
+            letter-spacing: 0.03em;
+        }
+
+        .sel-title {
+            font-size: 1.05rem;
+            font-weight: 800;
+            color: #ffffff;
+            letter-spacing: -0.01em;
+        }
+
+        .sel-banner-right {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            flex-wrap: wrap;
+        }
+
+        .sel-tag {
+            font-size: 0.78rem;
+            font-weight: 700;
+            padding: 0.24rem 0.7rem;
+            border-radius: 6px;
+            background: rgba(255, 255, 255, 0.08);
+            color: #cbd5e1;
+        }
+
+        .sel-hint {
+            font-size: 0.82rem;
+            color: var(--text-muted);
+        }
+
+        .banner-honours { border-color: rgba(6, 182, 212, 0.5); box-shadow: 0 0 22px rgba(6, 182, 212, 0.22); }
+        .banner-honours .sel-status-badge { background: #06b6d4; color: #022027; }
+        .banner-degree { border-color: rgba(245, 158, 11, 0.5); box-shadow: 0 0 22px rgba(245, 158, 11, 0.22); }
+        .banner-degree .sel-status-badge { background: #f59e0b; color: #2d1800; }
+        .banner-masters { border-color: rgba(168, 85, 247, 0.5); box-shadow: 0 0 22px rgba(168, 85, 247, 0.22); }
+        .banner-masters .sel-status-badge { background: #c084fc; color: #280547; }
+        .banner-fazil { border-color: rgba(16, 185, 129, 0.5); box-shadow: 0 0 22px rgba(16, 185, 129, 0.22); }
+        .banner-fazil .sel-status-badge { background: #10b981; color: #022c22; }
+        .banner-kamil { border-color: rgba(234, 179, 8, 0.5); box-shadow: 0 0 22px rgba(234, 179, 8, 0.22); }
+        .banner-kamil .sel-status-badge { background: #eab308; color: #2c2002; }
+
+        @media (max-width: 1080px) {
+            .higher-cards-grid {
+                grid-template-columns: repeat(3, minmax(0, 1fr));
+            }
+        }
+        @media (max-width: 768px) {
+            .higher-cards-grid {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+                gap: 0.85rem;
+            }
+        }
+        @media (max-width: 480px) {
+            .higher-cards-grid {
+                grid-template-columns: 1fr;
+            }
         }
 
         /* Server Quick Switch Chips */
@@ -1283,12 +1467,6 @@
             transform: translateY(-1px);
         }
 
-        @media (max-width: 768px) {
-            .higher-cards-grid {
-                grid-template-columns: 1fr;
-                gap: 0.85rem;
-            }
-        }
 
         @media print {
             body { background: #ffffff !important; color: #000000 !important; }
@@ -1746,47 +1924,89 @@
         <div class="higher-cards-grid">
             <!-- 1. HONOURS -->
             <div class="higher-card card-honours active" id="card-btn-honours" onclick="selectHigherCourse('honours')">
-                <span class="higher-active-indicator"></span>
-                <span class="higher-card-icon">🎓</span>
+                <div class="higher-active-badge">
+                    <span class="active-pulse-dot"></span>
+                    <span class="active-label">✓ নির্বাচিত</span>
+                </div>
+                <div class="higher-card-icon">🎓</div>
                 <div class="higher-card-title">অনার্স (Honours)</div>
                 <span class="higher-card-badge">৪ বছর মেয়াদী ব্যাচেলর</span>
                 <p class="higher-card-desc">জাতীয় বিশ্ববিদ্যালয় (১ম, ২য়, ৩য়, ৪র্থ বর্ষ ও সিজিপিএ কনসোলিডেটেড)</p>
+                <div class="higher-card-status">
+                    <span class="status-indicator-tag">✓ বর্তমান পছন্দ</span>
+                </div>
             </div>
 
             <!-- 2. DEGREE PASS -->
             <div class="higher-card card-degree" id="card-btn-degree" onclick="selectHigherCourse('degree')">
-                <span class="higher-active-indicator"></span>
-                <span class="higher-card-icon">📜</span>
+                <div class="higher-active-badge">
+                    <span class="active-pulse-dot"></span>
+                    <span class="active-label">✓ নির্বাচিত</span>
+                </div>
+                <div class="higher-card-icon">📜</div>
                 <div class="higher-card-title">ডিগ্রি পাস (Degree)</div>
                 <span class="higher-card-badge">৩ বছর মেয়াদী কোর্স</span>
                 <p class="higher-card-desc">জাতীয় বিশ্ববিদ্যালয় ডিগ্রি পাস ও সার্টিফিকেট (১ম, ২য়, ৩য় বর্ষ ও সমন্বিত)</p>
+                <div class="higher-card-status">
+                    <span class="status-indicator-tag">সিলেক্ট করতে চাপুন</span>
+                </div>
             </div>
 
             <!-- 3. MASTERS -->
             <div class="higher-card card-masters" id="card-btn-masters" onclick="selectHigherCourse('masters')">
-                <span class="higher-active-indicator"></span>
-                <span class="higher-card-icon">👑</span>
+                <div class="higher-active-badge">
+                    <span class="active-pulse-dot"></span>
+                    <span class="active-label">✓ নির্বাচিত</span>
+                </div>
+                <div class="higher-card-icon">👑</div>
                 <div class="higher-card-title">মাস্টার্স (Masters)</div>
                 <span class="higher-card-badge">স্নাতকোত্তর ডিগ্রী</span>
                 <p class="higher-card-desc">জাতীয় বিশ্ববিদ্যালয় মাস্টার্স প্রিলিমিনারি ও শেষ পর্ব (ফাইনাল)</p>
+                <div class="higher-card-status">
+                    <span class="status-indicator-tag">সিলেক্ট করতে চাপুন</span>
+                </div>
             </div>
 
             <!-- 4. FAZIL PASS & HONOURS -->
             <div class="higher-card card-fazil" id="card-btn-fazil" onclick="selectHigherCourse('fazil')">
-                <span class="higher-active-indicator"></span>
-                <span class="higher-card-icon">🕌</span>
+                <div class="higher-active-badge">
+                    <span class="active-pulse-dot"></span>
+                    <span class="active-label">✓ নির্বাচিত</span>
+                </div>
+                <div class="higher-card-icon">🕌</div>
                 <div class="higher-card-title">ফাজিল (Fazil)</div>
                 <span class="higher-card-badge">ফাজিল পাস ও অনার্স</span>
                 <p class="higher-card-desc">ইসলামী আরবি বিশ্ববিদ্যালয় (IAU) ফাজিল পাস ও ৪ বছর মেয়াদী অনার্স</p>
+                <div class="higher-card-status">
+                    <span class="status-indicator-tag">সিলেক্ট করতে চাপুন</span>
+                </div>
             </div>
 
             <!-- 5. KAMIL MASTERS -->
             <div class="higher-card card-kamil" id="card-btn-kamil" onclick="selectHigherCourse('kamil')">
-                <span class="higher-active-indicator"></span>
-                <span class="higher-card-icon">📿</span>
+                <div class="higher-active-badge">
+                    <span class="active-pulse-dot"></span>
+                    <span class="active-label">✓ নির্বাচিত</span>
+                </div>
+                <div class="higher-card-icon">📿</div>
                 <div class="higher-card-title">কামিল (Kamil)</div>
                 <span class="higher-card-badge">কামিল স্নাতকোত্তর</span>
                 <p class="higher-card-desc">ইসলামী আরবি বিশ্ববিদ্যালয় (IAU) কামিল ১ম ও শেষ পর্ব (মাস্টার্স)</p>
+                <div class="higher-card-status">
+                    <span class="status-indicator-tag">সিলেক্ট করতে চাপুন</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- DYNAMIC SELECTION RIBBON BANNER -->
+        <div class="higher-selection-banner banner-honours" id="higher-selection-banner">
+            <div class="sel-banner-left">
+                <span class="sel-status-badge" id="banner-status-badge">● সক্রিয় কোর্স</span>
+                <span class="sel-title" id="higher-selected-text">🎓 অনার্স (Honours) — জাতীয় বিশ্ববিদ্যালয় (NU)</span>
+            </div>
+            <div class="sel-banner-right">
+                <span class="sel-tag" id="higher-selected-tag">৪ বছর মেয়াদী ব্যাচেলর ও CGPA কনসোলিডেটেড</span>
+                <span class="sel-hint">👉 নিচে পরীক্ষার নাম ও বছর নির্বাচন করে রোল ও রেজিস্ট্রেশন দিন</span>
             </div>
         </div>
 
@@ -1848,8 +2068,8 @@
                 <button type="submit" class="btn-submit" id="higher-btn" style="flex:2; min-width:240px;">
                     🔍 ফলাফল যাচাই ও প্রস্তুত করুন (Fetch Result)
                 </button>
-                <button type="button" class="btn-submit" onclick="openNuOfficialDirect()" style="flex:1.5; min-width:200px; background:linear-gradient(135deg, #0284c7, #0369a1); border-color:#0284c7;" title="অফিসিয়াল পোর্টালে ১-ক্লিকে রেজাল্ট বাইপাস">
-                    ⚡ অফিসিয়াল গেটওয়ে বাইপাস ↗
+                <button type="button" class="btn-submit" id="higher-bypass-btn" onclick="openNuOfficialDirect()" style="flex:1.5; min-width:200px; background:linear-gradient(135deg, #0284c7, #0369a1); border-color:#0284c7;" title="অফিসিয়াল পোর্টালে ১-ক্লিকে রেজাল্ট বাইপাস">
+                    ⚡ NU অফিসিয়াল গেটওয়ে বাইপাস ↗
                 </button>
             </div>
         </form>
@@ -2909,15 +3129,67 @@
         }
     }
 
+    const HIGHER_COURSE_META = {
+        'honours': {
+            title: '🎓 অনার্স (Honours) — জাতীয় বিশ্ববিদ্যালয় (NU)',
+            tag: '৪ বছর মেয়াদী ব্যাচেলর ও CGPA কনসোলিডেটেড',
+            btnText: '🔍 অনার্স ফলাফল যাচাই করুন (NU Search)',
+            bypassText: '⚡ NU অফিসিয়াল গেটওয়ে বাইপাস ↗'
+        },
+        'degree': {
+            title: '📜 ডিগ্রি পাস (Degree Pass) — জাতীয় বিশ্ববিদ্যালয় (NU)',
+            tag: '৩ বছর মেয়াদী কোর্স ও সার্টিফিকেট',
+            btnText: '🔍 ডিগ্রি পাস ফলাফল যাচাই করুন (NU Search)',
+            bypassText: '⚡ NU অফিসিয়াল গেটওয়ে বাইপাস ↗'
+        },
+        'masters': {
+            title: '👑 মাস্টার্স (Masters) — জাতীয় বিশ্ববিদ্যালয় (NU)',
+            tag: 'মাস্টার্স প্রিলিমিনারি ও ফাইনাল ফলাফল',
+            btnText: '🔍 মাস্টার্স ফলাফল যাচাই করুন (NU Search)',
+            bypassText: '⚡ NU অফিসিয়াল গেটওয়ে বাইপাস ↗'
+        },
+        'fazil': {
+            title: '🕌 ফাজিল (Fazil) — ইসলামী আরবি বিশ্ববিদ্যালয় (IAU)',
+            tag: 'ফাজিল পাস (১ম-৩য় বর্ষ) ও ৪ বছর মেয়াদী অনার্স',
+            btnText: '🔍 ফাজিল ফলাফল যাচাই করুন (IAU Search)',
+            bypassText: '⚡ IAU অফিসিয়াল গেটওয়ে বাইপাস ↗'
+        },
+        'kamil': {
+            title: '📿 কামিল (Kamil) — ইসলামী আরবি বিশ্ববিদ্যালয় (IAU)',
+            tag: 'কামিল ১ম ও শেষ পর্ব (মাস্টার্স) এবং ১ বছর মেয়াদী',
+            btnText: '🔍 কামিল ফলাফল যাচাই করুন (IAU Search)',
+            bypassText: '⚡ IAU অফিসিয়াল গেটওয়ে বাইপাস ↗'
+        }
+    };
+
     function selectHigherCourse(course) {
         activeHigherCourse = course;
         
-        // Update Card Styles
-        document.querySelectorAll('.higher-card').forEach(c => c.classList.remove('active'));
-        const activeCard = document.getElementById(`card-btn-${course}`);
-        if (activeCard) activeCard.classList.add('active');
+        // 1. Update Card Styles & Status Tags
+        document.querySelectorAll('.higher-card').forEach(c => {
+            c.classList.remove('active');
+            const statusTag = c.querySelector('.status-indicator-tag');
+            if (statusTag) statusTag.textContent = 'সিলেক্ট করতে চাপুন';
+        });
 
-        // Update Label
+        const activeCard = document.getElementById(`card-btn-${course}`);
+        if (activeCard) {
+            activeCard.classList.add('active');
+            const statusTag = activeCard.querySelector('.status-indicator-tag');
+            if (statusTag) statusTag.textContent = '✓ বর্তমান পছন্দ';
+        }
+
+        // 2. Update Dynamic Ribbon Banner
+        const banner = document.getElementById('higher-selection-banner');
+        const bannerText = document.getElementById('higher-selected-text');
+        const bannerTag = document.getElementById('higher-selected-tag');
+        if (HIGHER_COURSE_META[course]) {
+            if (banner) banner.className = `higher-selection-banner banner-${course}`;
+            if (bannerText) bannerText.textContent = HIGHER_COURSE_META[course].title;
+            if (bannerTag) bannerTag.textContent = HIGHER_COURSE_META[course].tag;
+        }
+
+        // 3. Update Input Label & Buttons
         const examLabel = document.getElementById('higher-exam-label');
         if (examLabel) {
             if (course === 'fazil' || course === 'kamil') {
@@ -2927,7 +3199,17 @@
             }
         }
 
-        // Populate Exam Dropdown
+        const higherBtn = document.getElementById('higher-btn');
+        if (higherBtn && HIGHER_COURSE_META[course]) {
+            higherBtn.innerHTML = HIGHER_COURSE_META[course].btnText;
+        }
+
+        const bypassBtn = document.getElementById('higher-bypass-btn');
+        if (bypassBtn && HIGHER_COURSE_META[course]) {
+            bypassBtn.innerHTML = HIGHER_COURSE_META[course].bypassText;
+        }
+
+        // 4. Populate Exam Dropdown
         const select = document.getElementById('nu_exam_name');
         if (select && HIGHER_COURSE_DATA[course]) {
             select.innerHTML = '';
@@ -3002,7 +3284,9 @@
 
         hideError();
         const originalBtnHtml = higherBtn.innerHTML;
-        higherBtn.innerHTML = '<span class="loading-spinner"></span> জাতীয় বিশ্ববিদ্যালয় সার্ভার থেকে ফলাফল আনা হচ্ছে...';
+        const isMadrasah = (activeHigherCourse === 'fazil' || activeHigherCourse === 'kamil');
+        const uniName = isMadrasah ? 'ইসলামী আরবি বিশ্ববিদ্যালয় (IAU)' : 'জাতীয় বিশ্ববিদ্যালয় (NU)';
+        higherBtn.innerHTML = `<span class="loading-spinner"></span> ${uniName} সার্ভার থেকে ফলাফল আনা হচ্ছে...`;
         higherBtn.disabled = true;
 
         try {
