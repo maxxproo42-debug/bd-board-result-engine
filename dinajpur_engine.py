@@ -525,7 +525,16 @@ class DinajpurUnifiedEngine:
             if "SECURITY" not in msg_upper and "CAPTCHA" not in msg_upper and "KEY" not in msg_upper:
                 board_label = self.BOARD_NAME_BN.get(board_clean, board_clean)
                 if "BTEB.GOV.BD" in msg_upper:
-                    bn_err = "কারিগরি শিক্ষা বোর্ডের (BTEB) রেজাল্ট সরাসরি তাদের নিজস্ব সরকারি সার্ভারে সংরক্ষিত থাকে। অনুগ্রহ করে https://result.bteb.gov.bd ভিজিট করুন।"
+                    return {
+                        "success": True,
+                        "is_bteb": True,
+                        "is_bteb_portal": True,
+                        "roll": roll_clean,
+                        "reg": reg_clean,
+                        "exam": exam,
+                        "year": year,
+                        "board": "বাংলাদেশ কারিগরি শিক্ষা বোর্ড (BTEB)"
+                    }
                 elif "REGISTRATION" in msg_upper:
                     bn_err = f"{board_label} বোর্ডের সেন্ট্রাল আর্কাইভে একক রেজাল্ট দেখতে রোল {roll_clean} এর সাথে সঠিক রেজিস্ট্রেশন নম্বর আবশ্যক।"
                 elif "NOT FOUND" in msg_upper or "INVALID" in msg_upper:
@@ -556,6 +565,135 @@ class DinajpurUnifiedEngine:
             "error": "ক্যাপচা কোডটি অটোমেটিক মেলেনি। অনুগ্রহ করে নিচে প্রদর্শিত কোডটি যাচাই করে পুনরায় সাবমিট করুন।"
         }
 
+    def _get_bteb_result(self, roll, reg="", exam="HSC", year="2025"):
+        """Directly queries Bangladesh Technical Education Board (BTEB) public API.
+        Automatically decodes base64 captcha token and returns student marksheet or smart gateway.
+        """
+        import requests, base64
+        from concurrent.futures import ThreadPoolExecutor
+
+        BASE = 'https://result.bteb.gov.bd/api/public'
+        headers = {
+            'Accept': 'application/json, text/plain, */*',
+            'Content-Type': 'application/json',
+            'Origin': 'https://result.bteb.gov.bd',
+            'Referer': 'https://result.bteb.gov.bd/',
+            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'
+        }
+
+        def query_candidate(args):
+            curr, sem, r_num, rg_num, yr = args
+            try:
+                r_cap = requests.get(f'{BASE}/captcha', headers=headers, timeout=4).json()
+                tok = r_cap.get('token', '')
+                if not tok:
+                    return None
+                decoded = base64.b64decode(tok).decode('utf-8')
+                ans = decoded.split('.')[2]
+                payload = {
+                    'curriculumCode': str(curr),
+                    'rollNo': str(r_num),
+                    'regNo': str(rg_num),
+                    'semester': str(sem),
+                    'examYear': str(yr),
+                    'captchaToken': tok,
+                    'captchaAnswer': ans
+                }
+                res = requests.post(f'{BASE}/result', headers=headers, json=payload, timeout=5).json()
+                if res.get('data') and res.get('data', {}).get('semesters'):
+                    return res['data']
+            except Exception:
+                pass
+            return None
+
+        ex = (exam or '').upper()
+        candidates = []
+        if 'HSC' in ex or 'VOC' in ex or 'BM' in ex or 'DIP' in ex:
+            candidates = [
+                ('26', '2', roll, reg, year), # HSC Vocational Final
+                ('24', '2', roll, reg, year), # HSC BM Final
+                ('44', '2', roll, reg, year), # BM & Tech Final
+                ('26', '1', roll, reg, year), # HSC Vocational 1st yr
+                ('24', '1', roll, reg, year), # HSC BM 1st yr
+                ('15', '2', roll, reg, year), # Diploma in Engg
+            ]
+        elif 'SSC' in ex:
+            candidates = [
+                ('27', '2', roll, reg, year), # SSC Vocational Class 10
+                ('77', '2', roll, reg, year), # Dakhil Vocational Class 10
+                ('27', '1', roll, reg, year), # SSC Vocational Class 9
+            ]
+        else:
+            candidates = [
+                ('26', '2', roll, reg, year),
+                ('24', '2', roll, reg, year),
+                ('27', '2', roll, reg, year),
+            ]
+
+        found = None
+        try:
+            with ThreadPoolExecutor(max_workers=min(len(candidates), 6)) as executor:
+                for r in executor.map(query_candidate, candidates):
+                    if r:
+                        found = r
+                        break
+        except Exception as e:
+            print(f"[BTEB Query Error]: {e}")
+
+        if found:
+            student = found.get('student', {})
+            semesters = found.get('semesters', [])
+            sem0 = semesters[0] if semesters else {}
+            gpa_obj = sem0.get('gpa', {})
+            inst_obj = sem0.get('institute', {})
+            subj_raw = sem0.get('subjects', [])
+
+            subjects = []
+            for s in subj_raw:
+                subjects.append({
+                    'code': str(s.get('subjectCode', '')),
+                    'name': s.get('subjectName', f"বিষয় {s.get('subjectCode', '')}"),
+                    'grade': s.get('letterGrade', 'N/A'),
+                    'gpa': str(s.get('gradePoint', '')) if s.get('gradePoint') is not None else '',
+                    'marks': str(s.get('obtainedMarks', '')) if s.get('obtainedMarks') is not None else ''
+                })
+
+            gpa_val = gpa_obj.get('gpa', gpa_obj.get('cgpa', ''))
+            if not gpa_val and gpa_obj.get('gpa1'):
+                gpa_val = gpa_obj.get('gpa1')
+
+            return {
+                "success": True,
+                "is_bteb": True,
+                "is_bteb_portal": False,
+                "roll": student.get('studentRoll', roll),
+                "reg": student.get('regNo', reg),
+                "name": student.get('studentName', 'N/A'),
+                "father": student.get('fatherName', 'N/A'),
+                "mother": student.get('motherName', 'N/A'),
+                "institute": f"{inst_obj.get('code', '')} - {inst_obj.get('name', 'N/A')}".strip(' -'),
+                "board": "বাংলাদেশ কারিগরি শিক্ষা বোর্ড (BTEB)",
+                "session": student.get('session', 'N/A'),
+                "group": student.get('curriculum', {}).get('name', 'কারিগরি ও ভোকেশনাল'),
+                "type": "Regular",
+                "gpa": str(gpa_val) if gpa_val else "PASSED",
+                "result_status": gpa_obj.get('status', 'PASSED'),
+                "total_marks": "",
+                "subjects": subjects
+            }
+
+        # Seamless BTEB Dedicated Portal & 16222 SMS Gateway
+        return {
+            "success": True,
+            "is_bteb": True,
+            "is_bteb_portal": True,
+            "roll": roll,
+            "reg": reg,
+            "exam": exam,
+            "year": year,
+            "board": "বাংলাদেশ কারিগরি শিক্ষা বোর্ড (BTEB)"
+        }
+
     # =========================================================================
     # Universal Public Router (Student)
     # =========================================================================
@@ -571,6 +709,13 @@ class DinajpurUnifiedEngine:
             ts, cached_res = self._student_cache[cache_key]
             if time.time() - ts < 3600:
                 return cached_res
+
+        # Dedicated Technical Board (BTEB) Router
+        if board_clean in ['tec', 'technical']:
+            res = self._get_bteb_result(roll_clean, reg_clean, exam, year)
+            if res.get('success'):
+                self._student_cache[cache_key] = (time.time(), res)
+            return res
 
         # If board is Dinajpur and directly supported on Dinajpur Direct Portal:
         if board_clean == "dinajpur":
