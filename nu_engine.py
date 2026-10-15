@@ -94,16 +94,12 @@ class NuResultEngine:
             }
 
     def _parse_nu_html(self, html, course, exam_code, roll, reg, year):
-        """Extracts student bio and subject grades from NU result page using regex"""
-        # Look for table rows
-        rows = re.findall(r'<tr[^>]*>(.*?)</tr>', html, re.DOTALL | re.IGNORECASE)
-        if not rows:
-            return None
-
+        """Extracts student bio, 4-year consolidated grid, and single-year subjects from NU result page"""
         data = {
             "success": True,
-            "board": "NATIONAL UNIVERSITY",
-            "exam_title": f"NATIONAL UNIVERSITY - {course.upper()}",
+            "board": "NATIONAL UNIVERSITY, BANGLADESH",
+            "exam_title": f"NATIONAL UNIVERSITY - {course.upper()} ({exam_code})",
+            "exam_code": exam_code,
             "roll": roll,
             "reg": reg,
             "year": year,
@@ -111,51 +107,134 @@ class NuResultEngine:
             "father": "",
             "mother": "",
             "college": "",
-            "course": "",
+            "course": course.upper(),
             "session": "",
-            "gpa": "0.00",
+            "student_type": "",
+            "subject": "",
+            "cgpa": "",
+            "gpa": "",
             "result_status": "Passed",
-            "subjects": []
+            "subjects": [],
+            "years_breakdown": {}
         }
 
-        for row in rows:
-            tds = re.findall(r'<td[^>]*>(.*?)</td>', row, re.DOTALL | re.IGNORECASE)
-            td_texts = [re.sub(r'<[^>]+>', '', t).strip() for t in tds]
-            if len(td_texts) >= 2:
-                txt0 = td_texts[0].lower()
-                txt1 = td_texts[1]
-                if 'student name' in txt0 or 'name of examinee' in txt0:
-                    data['name'] = txt1
-                elif "father's name" in txt0:
-                    data['father'] = txt1
-                elif "mother's name" in txt0:
-                    data['mother'] = txt1
-                elif 'college' in txt0 or 'institution' in txt0:
-                    data['college'] = txt1
-                elif 'course' in txt0 or 'subject' in txt0 or 'degree' in txt0:
-                    data['course'] = txt1
-                elif 'session' in txt0:
-                    data['session'] = txt1
-                elif 'gpa' in txt0 or 'cgpa' in txt0 or 'result' in txt0:
-                    data['result_status'] = txt1
-                    gpa_m = re.search(r'(\d+\.\d+)', txt1)
-                    if gpa_m:
-                        data['gpa'] = gpa_m.group(1)
+        # Isolate result section so form elements are ignored
+        pos = html.find('id="result-section"')
+        sec = html[pos:] if pos != -1 else html
 
-            # Course codes / grade table row (usually 3+ columns)
-            if len(td_texts) >= 3:
-                c_code = td_texts[0]
-                c_title = td_texts[1]
-                c_grade = td_texts[2]
-                if re.match(r'^\d{4,7}$', c_code) and c_title:
-                    data['subjects'].append({
-                        "code": c_code,
-                        "name": c_title,
-                        "grade": c_grade
-                    })
+        # Extract Roll from result section
+        m_roll = re.search(r'Examination Roll.*?<span[^>]*class="[^"]*fw-bold[^"]*"[^>]*>\s*([0-9]+)\s*</span>', sec, re.DOTALL | re.IGNORECASE)
+        if m_roll:
+            data['roll'] = m_roll.group(1).strip()
 
-        # Check if we got valid details
-        if data['name'] or data['subjects'] or data['gpa'] != "0.00" or 'passed' in data['result_status'].lower() or 'promoted' in data['result_status'].lower():
+        # Extract Reg digits from result section
+        reg_block = re.search(r'Registration No\..*?</div>\s*</div>\s*</div>', sec, re.DOTALL | re.IGNORECASE)
+        if reg_block:
+            digits = re.findall(r'<span[^>]*border-primary[^>]*>\s*([0-9])\s*</span>', reg_block.group(0))
+            if digits:
+                data['reg'] = "".join(digits)
+
+        # Helper to extract card fields
+        def get_field(label):
+            pattern = rf'<span[^>]*class="text-muted[^"]*"[^>]*>\s*{label}\s*</span>\s*<span[^>]*class="fw-semibold"[^>]*>(.*?)</span>'
+            match = re.search(pattern, sec, re.DOTALL | re.IGNORECASE)
+            if match:
+                clean = re.sub(r'<[^>]+>', '', match.group(1)).strip()
+                clean = re.sub(r'[^\x20-\x7E]+', ' - ', clean)
+                clean = re.sub(r'\s+', ' ', clean)
+                return clean.strip(' -')
+            return ""
+
+        data['name'] = get_field('Name of Student')
+        data['father'] = get_field("Father's Name")
+        data['mother'] = get_field("Mother's Name")
+        data['college'] = get_field('College')
+        data['session'] = get_field('Session')
+        data['student_type'] = get_field('Student Type')
+        data['subject'] = get_field('Subject')
+        if data['subject']:
+            data['course'] = data['subject']
+
+        # Extract CGPA from big badge (Consolidated 2205 / 1104)
+        m_cgpa = re.search(r'CGPA.*?<div[^>]*class="fw-bold"[^>]*>\s*([0-9\.]+)\s*</div>', sec, re.DOTALL | re.IGNORECASE)
+        if m_cgpa:
+            data['cgpa'] = m_cgpa.group(1).strip()
+            data['gpa'] = data['cgpa']
+
+        # Extract Year GPA (Single-year e.g. 2204, 2201, 2202, 2203)
+        m_ygpa = re.search(r'Year GPA:\s*([0-9\.]+)', sec, re.IGNORECASE)
+        if m_ygpa:
+            data['gpa'] = m_ygpa.group(1).strip()
+            if not data['cgpa']:
+                data['cgpa'] = data['gpa']
+
+        # Status text
+        if data['cgpa']:
+            cgpa_f = float(data['cgpa']) if re.match(r'^\d+(\.\d+)?$', data['cgpa']) else 0.0
+            grade_class = "First Class" if cgpa_f >= 3.00 else ("Second Class" if cgpa_f >= 2.25 else "Passed")
+            data['result_status'] = f"Passed ({grade_class} | CGPA: {data['cgpa']})"
+        elif data['gpa']:
+            data['result_status'] = f"Passed (GPA: {data['gpa']})"
+
+        # 4-Year Consolidated Grid (e.g. 2205, 1104)
+        # Identify sub-tables that have Course Code and LG headers
+        sub_tables = re.findall(r'<table[^>]*table-hover[^>]*>(.*?)</table>', sec, re.DOTALL)
+        course_tables = [t for t in sub_tables if 'Course Code' in t and 'LG' in t]
+        if course_tables:
+            year_labels = ['First Year', 'Second Year', 'Third Year', 'Fourth Year']
+            for idx, tbl in enumerate(course_tables):
+                y_lbl = year_labels[idx] if idx < len(year_labels) else f"Year {idx+1}"
+                rows = re.findall(r'<tr[^>]*>\s*<td>\s*([^<]+)\s*</td>\s*<td>\s*([^<]+)\s*</td>\s*</tr>', tbl)
+                y_list = []
+                for code, grade in rows:
+                    c_clean = code.strip()
+                    g_clean = grade.strip()
+                    if c_clean and g_clean and 'course' not in c_clean.lower():
+                        y_list.append({"code": c_clean, "grade": g_clean})
+                if y_list:
+                    data['years_breakdown'][y_lbl] = y_list
+
+        # Single-Year Subject Table (e.g. 2204, 2201, 2202, 2203)
+        course_rows = re.findall(
+            r'<tr[^>]*>\s*<td[^>]*>\s*([0-9]{4,8})\s*</td>\s*<td[^>]*>\s*(.*?)\s*</td>\s*<td[^>]*>\s*([0-9\.]+)\s*</td>\s*<td[^>]*>\s*([A-F][\+\-]?)\s*</td>\s*</tr>',
+            sec, re.DOTALL | re.IGNORECASE
+        )
+        for c_code, c_title, c_credit, c_grade in course_rows:
+            data['subjects'].append({
+                "code": c_code.strip(),
+                "name": re.sub(r'\s+', ' ', re.sub(r'<[^>]+>', '', c_title)).strip(),
+                "credit": c_credit.strip(),
+                "grade": c_grade.strip()
+            })
+
+        # Fallback to old table parser if empty
+        if not data['name'] and not data['subjects'] and not data['years_breakdown']:
+            old_rows = re.findall(r'<tr[^>]*>(.*?)</tr>', html, re.DOTALL | re.IGNORECASE)
+            for row in old_rows:
+                tds = re.findall(r'<td[^>]*>(.*?)</td>', row, re.DOTALL | re.IGNORECASE)
+                td_texts = [re.sub(r'<[^>]+>', '', t).strip() for t in tds]
+                if len(td_texts) >= 2:
+                    txt0 = td_texts[0].lower()
+                    txt1 = td_texts[1]
+                    if 'student name' in txt0 or 'name of examinee' in txt0:
+                        data['name'] = txt1
+                    elif "father's name" in txt0:
+                        data['father'] = txt1
+                    elif "mother's name" in txt0:
+                        data['mother'] = txt1
+                    elif 'college' in txt0 or 'institution' in txt0:
+                        data['college'] = txt1
+                    elif 'course' in txt0 or 'subject' in txt0:
+                        data['subject'] = txt1
+                    elif 'session' in txt0:
+                        data['session'] = txt1
+                    elif 'gpa' in txt0 or 'cgpa' in txt0:
+                        data['cgpa'] = txt1
+                        data['gpa'] = txt1
+
+        # Check if valid data obtained
+        if data['name'] or data['subjects'] or data['years_breakdown'] or data['cgpa'] or data['gpa']:
             return data
 
         return None
+

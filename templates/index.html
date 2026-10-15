@@ -2953,9 +2953,11 @@
     function renderHigherResult(data) {
         const container = document.getElementById('result-container');
         const course = HIGHER_COURSE_DATA[activeHigherCourse] || { title: 'NATIONAL UNIVERSITY' };
-        const gpaNum = parseFloat(data.gpa) || 0;
+        const gpaNum = parseFloat(data.cgpa || data.gpa) || 0;
         const isGood = gpaNum >= 3.0;
+        const isPassed = gpaNum >= 2.0 || (data.result_status || '').toLowerCase().includes('pass');
 
+        // 1. Build Single Year Subjects Table
         let subRowsHtml = '';
         if (data.subjects && data.subjects.length > 0) {
             subRowsHtml = data.subjects.map(s => {
@@ -2969,8 +2971,11 @@
 
                 return `
                     <tr>
-                        <td style="font-family:monospace; font-weight:700;">${s.code || 'N/A'}</td>
-                        <td style="font-weight:600;">${s.name || 'Course Title'}</td>
+                        <td style="font-family:monospace; font-weight:700; color:#1e293b;">${s.code || 'N/A'}</td>
+                        <td style="font-weight:600; color:#0f172a;">${s.name || 'Course Title'}</td>
+                        <td style="text-align:center; font-weight:700; color:#475569;">
+                            <span style="background:rgba(59,130,246,0.1); color:#2563eb; padding:0.2rem 0.5rem; border-radius:6px; font-size:0.82rem;">${s.credit ? s.credit + ' Credit' : '-'}</span>
+                        </td>
                         <td style="text-align:center;">
                             <span class="grade-badge ${badgeClass}">${s.grade || 'Passed'}</span>
                         </td>
@@ -2978,6 +2983,80 @@
                 `;
             }).join('');
         }
+
+        // 2. Build 4-Year Consolidated Grid (e.g. Code 2205 / 1104)
+        let breakdownHtml = '';
+        if (data.years_breakdown && Object.keys(data.years_breakdown).length > 0) {
+            const yearKeys = ['First Year', 'Second Year', 'Third Year', 'Fourth Year'];
+            const bnYearLabels = {
+                'First Year': '১ম বর্ষ (1st Year)',
+                'Second Year': '২য় বর্ষ (2nd Year)',
+                'Third Year': '৩য় বর্ষ (3rd Year)',
+                'Fourth Year': '৪র্থ বর্ষ (4th Year)'
+            };
+
+            let colsHtml = '';
+            yearKeys.forEach(yk => {
+                const courses = data.years_breakdown[yk] || [];
+                const colRows = courses.map(c => {
+                    let badgeClass = 'grade-A';
+                    const g = (c.grade || '').toUpperCase();
+                    if (g.includes('A+')) badgeClass = 'grade-A-plus';
+                    else if (g.includes('A-')) badgeClass = 'grade-A-minus';
+                    else if (g.includes('B')) badgeClass = 'grade-B';
+                    else if (g.includes('C') || g.includes('D')) badgeClass = 'grade-C';
+                    else if (g.includes('F')) badgeClass = 'grade-F';
+
+                    return `
+                        <tr style="border-bottom: 1px solid rgba(226,232,240,0.7);">
+                            <td style="font-family:monospace; font-weight:700; font-size:0.83rem; padding:0.42rem 0.6rem; color:#1e293b;">${c.code}</td>
+                            <td style="text-align:center; padding:0.42rem 0.6rem;">
+                                <span class="grade-badge ${badgeClass}" style="padding:0.18rem 0.5rem; font-size:0.75rem;">${c.grade}</span>
+                            </td>
+                        </tr>
+                    `;
+                }).join('');
+
+                colsHtml += `
+                    <div style="flex:1 1 210px; min-width:200px; background:#ffffff; border:1px solid #e2e8f0; border-radius:12px; overflow:hidden; box-shadow:0 3px 10px rgba(0,0,0,0.04);">
+                        <div style="background:linear-gradient(135deg, #1e3a8a, #2563eb); color:#ffffff; padding:0.65rem 0.75rem; text-align:center; font-weight:700; font-size:0.88rem; letter-spacing:0.3px;">
+                            ${bnYearLabels[yk] || yk}
+                            <div style="font-size:0.73rem; font-weight:500; opacity:0.88; margin-top:2px;">${courses.length}টি কোর্স / পেপার</div>
+                        </div>
+                        <table style="width:100%; border-collapse:collapse; text-align:left;">
+                            <thead style="background:#f8fafc; font-size:0.75rem; color:#64748b; border-bottom:1px solid #e2e8f0;">
+                                <tr>
+                                    <th style="padding:0.4rem 0.6rem;">কোর্স কোড</th>
+                                    <th style="padding:0.4rem 0.6rem; text-align:center;">গ্রেড (LG)</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                ${colRows || '<tr><td colspan="2" style="text-align:center; padding:0.8rem; color:#94a3b8;">কোনো তথ্য নেই</td></tr>'}
+                            </tbody>
+                        </table>
+                    </div>
+                `;
+            });
+
+            breakdownHtml = `
+                <div style="margin-top:1.5rem; margin-bottom:1rem;">
+                    <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:0.85rem; flex-wrap:wrap; gap:0.5rem;">
+                        <h4 style="font-size:1.05rem; font-weight:700; color:#0f172a; margin:0;">
+                            📊 ৪ বছরের সমন্বিত কোর্স ফলাফল (Course-wise Letter Grade - 4 Years):
+                        </h4>
+                        <span style="font-size:0.8rem; background:rgba(37,99,235,0.1); color:#1d4ed8; padding:0.25rem 0.65rem; border-radius:6px; font-weight:700;">
+                            🏛️ অনার্স ৪ বর্ষের ট্রান্সক্রিপ্ট
+                        </span>
+                    </div>
+                    <div style="display:flex; gap:0.75rem; overflow-x:auto; padding-bottom:0.5rem; flex-wrap:wrap;">
+                        ${colsHtml}
+                    </div>
+                </div>
+            `;
+        }
+
+        const scoreVal = data.cgpa || data.gpa || 'PASSED';
+        const displayStatus = data.result_status || (isPassed ? 'কৃতকার্য (Passed)' : 'অকৃতকার্য');
 
         container.innerHTML = `
             <div class="sheet-card">
@@ -2998,41 +3077,49 @@
                     <div class="score-banner">
                         <div class="score-item-lead">
                             <div class="gpa-circle ${isGood ? 'gold' : ''}">
-                                ${data.gpa || 'PASSED'}
+                                ${scoreVal}
                             </div>
                             <div class="score-meta">
-                                <h3>CGPA / GPA ${data.gpa || 'Passed'} ${isGood ? '🌟 প্রথম শ্রেণী / ফার্স্ট ক্লাস' : ''}</h3>
-                                <p>ফলাফলের স্ট্যাটাস: <b>${data.result_status || 'কৃতকার্য (Passed)'}</b></p>
+                                <h3>${data.cgpa ? 'CGPA ' + data.cgpa : 'GPA ' + data.gpa} ${isGood ? '🌟 ফার্স্ট ক্লাস (First Class)' : (gpaNum >= 2.25 ? '🎖️ সেকেন্ড ক্লাস (Second Class)' : '')}</h3>
+                                <p>ফলাফলের স্ট্যাটাস: <b>${displayStatus}</b></p>
                             </div>
                         </div>
                     </div>
 
                     <div class="bio-grid">
-                        <div class="bio-row"><span class="bio-lbl">শিক্ষার্থীর নাম:</span><span class="bio-val">${data.name || 'N/A'}</span></div>
+                        <div class="bio-row"><span class="bio-lbl">শিক্ষার্থীর নাম:</span><span class="bio-val" style="font-weight:700; color:#1e293b;">${data.name || 'N/A'}</span></div>
                         <div class="bio-row"><span class="bio-lbl">পিতার নাম:</span><span class="bio-val">${data.father || 'N/A'}</span></div>
                         <div class="bio-row"><span class="bio-lbl">মাতার নাম:</span><span class="bio-val">${data.mother || 'N/A'}</span></div>
-                        <div class="bio-row"><span class="bio-lbl">রোল নম্বর:</span><span class="bio-val">${data.roll || 'N/A'}</span></div>
-                        <div class="bio-row"><span class="bio-lbl">রেজিস্ট্রেশন নম্বর:</span><span class="bio-val">${data.reg || 'N/A'}</span></div>
+                        <div class="bio-row"><span class="bio-lbl">রোল নম্বর:</span><span class="bio-val" style="font-family:monospace; font-weight:700;">${data.roll || 'N/A'}</span></div>
+                        <div class="bio-row"><span class="bio-lbl">রেজিস্ট্রেশন নম্বর:</span><span class="bio-val" style="font-family:monospace; font-weight:700;">${data.reg || 'N/A'}</span></div>
                         <div class="bio-row"><span class="bio-lbl">শিক্ষাবর্ষ (Session):</span><span class="bio-val">${data.session || 'N/A'}</span></div>
-                        <div class="bio-row"><span class="bio-lbl">কোর্সের নাম / বিষয়:</span><span class="bio-val">${data.course || course.title}</span></div>
-                        <div class="bio-row" style="grid-column: 1 / -1;"><span class="bio-lbl">কলেজের নাম:</span><span class="bio-val">${data.college || 'জাতীয় বিশ্ববিদ্যালয় অধিভুক্ত কলেজ'}</span></div>
+                        <div class="bio-row"><span class="bio-lbl">কোর্সের নাম / বিষয়:</span><span class="bio-val" style="font-weight:700; color:#2563eb;">${data.subject || data.course || course.title}</span></div>
+                        <div class="bio-row"><span class="bio-lbl">শিক্ষার্থী ধরন:</span><span class="bio-val">${data.student_type || 'Regular'}</span></div>
+                        <div class="bio-row" style="grid-column: 1 / -1;"><span class="bio-lbl">কলেজের নাম:</span><span class="bio-val" style="font-weight:600;">${data.college || 'জাতীয় বিশ্ববিদ্যালয় অধিভুক্ত কলেজ'}</span></div>
                     </div>
 
-                    <h4 style="margin-bottom:0.75rem; font-size:1.05rem; font-weight:700; color:#0f172a;">বিষয়ভিত্তিক ফলাফল ও লেটার গ্রেড (Subject Grades):</h4>
-                    <div class="marks-table-wrap">
-                        <table class="marks-table">
-                            <thead>
-                                <tr>
-                                    <th style="width:110px;">কোর্স কোড</th>
-                                    <th>বিষয়ের শিরোনাম</th>
-                                    <th style="width:110px; text-align:center;">গ্রেড</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                ${subRowsHtml || '<tr><td colspan="3" style="text-align:center;">বিষয়ভিত্তিক বিস্তারিত বিবরণ উপলব্ধ নয়।</td></tr>'}
-                            </tbody>
-                        </table>
-                    </div>
+                    ${breakdownHtml}
+
+                    ${subRowsHtml ? `
+                        <h4 style="margin-top:1.5rem; margin-bottom:0.75rem; font-size:1.05rem; font-weight:700; color:#0f172a;">
+                            📚 বিষয়ভিত্তিক ফলাফল ও লেটার গ্রেড (Course-wise Result):
+                        </h4>
+                        <div class="marks-table-wrap">
+                            <table class="marks-table">
+                                <thead>
+                                    <tr>
+                                        <th style="width:110px;">কোর্স কোড</th>
+                                        <th>বিষয়ের শিরোনাম (Course Title)</th>
+                                        <th style="width:110px; text-align:center;">ক্রেডিট</th>
+                                        <th style="width:100px; text-align:center;">গ্রেড (LG)</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    ${subRowsHtml}
+                                </tbody>
+                            </table>
+                        </div>
+                    ` : ''}
                 </div>
             </div>
         `;
