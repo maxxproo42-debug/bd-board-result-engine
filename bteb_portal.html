@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+
+    <!--
+      One image, not two.
+
+      This was a 67 KB PNG while the page itself already loads a 46 KB JPG of
+      the same logo, so every visitor fetched the mark twice in two formats:
+      113 KB, more than the entire JavaScript bundle. Pointing the icon at the
+      file the page already needs makes the second download disappear
+      completely -- the browser serves it from cache.
+    -->
+    <link rel="icon" type="image/png" href="/favicon.png" />
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <!--
+      SAME FONTS, SAME WEIGHTS. Only the waiting is gone.
+
+      Every family and weight below is exactly what was here before -- Great
+      Vibes, Hind Siliguri, Newsreader, IBM Plex Mono. Nothing was removed and
+      nothing renders differently once loaded.
+
+      What changed is that the page no longer stops for them. A plain
+      <link rel="stylesheet"> is render-blocking: the browser paints nothing
+      at all until that stylesheet arrives. This one lives on
+      fonts.googleapis.com, so a student on a cellular network in Bangladesh
+      saw a blank white screen until a foreign server answered -- while our
+      own server looked perfectly healthy, because the request never reached
+      it. On result day, 10 Aug 2026, that is what "the page will not load on
+      mobile" turned out to be.
+
+      media="print" makes the browser fetch the stylesheet without applying
+      it, so it cannot block the first paint. onload flips it to media="all"
+      the instant it arrives and the real fonts take over. The text is
+      readable from the first frame, then becomes the intended typeface a
+      moment later -- which is what display=swap in the URL already asked for.
+
+      The <noscript> copy keeps the fonts for a browser with scripting
+      disabled. Such a browser cannot run this app at all, but the line is
+      free.
+    -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Hind+Siliguri:wght@400;500;600;700&family=Newsreader:opsz,wght@6..72,400;6..72,500;6..72,600&family=IBM+Plex+Mono:wght@400;500;600&display=swap"
+          rel="stylesheet" media="print" onload="this.media='all'">
+    <noscript>
+      <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Hind+Siliguri:wght@400;500;600;700&family=Newsreader:opsz,wght@6..72,400;6..72,500;6..72,600&family=IBM+Plex+Mono:wght@400;500;600&display=swap"
+            rel="stylesheet">
+    </noscript>
+
+    <title>Result Search â Bangladesh Technical Education Board</title>
+    <script type="module" crossorigin src="/assets/result-yQpDx_Ab.js"></script>
+    <link rel="stylesheet" crossorigin href="/assets/result-C7sLPPR9.css">
+  </head>
+  <body>
+    <div id="root"></div>
+  </body>
+</html>
