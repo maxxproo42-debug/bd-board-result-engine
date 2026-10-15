@@ -1779,6 +1779,10 @@
                         <option value="2019">২০১৯ (2019)</option>
                         <option value="2018">২০১৮ (2018)</option>
                         <option value="2017">২০১৭ (2017)</option>
+                        <option value="2016">২০১৬ (2016)</option>
+                        <option value="2015">২০১৫ (2015)</option>
+                        <option value="2014">২০১৪ (2014)</option>
+                        <option value="2013">২০১৩ (2013)</option>
                     </select>
                 </div>
 
@@ -2984,15 +2988,19 @@
             }).join('');
         }
 
-        // 2. Build 4-Year Consolidated Grid (e.g. Code 2205 / 1104)
+        // 2. Build Multi-Year Consolidated Grid (e.g. Code 2205 / 1104)
         let breakdownHtml = '';
         if (data.years_breakdown && Object.keys(data.years_breakdown).length > 0) {
-            const yearKeys = ['First Year', 'Second Year', 'Third Year', 'Fourth Year'];
+            const yearKeys = Object.keys(data.years_breakdown);
             const bnYearLabels = {
                 'First Year': '১ম বর্ষ (1st Year)',
                 'Second Year': '২য় বর্ষ (2nd Year)',
                 'Third Year': '৩য় বর্ষ (3rd Year)',
-                'Fourth Year': '৪র্থ বর্ষ (4th Year)'
+                'Fourth Year': '৪র্থ বর্ষ (4th Year)',
+                'Year 1': '১ম বর্ষ (Year 1)',
+                'Year 2': '২য় বর্ষ (Year 2)',
+                'Year 3': '৩য় বর্ষ (Year 3)',
+                'Year 4': '৪র্থ বর্ষ (Year 4)'
             };
 
             let colsHtml = '';
