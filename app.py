@@ -23,8 +23,14 @@ def api_nu_student():
     if not roll or not reg:
         return jsonify({"success": False, "error": "পরীক্ষার রোল এবং রেজিস্ট্রেশন নম্বর দুটোই আবশ্যক।"}), 400
 
-    result = nu_engine.get_result(course=course, exam_code=exam_code, roll=roll, reg=reg, year=year)
-    return jsonify(result)
+    try:
+        result = nu_engine.get_result(course=course, exam_code=exam_code, roll=roll, reg=reg, year=year)
+        return jsonify(result)
+    except Exception as e:
+        return jsonify({
+            "success": False,
+            "error": f"জাতীয় বিশ্ববিদ্যালয় সার্ভার অতিরিক্ত ট্রাফিকের কারণে সংযোগ বিচ্ছিন্ন করেছে। অনুগ্রহ করে ১ মিনিট পর পুনরায় চেষ্টা করুন। ({str(e)})"
+        }), 200
 
 @app.route('/api/institutes')
 def api_institutes():
