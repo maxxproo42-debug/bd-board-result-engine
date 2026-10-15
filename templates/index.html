@@ -898,6 +898,215 @@
             transform: translateY(-1px);
         }
 
+        /* ============================================================
+           LIVE RUNNING CLOCK & DATE WIDGET (AESTHETIC CYBER-GLASS)
+           ============================================================ */
+        .live-clock-card {
+            display: inline-flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            margin: 1.5rem auto 0;
+            padding: 0.9rem 1.85rem;
+            border-radius: 20px;
+            background: linear-gradient(135deg, rgba(15, 23, 42, 0.82), rgba(30, 41, 59, 0.7));
+            border: 1px solid rgba(16, 185, 129, 0.35);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            box-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.45), 
+                        0 0 25px rgba(16, 185, 129, 0.15),
+                        inset 0 1px 0 rgba(255, 255, 255, 0.12);
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .live-clock-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 15%;
+            right: 15%;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, rgba(16, 185, 129, 0.9), rgba(56, 189, 248, 0.9), transparent);
+        }
+
+        .live-clock-card:hover {
+            border-color: rgba(56, 189, 248, 0.55);
+            box-shadow: 0 14px 40px -5px rgba(0, 0, 0, 0.55), 
+                        0 0 30px rgba(56, 189, 248, 0.22);
+            transform: translateY(-2px);
+        }
+
+        .clock-date-row {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.55rem;
+            flex-wrap: wrap;
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            margin-bottom: 0.45rem;
+            font-weight: 500;
+        }
+
+        .clock-cal-icon {
+            font-size: 1rem;
+            filter: drop-shadow(0 0 6px rgba(245, 158, 11, 0.6));
+        }
+
+        .clock-date-bn {
+            color: #f8fafc;
+            font-weight: 700;
+            letter-spacing: 0.02em;
+        }
+
+        .clock-divider {
+            color: rgba(255, 255, 255, 0.25);
+            font-weight: 300;
+        }
+
+        .clock-date-en {
+            color: #94a3b8;
+            font-size: 0.85rem;
+            font-family: 'Outfit', sans-serif;
+            letter-spacing: 0.03em;
+        }
+
+        .clock-time-display {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.85rem;
+        }
+
+        .clock-digits-group {
+            display: flex;
+            align-items: center;
+            gap: 0.15rem;
+            font-family: 'Outfit', monospace;
+            font-variant-numeric: tabular-nums;
+            font-weight: 800;
+            font-size: clamp(2rem, 4.5vw, 2.65rem);
+            line-height: 1;
+            letter-spacing: 0.04em;
+        }
+
+        .clock-num {
+            background: linear-gradient(180deg, #ffffff 30%, #e2e8f0 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 0 20px rgba(255, 255, 255, 0.25);
+            display: inline-block;
+            min-width: 2ch;
+            text-align: center;
+        }
+
+        .clock-sec {
+            background: linear-gradient(180deg, #38bdf8 15%, #0284c7 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 0 16px rgba(56, 189, 248, 0.45);
+        }
+
+        .clock-colon {
+            color: var(--accent-green);
+            animation: blink-colon 1s infinite;
+            font-weight: 700;
+            padding: 0 0.12rem;
+            -webkit-text-fill-color: var(--accent-green);
+        }
+
+        @keyframes blink-colon {
+            0%, 49% { opacity: 1; }
+            50%, 100% { opacity: 0.2; }
+        }
+
+        .clock-meta {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 0.3rem;
+        }
+
+        .clock-ampm {
+            font-family: 'Outfit', sans-serif;
+            font-size: 0.88rem;
+            font-weight: 800;
+            letter-spacing: 0.06em;
+            color: #38bdf8;
+            background: rgba(56, 189, 248, 0.14);
+            border: 1px solid rgba(56, 189, 248, 0.35);
+            border-radius: 6px;
+            padding: 0.18rem 0.5rem;
+            line-height: 1;
+            box-shadow: 0 0 12px rgba(56, 189, 248, 0.2);
+        }
+
+        .clock-tz-badge {
+            font-size: 0.72rem;
+            font-weight: 600;
+            color: var(--accent-green);
+            display: inline-flex;
+            align-items: center;
+            gap: 0.3rem;
+            background: rgba(16, 185, 129, 0.12);
+            border: 1px solid rgba(16, 185, 129, 0.28);
+            border-radius: 9999px;
+            padding: 0.15rem 0.5rem;
+            line-height: 1;
+        }
+
+        .clock-pulse-dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: var(--accent-green);
+            box-shadow: 0 0 8px var(--accent-green);
+            animation: pulse-dot 1.2s infinite;
+        }
+
+        /* Top Sticky Navbar Clock */
+        .nav-clock-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.45rem;
+            background: rgba(15, 23, 42, 0.85);
+            border: 1px solid rgba(16, 185, 129, 0.3);
+            border-radius: 9999px;
+            padding: 0.32rem 0.8rem;
+            font-family: 'Outfit', monospace;
+            font-variant-numeric: tabular-nums;
+            font-size: 0.82rem;
+            font-weight: 700;
+            color: #38bdf8;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.35);
+            transition: all 0.2s ease;
+        }
+
+        .nav-clock-pill:hover {
+            border-color: rgba(56, 189, 248, 0.55);
+            background: rgba(15, 23, 42, 0.95);
+            box-shadow: 0 0 14px rgba(56, 189, 248, 0.25);
+        }
+
+        @media (max-width: 768px) {
+            .live-clock-card {
+                padding: 0.75rem 1.15rem;
+                margin-top: 1.1rem;
+            }
+            .clock-date-row {
+                font-size: 0.8rem;
+                gap: 0.35rem;
+            }
+            .clock-digits-group {
+                font-size: 1.75rem;
+            }
+            .nav-clock-pill {
+                display: none;
+            }
+        }
+
         @media print {
             body { background: #ffffff !important; color: #000000 !important; }
             .top-nav, .app-header, .tabs-nav, .glass-card, .btn-print, .app-footer, .no-print { display: none !important; }
@@ -943,6 +1152,10 @@
         </ul>
 
         <div style="display:flex; align-items:center; gap:0.6rem;">
+            <div class="nav-clock-pill" title="বাংলাদেশ লাইভ সময়">
+                <span class="live-dot" style="width:6px; height:6px;"></span>
+                <span id="nav-live-clock">--:--:-- --</span>
+            </div>
             <a href="https://t.me/ShaifulXD" target="_blank" rel="noopener noreferrer" class="nav-creator-btn" title="Contact Developer on Telegram: @ShaifulXD">
                 ⚡ by ShaifulXRD ↗
             </a>
@@ -954,6 +1167,11 @@
 
     <!-- Mobile Drawer Menu -->
     <div class="mobile-nav-drawer" id="mobile-nav-drawer">
+        <!-- Mobile Live Time Widget -->
+        <div style="padding:0.65rem 0.85rem; background:rgba(15,23,42,0.85); border:1px solid rgba(16,185,129,0.3); border-radius:12px; margin-bottom:0.85rem; text-align:center;">
+            <div style="font-size:0.8rem; color:#94a3b8; margin-bottom:0.25rem;" id="mobile-live-date">--</div>
+            <div style="font-family:'Outfit', monospace; font-size:1.2rem; font-weight:800; color:#38bdf8;" id="mobile-live-clock">--:--:-- --</div>
+        </div>
         <button type="button" class="nav-link-btn" onclick="switchTab('student'); closeMobileNav();">
             🎓 একক রেজাল্ট (মার্কশিট)
         </button>
@@ -980,6 +1198,29 @@
         </div>
         <h1 class="app-title">Bangladesh All Education Board Result Portal <a href="https://t.me/ShaifulXD" target="_blank" rel="noopener noreferrer" style="font-size:0.55em; font-weight:700; color:#38bdf8; letter-spacing:0.04em; display:inline-block; border-radius:8px; padding:0.18rem 0.65rem; background:rgba(56,189,248,0.12); border:1px solid rgba(56,189,248,0.3); vertical-align:middle; text-transform:none; text-decoration:none; cursor:pointer; transition:all 0.2s ease;" title="Contact on Telegram: @ShaifulXD" onmouseover="this.style.background='rgba(56,189,248,0.25)'; this.style.borderColor='#38bdf8';" onmouseout="this.style.background='rgba(56,189,248,0.12)'; this.style.borderColor='rgba(56,189,248,0.3)';">by ShaifulXRD ↗</a></h1>
         <p class="app-subtitle">ঢাকা, দিনাজপুর, চট্টগ্রাম, রাজশাহী, কুমিল্লা, যশোর, বরিশাল, সিলেট, ময়মনসিংহ, মাদ্রাসা ও কারিগরি বোর্ডের যেকোনো পরীক্ষার (HSC/Alim, SSC/Dakhil, JSC/JDC) রেজাল্ট ও মার্কশিট সেকেন্ডের মধ্যে দেখুন।</p>
+
+        <!-- LIVE RUNNING CLOCK & DATE WIDGET (HOURS, MINUTES, SECONDS & DATE) -->
+        <div class="live-clock-card" id="main-live-clock">
+            <div class="clock-date-row">
+                <span class="clock-cal-icon">📅</span>
+                <span id="live-date-bn" class="clock-date-bn">--</span>
+                <span class="clock-divider">|</span>
+                <span id="live-date-en" class="clock-date-en">--</span>
+            </div>
+            <div class="clock-time-display">
+                <div class="clock-digits-group">
+                    <span id="clock-hours" class="clock-num">00</span>
+                    <span class="clock-colon">:</span>
+                    <span id="clock-minutes" class="clock-num">00</span>
+                    <span class="clock-colon">:</span>
+                    <span id="clock-seconds" class="clock-num clock-sec">00</span>
+                </div>
+                <div class="clock-meta">
+                    <span id="clock-ampm" class="clock-ampm">AM</span>
+                    <span class="clock-tz-badge"><span class="clock-pulse-dot"></span> লাইভ BST</span>
+                </div>
+            </div>
+        </div>
     </header>
 
     <nav class="tabs-nav">
@@ -2178,8 +2419,62 @@
         document.getElementById('student-btn').click();
     }
 
+    // ============================================================
+    // LIVE DIGITAL CLOCK & CALENDAR ENGINE (HOURS, MINS, SECS, DATE)
+    // ============================================================
+    function updateLiveClock() {
+        const now = new Date();
+        
+        let hours = now.getHours();
+        const minutes = String(now.getMinutes()).padStart(2, '0');
+        const seconds = String(now.getSeconds()).padStart(2, '0');
+        const ampm = hours >= 12 ? 'PM' : 'AM';
+        const h12 = hours % 12 || 12;
+        const hoursStr = String(h12).padStart(2, '0');
+
+        const elH = document.getElementById('clock-hours');
+        const elM = document.getElementById('clock-minutes');
+        const elS = document.getElementById('clock-seconds');
+        const elAmpm = document.getElementById('clock-ampm');
+        const elNav = document.getElementById('nav-live-clock');
+        const elMobClock = document.getElementById('mobile-live-clock');
+        const elMobDate = document.getElementById('mobile-live-date');
+
+        if (elH) elH.textContent = hoursStr;
+        if (elM) elM.textContent = minutes;
+        if (elS) elS.textContent = seconds;
+        if (elAmpm) elAmpm.textContent = ampm;
+        if (elNav) elNav.textContent = `${hoursStr}:${minutes}:${seconds} ${ampm}`;
+        if (elMobClock) elMobClock.textContent = `${hoursStr}:${minutes}:${seconds} ${ampm}`;
+
+        const daysBn = ['রবিবার', 'সোমবার', 'মঙ্গলবার', 'বুধবার', 'বৃহস্পতিবার', 'শুক্রবার', 'শনিবার'];
+        const monthsBn = ['জানুয়ারি', 'ফেব্রুয়ারি', 'মার্চ', 'এপ্রিল', 'মে', 'জুন', 'জুলাই', 'আগস্ট', 'সেপ্টেম্বর', 'অক্টোবর', 'নভেম্বর', 'ডিসেম্বর'];
+        const daysEn = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+        const monthsEn = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+        const bnNums = {'0':'০','1':'১','2':'২','3':'৩','4':'৪','5':'৫','6':'৬','7':'৭','8':'৮','9':'৯'};
+        const toBn = (s) => String(s).replace(/[0-9]/g, d => bnNums[d] || d);
+
+        const dayBn = daysBn[now.getDay()];
+        const dayEn = daysEn[now.getDay()];
+        const dateNum = now.getDate();
+        const monthBn = monthsBn[now.getMonth()];
+        const monthEn = monthsEn[now.getMonth()];
+        const year = now.getFullYear();
+
+        const bnDateStr = `${dayBn}, ${toBn(dateNum)} ${monthBn} ${toBn(year)}`;
+        const enDateStr = `${dayEn}, ${monthEn} ${dateNum}, ${year}`;
+
+        const elDateBn = document.getElementById('live-date-bn');
+        const elDateEn = document.getElementById('live-date-en');
+        if (elDateBn) elDateBn.textContent = bnDateStr;
+        if (elDateEn) elDateEn.textContent = enDateStr;
+        if (elMobDate) elMobDate.textContent = bnDateStr;
+    }
+
     // Initialize state on page load
     document.addEventListener('DOMContentLoaded', () => {
+        updateLiveClock();
+        setInterval(updateLiveClock, 1000);
         updateExamYearState();
     });
 </script>
