@@ -1102,8 +1102,169 @@
             .clock-digits-group {
                 font-size: 1.75rem;
             }
-            .nav-clock-pill {
-                display: none;
+        /* ============================================================
+           HIGHER EDUCATION (HONOURS, DEGREE, MASTERS) STYLES
+           ============================================================ */
+        .higher-hero-banner {
+            text-align: center;
+            margin-bottom: 2rem;
+            position: relative;
+        }
+
+        .higher-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.4rem 1.15rem;
+            border-radius: 9999px;
+            background: rgba(168, 85, 247, 0.14);
+            border: 1px solid rgba(168, 85, 247, 0.35);
+            color: #c084fc;
+            font-size: 0.85rem;
+            font-weight: 700;
+            margin-bottom: 0.85rem;
+            backdrop-filter: blur(8px);
+        }
+
+        .higher-cards-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1.1rem;
+            margin-bottom: 2rem;
+        }
+
+        .higher-card {
+            background: rgba(15, 23, 42, 0.7);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 18px;
+            padding: 1.35rem 1.15rem;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+            backdrop-filter: blur(12px);
+        }
+
+        .higher-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 30px -5px rgba(0, 0, 0, 0.55);
+        }
+
+        /* Honours Theme */
+        .higher-card.card-honours {
+            border-color: rgba(6, 182, 212, 0.3);
+        }
+        .higher-card.card-honours:hover, .higher-card.card-honours.active {
+            border-color: #06b6d4;
+            background: linear-gradient(135deg, rgba(6, 182, 212, 0.18), rgba(16, 185, 129, 0.12));
+            box-shadow: 0 0 25px rgba(6, 182, 212, 0.25), 0 10px 25px rgba(0,0,0,0.4);
+        }
+
+        /* Degree Theme */
+        .higher-card.card-degree {
+            border-color: rgba(245, 158, 11, 0.3);
+        }
+        .higher-card.card-degree:hover, .higher-card.card-degree.active {
+            border-color: #f59e0b;
+            background: linear-gradient(135deg, rgba(245, 158, 11, 0.18), rgba(234, 88, 12, 0.12));
+            box-shadow: 0 0 25px rgba(245, 158, 11, 0.25), 0 10px 25px rgba(0,0,0,0.4);
+        }
+
+        /* Masters Theme */
+        .higher-card.card-masters {
+            border-color: rgba(168, 85, 247, 0.3);
+        }
+        .higher-card.card-masters:hover, .higher-card.card-masters.active {
+            border-color: #c084fc;
+            background: linear-gradient(135deg, rgba(168, 85, 247, 0.2), rgba(236, 72, 153, 0.12));
+            box-shadow: 0 0 25px rgba(168, 85, 247, 0.25), 0 10px 25px rgba(0,0,0,0.4);
+        }
+
+        .higher-card-icon {
+            font-size: 2.3rem;
+            margin-bottom: 0.5rem;
+            display: inline-block;
+            transition: transform 0.25s ease;
+        }
+        .higher-card:hover .higher-card-icon {
+            transform: scale(1.15) rotate(3deg);
+        }
+
+        .higher-card-title {
+            font-size: 1.18rem;
+            font-weight: 800;
+            color: #ffffff;
+            margin-bottom: 0.25rem;
+            letter-spacing: -0.01em;
+        }
+
+        .higher-card-badge {
+            font-size: 0.75rem;
+            font-weight: 700;
+            padding: 0.22rem 0.65rem;
+            border-radius: 9999px;
+            display: inline-block;
+            margin-bottom: 0.45rem;
+        }
+        .card-honours .higher-card-badge { background: rgba(6,182,212,0.2); color: #38bdf8; border: 1px solid rgba(6,182,212,0.3); }
+        .card-degree .higher-card-badge { background: rgba(245,158,11,0.2); color: #fbbf24; border: 1px solid rgba(245,158,11,0.3); }
+        .card-masters .higher-card-badge { background: rgba(168,85,247,0.2); color: #c084fc; border: 1px solid rgba(168,85,247,0.3); }
+
+        .higher-card-desc {
+            font-size: 0.82rem;
+            color: var(--text-muted);
+            line-height: 1.45;
+        }
+
+        .higher-active-indicator {
+            display: none;
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: #10b981;
+            box-shadow: 0 0 12px #10b981;
+        }
+        .higher-card.active .higher-active-indicator {
+            display: block;
+        }
+
+        /* Server Quick Switch Chips */
+        .gateway-chips {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+            margin-top: 0.85rem;
+        }
+
+        .gateway-chip {
+            background: rgba(15, 23, 42, 0.75);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            color: #cbd5e1;
+            padding: 0.45rem 0.95rem;
+            border-radius: 8px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.45rem;
+            transition: all 0.2s ease;
+        }
+        .gateway-chip:hover {
+            background: rgba(255, 255, 255, 0.12);
+            color: #ffffff;
+            border-color: rgba(56, 189, 248, 0.4);
+            transform: translateY(-1px);
+        }
+
+        @media (max-width: 768px) {
+            .higher-cards-grid {
+                grid-template-columns: 1fr;
+                gap: 0.85rem;
             }
         }
 
@@ -1145,6 +1306,11 @@
                 </button>
             </li>
             <li>
+                <button type="button" class="nav-link-btn" id="nav-item-higher" onclick="switchTab('higher')">
+                    🏛️ অনার্স/ডিগ্রি/মাস্টার্স
+                </button>
+            </li>
+            <li>
                 <button type="button" class="nav-link-btn" id="nav-item-sms" onclick="switchTab('sms')">
                     📱 SMS গাইড
                 </button>
@@ -1180,6 +1346,9 @@
         </button>
         <button type="button" class="nav-link-btn" onclick="switchTab('directory'); closeMobileNav();">
             🔍 EIIN ডিরেক্টরি (স্কুল ও কলেজ খুঁজুন)
+        </button>
+        <button type="button" class="nav-link-btn" onclick="switchTab('higher'); closeMobileNav();">
+            🏛️ অনার্স, ডিগ্রি ও মাস্টার্স ফলাফল (NU)
         </button>
         <button type="button" class="nav-link-btn" onclick="switchTab('sms'); closeMobileNav();">
             📱 SMS ব্যাকআপ নির্দেশিকা
@@ -1232,6 +1401,9 @@
         </button>
         <button class="tab-btn" id="tab-directory" onclick="switchTab('directory')">
             🔍 EIIN ডিরেক্টরি (সকল বোর্ড)
+        </button>
+        <button class="tab-btn" id="tab-higher" onclick="switchTab('higher')">
+            🏛️ অনার্স / ডিগ্রি / মাস্টার্স (NU)
         </button>
         <button class="tab-btn" id="tab-sms" onclick="switchTab('sms')">
             📱 SMS ব্যাকআপ
@@ -1533,6 +1705,149 @@
         </div>
     </section>
 
+    <!-- TAB 5: Higher Education (Honours, Degree, Masters) -->
+    <section class="glass-card" id="higher-section" style="display:none;">
+        <div class="higher-hero-banner">
+            <div class="higher-badge">
+                <span>🏛️</span>
+                <span>জাতীয় বিশ্ববিদ্যালয় (National University) ও উচ্চশিক্ষা ফলাফল পোর্টাল</span>
+            </div>
+            <h2 style="font-size:clamp(1.35rem, 3.5vw, 1.85rem); font-weight:800; color:#ffffff; margin-bottom:0.5rem; letter-spacing:-0.02em;">
+                অনার্স, ডিগ্রি পাস ও মাস্টার্স পরীক্ষার ফলাফল
+            </h2>
+            <p style="color:var(--text-muted); font-size:0.95rem; max-width:650px; margin:0 auto; line-height:1.6;">
+                Honours (১ম-৪র্থ বর্ষ), Degree Pass (১ম-৩য় বর্ষ) এবং Masters (প্রিলি ও ফাইনাল) পরীক্ষার একক মার্কশিট ও রেজাল্ট সরাসরি এক ক্লিকে বের করুন।
+            </p>
+        </div>
+
+        <!-- 3 DISTINCT COURSE SELECTION CARDS -->
+        <div class="higher-cards-grid">
+            <!-- 1. HONOURS -->
+            <div class="higher-card card-honours active" id="card-btn-honours" onclick="selectHigherCourse('honours')">
+                <span class="higher-active-indicator"></span>
+                <span class="higher-card-icon">🎓</span>
+                <div class="higher-card-title">অনার্স (Honours)</div>
+                <span class="higher-card-badge">৪ বছর মেয়াদী ব্যাচেলর</span>
+                <p class="higher-card-desc">১ম বর্ষ, ২য় বর্ষ, ৩য় বর্ষ, ৪র্থ বর্ষ ও সিজিপিএ কনসোলিডেটেড রেজাল্ট</p>
+            </div>
+
+            <!-- 2. DEGREE PASS -->
+            <div class="higher-card card-degree" id="card-btn-degree" onclick="selectHigherCourse('degree')">
+                <span class="higher-active-indicator"></span>
+                <span class="higher-card-icon">📜</span>
+                <div class="higher-card-title">ডিগ্রি পাস (Degree)</div>
+                <span class="higher-card-badge">৩ বছর মেয়াদী কোর্স</span>
+                <p class="higher-card-desc">ডিগ্রি পাস ও সার্টিফিকেট কোর্স (১ম, ২য়, ৩য় বর্ষ ও সমন্বিত ফলাফল)</p>
+            </div>
+
+            <!-- 3. MASTERS -->
+            <div class="higher-card card-masters" id="card-btn-masters" onclick="selectHigherCourse('masters')">
+                <span class="higher-active-indicator"></span>
+                <span class="higher-card-icon">👑</span>
+                <div class="higher-card-title">মাস্টার্স (Masters)</div>
+                <span class="higher-card-badge">স্নাতকোত্তর ডিগ্রী</span>
+                <p class="higher-card-desc">মাস্টার্স প্রিলিমিনারি (১ম পর্ব) ও মাস্টার্স শেষ পর্ব (ফাইনাল) ফলাফল</p>
+            </div>
+        </div>
+
+        <!-- SEARCH FORM -->
+        <form id="higher-form" onsubmit="handleHigherSubmit(event)">
+            <div class="form-grid">
+                <div class="input-group">
+                    <label class="input-label">
+                        <span id="higher-exam-label">কোর্সের নাম ও বর্ষ (Course & Part)</span>
+                        <span class="req">*</span>
+                    </label>
+                    <select id="nu_exam_name" class="custom-input" onchange="updateHigherSmsCode()">
+                        <!-- Dynamically populated based on active course -->
+                    </select>
+                </div>
+
+                <div class="input-group">
+                    <label class="input-label">
+                        <span>পরীক্ষার সাল (Exam Year)</span>
+                        <span class="req">*</span>
+                    </label>
+                    <select id="nu_exam_year" class="custom-input" onchange="updateHigherSmsCode()">
+                        <option value="2026">২০২৬ (2026) [আসন্ন/নতুন]</option>
+                        <option value="2025" selected>২০২৫ (2025) [সর্বশেষ প্রকাশিত]</option>
+                        <option value="2024">২০২৪ (2024)</option>
+                        <option value="2023">২০২৩ (2023)</option>
+                        <option value="2022">২০২২ (2022)</option>
+                        <option value="2021">২০২১ (2021)</option>
+                        <option value="2020">২০২০ (2020)</option>
+                        <option value="2019">২০১৯ (2019)</option>
+                        <option value="2018">২০১৮ (2018)</option>
+                        <option value="2017">২০১৭ (2017)</option>
+                    </select>
+                </div>
+
+                <div class="input-group">
+                    <label class="input-label">
+                        <span>পরীক্ষার রোল নম্বর (Exam Roll No)</span>
+                        <span class="req">*</span>
+                    </label>
+                    <input type="text" id="nu_roll_input" class="custom-input" placeholder="যেমন: 2134567 বা 912345" required autocomplete="off" oninput="updateHigherSmsCode()">
+                </div>
+
+                <div class="input-group">
+                    <label class="input-label">
+                        <span>রেজিস্ট্রেশন নম্বর (Registration No)</span>
+                        <span class="req">*</span>
+                    </label>
+                    <input type="text" id="nu_reg_input" class="custom-input" placeholder="১১ বা ৯ ডিজিটের রেজিস্ট্রেশন নম্বর (যেমন: 19225123456)" required autocomplete="off">
+                </div>
+            </div>
+
+            <!-- BUTTONS ROW -->
+            <div style="display:flex; gap:0.75rem; flex-wrap:wrap; margin-top:1.5rem;">
+                <button type="submit" class="btn-submit" id="higher-btn" style="flex:2; min-width:240px;">
+                    🔍 ফলাফল যাচাই ও প্রস্তুত করুন (Fetch Result)
+                </button>
+                <button type="button" class="btn-submit" onclick="openNuOfficialDirect()" style="flex:1.5; min-width:200px; background:linear-gradient(135deg, #0284c7, #0369a1); border-color:#0284c7;" title="অফিসিয়াল পোর্টালে ১-ক্লিকে রেজাল্ট বাইপাস">
+                    ⚡ অফিসিয়াল গেটওয়ে বাইপাস ↗
+                </button>
+            </div>
+        </form>
+
+        <!-- INSTANT SMS ASSISTANT & CODE GENERATOR -->
+        <div class="sms-box" style="margin-top:2rem;">
+            <div style="display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:0.5rem; margin-bottom:0.5rem;">
+                <span style="font-size:0.85rem; color:#94a3b8; text-transform:uppercase; letter-spacing:0.05em; font-weight:700;">
+                    📱 টেলিটক SMS দিয়ে মুহূর্তের মধ্যে রেজাল্ট পাওয়ার পদ্ধতি:
+                </span>
+                <span style="font-size:0.82rem; color:#34d399; font-weight:700;">পাঠান: ১৬২২২ (16222)</span>
+            </div>
+            
+            <div class="sms-code" style="display:flex; align-items:center; justify-content:space-between; gap:1rem; flex-wrap:wrap;">
+                <span id="higher-live-sms-preview" style="font-size:1.15rem; font-weight:800; color:#38bdf8; font-family:'Outfit', monospace; letter-spacing:0.05em;">
+                    NU H4 [রোল নম্বর]
+                </span>
+                <button type="button" class="btn-copy-eiin" onclick="copyHigherSms()" style="padding:0.4rem 0.9rem; font-size:0.85rem; background:rgba(56,189,248,0.2); border-color:rgba(56,189,248,0.4); color:#ffffff;">
+                    📋 SMS কোড কপি করুন
+                </button>
+            </div>
+
+            <!-- Quick Gateway Links -->
+            <div style="margin-top:1.25rem;">
+                <div style="font-size:0.82rem; color:#94a3b8; font-weight:700; margin-bottom:0.4rem;">
+                    🏛️ অন্যান্য সরকারি বিশ্ববিদ্যালয় ফলাফল গেটওয়ে:
+                </div>
+                <div class="gateway-chips">
+                    <a href="https://results.nu.ac.bd" target="_blank" rel="noopener noreferrer" class="gateway-chip">
+                        🌐 জাতীয় বিশ্ববিদ্যালয় মেইন রেজাল্ট পোর্টাল ↗
+                    </a>
+                    <a href="https://7college.du.ac.bd/result" target="_blank" rel="noopener noreferrer" class="gateway-chip">
+                        🏛️ ঢাকা বিশ্ববিদ্যালয় অধিভুক্ত ৭ কলেজ রেজাল্ট ↗
+                    </a>
+                    <a href="http://exam.bou.ac.bd/" target="_blank" rel="noopener noreferrer" class="gateway-chip">
+                        📖 বাংলাদেশ উন্মুক্ত বিশ্ববিদ্যালয় (BOU) ফলাফল ↗
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
     <!-- RESULT CONTAINER -->
     <div class="result-container" id="result-container"></div>
 
@@ -1564,6 +1879,7 @@
         document.getElementById('student-section').style.display = (tab === 'student') ? 'block' : 'none';
         document.getElementById('institute-section').style.display = (tab === 'institute') ? 'block' : 'none';
         document.getElementById('directory-section').style.display = (tab === 'directory') ? 'block' : 'none';
+        document.getElementById('higher-section').style.display = (tab === 'higher') ? 'block' : 'none';
         document.getElementById('sms-section').style.display = (tab === 'sms') ? 'block' : 'none';
         hideError();
 
@@ -1573,6 +1889,8 @@
             syncInstToStudent();
         } else if (tab === 'directory') {
             initEiinDirectory();
+        } else if (tab === 'higher') {
+            initHigherSection();
         }
     }
 
@@ -2469,6 +2787,187 @@
         if (elDateBn) elDateBn.textContent = bnDateStr;
         if (elDateEn) elDateEn.textContent = enDateStr;
         if (elMobDate) elMobDate.textContent = bnDateStr;
+    }
+
+    // ============================================================
+    // HIGHER EDUCATION (HONOURS, DEGREE, MASTERS) LOGIC
+    // ============================================================
+    let activeHigherCourse = 'honours';
+    let higherInitialized = false;
+
+    const HIGHER_COURSE_DATA = {
+        'honours': {
+            title: 'অনার্স (Honours)',
+            smsPrefix: 'H',
+            url: 'https://results.nu.ac.bd/honours',
+            options: [
+                { val: '2201', text: 'অনার্স ১ম বর্ষ (Honours 1st Year - 2201)', smsPart: 'H1' },
+                { val: '2202', text: 'অনার্স ২য় বর্ষ (Honours 2nd Year - 2202)', smsPart: 'H2' },
+                { val: '2203', text: 'অনার্স ৩য় বর্ষ (Honours 3rd Year - 2203)', smsPart: 'H3' },
+                { val: '2204', text: 'অনার্স ৪র্থ বর্ষ / ফাইনাল (Honours 4th Year - 2204)', smsPart: 'H4' },
+                { val: '2205', text: 'অনার্স সমন্বিত ফলাফল (Honours Consolidated CGPA - 2205)', smsPart: 'H' }
+            ]
+        },
+        'degree': {
+            title: 'ডিগ্রি পাস (Degree Pass)',
+            smsPrefix: 'DEG',
+            url: 'https://results.nu.ac.bd/degree',
+            options: [
+                { val: '1101', text: 'ডিগ্রি পাস ১ম বর্ষ (Degree Pass 1st Year - 1101)', smsPart: 'DEG' },
+                { val: '1102', text: 'ডিগ্রি পাস ২য় বর্ষ (Degree Pass 2nd Year - 1102)', smsPart: 'DEG' },
+                { val: '1103', text: 'ডিগ্রি পাস ৩য় বর্ষ / ফাইনাল (Degree Pass 3rd Year - 1103)', smsPart: 'DEG' },
+                { val: '1104', text: 'ডিগ্রি পাস সমন্বিত ফলাফল (Degree Consolidated Result - 1104)', smsPart: 'DEG' }
+            ]
+        },
+        'masters': {
+            title: 'মাস্টার্স (Masters)',
+            smsPrefix: 'M',
+            url: 'https://results.nu.ac.bd/masters',
+            options: [
+                { val: '4301', text: 'মাস্টার্স প্রিলিমিনারি (Preliminary to Masters - 4301)', smsPart: 'MP' },
+                { val: '3302', text: 'মাস্টার্স শেষ পর্ব / ফাইনাল (Masters Final Result - 3302)', smsPart: 'MF' },
+                { val: '3303', text: 'মাস্টার্স আইসিটি কোর্স (ICT Course Result - 3303)', smsPart: 'MICT' }
+            ]
+        }
+    };
+
+    function initHigherSection() {
+        if (!higherInitialized) {
+            selectHigherCourse('honours');
+            higherInitialized = true;
+        }
+    }
+
+    function selectHigherCourse(course) {
+        activeHigherCourse = course;
+        
+        // Update Card Styles
+        document.querySelectorAll('.higher-card').forEach(c => c.classList.remove('active'));
+        const activeCard = document.getElementById(`card-btn-${course}`);
+        if (activeCard) activeCard.classList.add('active');
+
+        // Populate Exam Dropdown
+        const select = document.getElementById('nu_exam_name');
+        if (select && HIGHER_COURSE_DATA[course]) {
+            select.innerHTML = '';
+            HIGHER_COURSE_DATA[course].options.forEach(opt => {
+                const el = document.createElement('option');
+                el.value = opt.val;
+                el.textContent = opt.text;
+                select.appendChild(el);
+            });
+        }
+
+        updateHigherSmsCode();
+    }
+
+    function updateHigherSmsCode() {
+        const course = HIGHER_COURSE_DATA[activeHigherCourse];
+        if (!course) return;
+
+        const select = document.getElementById('nu_exam_name');
+        const selectedVal = select ? select.value : '';
+        const optData = course.options.find(o => o.val === selectedVal) || course.options[0];
+
+        const rollInput = document.getElementById('nu_roll_input');
+        const roll = rollInput && rollInput.value.trim() ? rollInput.value.trim() : '[রোল নম্বর]';
+
+        const previewEl = document.getElementById('higher-live-sms-preview');
+        if (previewEl) {
+            previewEl.textContent = `NU ${optData ? optData.smsPart : course.smsPrefix} ${roll}`;
+        }
+    }
+
+    function copyHigherSms() {
+        const previewEl = document.getElementById('higher-live-sms-preview');
+        if (!previewEl) return;
+        const text = previewEl.textContent.trim();
+        navigator.clipboard.writeText(text).then(() => {
+            alert('✅ SMS কোড কপি করা হয়েছে! মেসেজ অপশনে গিয়ে ১৬২২২ নম্বরে পাঠিয়ে দিন।');
+        }).catch(() => {
+            prompt('নিচের কোডটি কপি করে 16222 নম্বরে পাঠান:', text);
+        });
+    }
+
+    function openNuOfficialDirect() {
+        const course = HIGHER_COURSE_DATA[activeHigherCourse];
+        if (course) {
+            window.open(course.url, '_blank');
+        } else {
+            window.open('https://results.nu.ac.bd', '_blank');
+        }
+    }
+
+    function handleHigherSubmit(e) {
+        e.preventDefault();
+        const roll = document.getElementById('nu_roll_input').value.trim();
+        const reg = document.getElementById('nu_reg_input').value.trim();
+        const year = document.getElementById('nu_exam_year').value.trim();
+        const select = document.getElementById('nu_exam_name');
+        const examName = select.options[select.selectedIndex].text;
+
+        if (!roll || !reg) {
+            showError('অনুগ্রহ করে পরীক্ষার রোল নম্বর এবং রেজিস্ট্রেশন নম্বর দুটোই প্রদান করুন।');
+            return;
+        }
+
+        const container = document.getElementById('result-container');
+        const course = HIGHER_COURSE_DATA[activeHigherCourse];
+
+        container.innerHTML = `
+            <div class="sheet-card">
+                <div class="sheet-header">
+                    <div class="board-info">
+                        <div style="display:inline-flex; align-items:center; gap:0.5rem; background:rgba(168,85,247,0.12); border:1px solid rgba(168,85,247,0.3); border-radius:8px; padding:0.25rem 0.75rem; margin-bottom:0.6rem; color:#c084fc; font-weight:800; font-size:0.95rem;">
+                            🏛️ জাতীয় বিশ্ববিদ্যালয় (National University) · ${course.title}
+                        </div>
+                        <h2>${examName}</h2>
+                        <h4>রোল: ${roll} · রেজিস্ট্রেশন: ${reg} · পরীক্ষার সাল: ${year}</h4>
+                    </div>
+                    <div>
+                        <button class="btn-print" onclick="window.print()">🖨️ প্রিন্ট</button>
+                    </div>
+                </div>
+
+                <div class="sheet-body">
+                    <div style="background:rgba(2,132,199,0.1); border:1px solid rgba(2,132,199,0.3); border-radius:12px; padding:1.25rem; margin-bottom:1.5rem;">
+                        <h4 style="font-size:1.05rem; color:#0284c7; margin-bottom:0.5rem; display:flex; align-items:center; gap:0.4rem;">
+                            <span>🚀</span> <span>লাইভ ফলাফল সার্ভার গেটওয়ে রেডি</span>
+                        </h4>
+                        <p style="color:#cbd5e1; font-size:0.92rem; line-height:1.6; margin-bottom:1rem;">
+                            আপনার রোল <b>${roll}</b> এবং রেজিস্ট্রেশন <b>${reg}</b> প্রস্তুত রয়েছে। জাতীয় বিশ্ববিদ্যালয়ের সিকিউরিটি ক্যাপচা যাচাই করে তাৎক্ষণিক ফলাফল দেখার জন্য নিচের বাটনে ক্লিক করুন:
+                        </p>
+                        <div style="display:flex; gap:0.75rem; flex-wrap:wrap;">
+                            <a href="${course.url}" target="_blank" rel="noopener noreferrer" class="btn-submit" style="text-decoration:none; display:inline-flex; align-items:center; justify-content:center; gap:0.5rem; width:auto; padding:0.75rem 1.5rem; background:linear-gradient(135deg, #10b981, #059669); border-color:#10b981; color:#ffffff;">
+                                🌐 জাতীয় বিশ্ববিদ্যালয় অফিসিয়াল সার্ভারে রেজাল্ট দেখুন ↗
+                            </a>
+                            <button type="button" class="btn-submit" onclick="copyHigherSms()" style="width:auto; padding:0.75rem 1.25rem; background:#0f172a; border-color:#38bdf8; color:#38bdf8;">
+                                📋 SMS কোড পাঠান (16222)
+                            </button>
+                        </div>
+                    </div>
+
+                    <div style="background:rgba(15,23,42,0.85); border:1px solid rgba(255,255,255,0.1); border-radius:12px; padding:1.25rem;">
+                        <h4 style="font-size:0.95rem; font-weight:700; color:#ffffff; margin-bottom:0.5rem;">📌 জাতীয় বিশ্ববিদ্যালয়ের গ্রেডিং স্কেল (CGPA 4.00):</h4>
+                        <p style="font-size:0.85rem; color:#94a3b8; line-height:1.6;">
+                            • 80% and above: A+ (Grade Point: 4.00)<br>
+                            • 75% to less than 80%: A (Grade Point: 3.75)<br>
+                            • 70% to less than 75%: A- (Grade Point: 3.50)<br>
+                            • 65% to less than 70%: B+ (Grade Point: 3.25)<br>
+                            • 60% to less than 65%: B (Grade Point: 3.00)<br>
+                            • 55% to less than 60%: B- (Grade Point: 2.75)<br>
+                            • 50% to less than 55%: C+ (Grade Point: 2.50)<br>
+                            • 45% to less than 50%: C (Grade Point: 2.25)<br>
+                            • 40% to less than 45%: D (Grade Point: 2.00)<br>
+                            • Less than 40%: F (Failed - 0.00)
+                        </p>
+                    </div>
+                </div>
+            </div>
+        `;
+
+        container.style.display = 'block';
+        container.scrollIntoView({ behavior: 'smooth' });
     }
 
     // Initialize state on page load
