@@ -5,9 +5,26 @@ from flask import Flask, render_template, request, jsonify
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from dinajpur_engine import DinajpurUnifiedEngine
 from institutes_data import search_institutes, INSTITUTES
+from nu_engine import NuResultEngine
 
 app = Flask(__name__)
 engine = DinajpurUnifiedEngine()
+nu_engine = NuResultEngine()
+
+@app.route('/api/nu_student', methods=['POST'])
+def api_nu_student():
+    data = request.get_json(force=True, silent=True) or {}
+    roll = str(data.get('roll', '')).strip()
+    reg = str(data.get('reg', '')).strip()
+    year = str(data.get('year', '2024')).strip()
+    course = str(data.get('course', 'honours')).strip()
+    exam_code = str(data.get('exam_code', '2204')).strip()
+
+    if not roll or not reg:
+        return jsonify({"success": False, "error": "পরীক্ষার রোল এবং রেজিস্ট্রেশন নম্বর দুটোই আবশ্যক।"}), 400
+
+    result = nu_engine.get_result(course=course, exam_code=exam_code, roll=roll, reg=reg, year=year)
+    return jsonify(result)
 
 @app.route('/api/institutes')
 def api_institutes():

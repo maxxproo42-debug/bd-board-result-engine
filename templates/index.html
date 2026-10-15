@@ -2898,21 +2898,86 @@
         }
     }
 
-    function handleHigherSubmit(e) {
+    async function handleHigherSubmit(e) {
         e.preventDefault();
         const roll = document.getElementById('nu_roll_input').value.trim();
         const reg = document.getElementById('nu_reg_input').value.trim();
         const year = document.getElementById('nu_exam_year').value.trim();
         const select = document.getElementById('nu_exam_name');
-        const examName = select.options[select.selectedIndex].text;
+        const examCode = select ? select.value : '2204';
+        const examName = select ? select.options[select.selectedIndex].text : '';
+        const higherBtn = document.getElementById('higher-btn');
 
         if (!roll || !reg) {
             showError('অনুগ্রহ করে পরীক্ষার রোল নম্বর এবং রেজিস্ট্রেশন নম্বর দুটোই প্রদান করুন।');
             return;
         }
 
+        hideError();
+        const originalBtnHtml = higherBtn.innerHTML;
+        higherBtn.innerHTML = '<span class="loading-spinner"></span> জাতীয় বিশ্ববিদ্যালয় সার্ভার থেকে ফলাফল আনা হচ্ছে...';
+        higherBtn.disabled = true;
+
+        try {
+            const res = await fetch('/api/nu_student', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    course: activeHigherCourse,
+                    exam_code: examCode,
+                    exam_name: examName,
+                    roll: roll,
+                    reg: reg,
+                    year: year
+                })
+            });
+
+            const data = await res.json();
+            higherBtn.innerHTML = originalBtnHtml;
+            higherBtn.disabled = false;
+
+            if (data.success) {
+                renderHigherResult(data);
+            } else {
+                showError(data.error || 'জাতীয় বিশ্ববিদ্যালয়ের সার্ভারে এই তথ্যের কোনো ফলাফল মেলেনি।');
+                renderHigherFallback(roll, reg, year, examName, data.error);
+            }
+        } catch (err) {
+            higherBtn.innerHTML = originalBtnHtml;
+            higherBtn.disabled = false;
+            showError('সার্ভারের সাথে সংযোগ স্থাপন করা সম্ভব হয়নি। জাতীয় বিশ্ববিদ্যালয় সার্ভার ব্যস্ত থাকতে পারে।');
+            renderHigherFallback(roll, reg, year, examName, 'সার্ভার সংযোগ বিচ্ছিন্ন হয়েছে।');
+        }
+    }
+
+    function renderHigherResult(data) {
         const container = document.getElementById('result-container');
-        const course = HIGHER_COURSE_DATA[activeHigherCourse];
+        const course = HIGHER_COURSE_DATA[activeHigherCourse] || { title: 'NATIONAL UNIVERSITY' };
+        const gpaNum = parseFloat(data.gpa) || 0;
+        const isGood = gpaNum >= 3.0;
+
+        let subRowsHtml = '';
+        if (data.subjects && data.subjects.length > 0) {
+            subRowsHtml = data.subjects.map(s => {
+                let badgeClass = 'grade-A';
+                const g = (s.grade || '').toUpperCase();
+                if (g.includes('A+')) badgeClass = 'grade-A-plus';
+                else if (g.includes('A-')) badgeClass = 'grade-A-minus';
+                else if (g.includes('B')) badgeClass = 'grade-B';
+                else if (g.includes('C') || g.includes('D')) badgeClass = 'grade-C';
+                else if (g.includes('F')) badgeClass = 'grade-F';
+
+                return `
+                    <tr>
+                        <td style="font-family:monospace; font-weight:700;">${s.code || 'N/A'}</td>
+                        <td style="font-weight:600;">${s.name || 'Course Title'}</td>
+                        <td style="text-align:center;">
+                            <span class="grade-badge ${badgeClass}">${s.grade || 'Passed'}</span>
+                        </td>
+                    </tr>
+                `;
+            }).join('');
+        }
 
         container.innerHTML = `
             <div class="sheet-card">
@@ -2921,46 +2986,100 @@
                         <div style="display:inline-flex; align-items:center; gap:0.5rem; background:rgba(168,85,247,0.12); border:1px solid rgba(168,85,247,0.3); border-radius:8px; padding:0.25rem 0.75rem; margin-bottom:0.6rem; color:#c084fc; font-weight:800; font-size:0.95rem;">
                             🏛️ জাতীয় বিশ্ববিদ্যালয় (National University) · ${course.title}
                         </div>
-                        <h2>${examName}</h2>
-                        <h4>রোল: ${roll} · রেজিস্ট্রেশন: ${reg} · পরীক্ষার সাল: ${year}</h4>
+                        <h2>NATIONAL UNIVERSITY, BANGLADESH</h2>
+                        <h4>${data.exam_title || 'ACADEMIC TRANSCRIPT / RESULT SHEET'} · ${data.year}</h4>
                     </div>
-                    <div>
-                        <button class="btn-print" onclick="window.print()">🖨️ প্রিন্ট</button>
+                    <button class="btn-print" onclick="window.print()">
+                        🖨️ প্রিন্ট / PDF সংরক্ষণ
+                    </button>
+                </div>
+
+                <div class="sheet-body">
+                    <div class="score-banner">
+                        <div class="score-item-lead">
+                            <div class="gpa-circle ${isGood ? 'gold' : ''}">
+                                ${data.gpa || 'PASSED'}
+                            </div>
+                            <div class="score-meta">
+                                <h3>CGPA / GPA ${data.gpa || 'Passed'} ${isGood ? '🌟 প্রথম শ্রেণী / ফার্স্ট ক্লাস' : ''}</h3>
+                                <p>ফলাফলের স্ট্যাটাস: <b>${data.result_status || 'কৃতকার্য (Passed)'}</b></p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bio-grid">
+                        <div class="bio-row"><span class="bio-lbl">শিক্ষার্থীর নাম:</span><span class="bio-val">${data.name || 'N/A'}</span></div>
+                        <div class="bio-row"><span class="bio-lbl">পিতার নাম:</span><span class="bio-val">${data.father || 'N/A'}</span></div>
+                        <div class="bio-row"><span class="bio-lbl">মাতার নাম:</span><span class="bio-val">${data.mother || 'N/A'}</span></div>
+                        <div class="bio-row"><span class="bio-lbl">রোল নম্বর:</span><span class="bio-val">${data.roll || 'N/A'}</span></div>
+                        <div class="bio-row"><span class="bio-lbl">রেজিস্ট্রেশন নম্বর:</span><span class="bio-val">${data.reg || 'N/A'}</span></div>
+                        <div class="bio-row"><span class="bio-lbl">শিক্ষাবর্ষ (Session):</span><span class="bio-val">${data.session || 'N/A'}</span></div>
+                        <div class="bio-row"><span class="bio-lbl">কোর্সের নাম / বিষয়:</span><span class="bio-val">${data.course || course.title}</span></div>
+                        <div class="bio-row" style="grid-column: 1 / -1;"><span class="bio-lbl">কলেজের নাম:</span><span class="bio-val">${data.college || 'জাতীয় বিশ্ববিদ্যালয় অধিভুক্ত কলেজ'}</span></div>
+                    </div>
+
+                    <h4 style="margin-bottom:0.75rem; font-size:1.05rem; font-weight:700; color:#0f172a;">বিষয়ভিত্তিক ফলাফল ও লেটার গ্রেড (Subject Grades):</h4>
+                    <div class="marks-table-wrap">
+                        <table class="marks-table">
+                            <thead>
+                                <tr>
+                                    <th style="width:110px;">কোর্স কোড</th>
+                                    <th>বিষয়ের শিরোনাম</th>
+                                    <th style="width:110px; text-align:center;">গ্রেড</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                ${subRowsHtml || '<tr><td colspan="3" style="text-align:center;">বিষয়ভিত্তিক বিস্তারিত বিবরণ উপলব্ধ নয়।</td></tr>'}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        `;
+
+        container.style.display = 'block';
+        container.scrollIntoView({ behavior: 'smooth' });
+
+        if (typeof confetti === 'function' && isGood) {
+            confetti({ particleCount: 75, spread: 65, origin: { y: 0.6 } });
+        }
+    }
+
+    function renderHigherFallback(roll, reg, year, examName, errorMsg) {
+        const container = document.getElementById('result-container');
+        const course = HIGHER_COURSE_DATA[activeHigherCourse] || { title: 'NATIONAL UNIVERSITY', url: 'https://results.nu.ac.bd' };
+
+        container.innerHTML = `
+            <div class="sheet-card" style="border-left: 4px solid #f59e0b;">
+                <div class="sheet-header">
+                    <div class="board-info">
+                        <div style="display:inline-flex; align-items:center; gap:0.5rem; background:rgba(245,158,11,0.12); border:1px solid rgba(245,158,11,0.3); border-radius:8px; padding:0.25rem 0.75rem; margin-bottom:0.6rem; color:#f59e0b; font-weight:800; font-size:0.95rem;">
+                            ⚠️ তথ্য যাচাই বা নমুনা মার্কশিট প্রিভিউ
+                        </div>
+                        <h2>${examName || course.title}</h2>
+                        <h4>রোল: ${roll} · রেজিস্ট্রেশন: ${reg} · পরীক্ষার সাল: ${year}</h4>
                     </div>
                 </div>
 
                 <div class="sheet-body">
-                    <div style="background:rgba(2,132,199,0.1); border:1px solid rgba(2,132,199,0.3); border-radius:12px; padding:1.25rem; margin-bottom:1.5rem;">
-                        <h4 style="font-size:1.05rem; color:#0284c7; margin-bottom:0.5rem; display:flex; align-items:center; gap:0.4rem;">
-                            <span>🚀</span> <span>লাইভ ফলাফল সার্ভার গেটওয়ে রেডি</span>
-                        </h4>
-                        <p style="color:#cbd5e1; font-size:0.92rem; line-height:1.6; margin-bottom:1rem;">
-                            আপনার রোল <b>${roll}</b> এবং রেজিস্ট্রেশন <b>${reg}</b> প্রস্তুত রয়েছে। জাতীয় বিশ্ববিদ্যালয়ের সিকিউরিটি ক্যাপচা যাচাই করে তাৎক্ষণিক ফলাফল দেখার জন্য নিচের বাটনে ক্লিক করুন:
+                    <div style="background:rgba(15,23,42,0.8); border:1px dashed rgba(245,158,11,0.4); border-radius:12px; padding:1.25rem; margin-bottom:1.25rem;">
+                        <p style="color:#f8fafc; font-size:0.95rem; font-weight:600; line-height:1.6; margin-bottom:0.75rem;">
+                            ${errorMsg || 'জাতীয় বিশ্ববিদ্যালয়ের ডাটাবেসে এই রোল ও রেজিস্ট্রেশনের কোনো ফলাফল মেলেনি।'}
                         </p>
-                        <div style="display:flex; gap:0.75rem; flex-wrap:wrap;">
-                            <a href="${course.url}" target="_blank" rel="noopener noreferrer" class="btn-submit" style="text-decoration:none; display:inline-flex; align-items:center; justify-content:center; gap:0.5rem; width:auto; padding:0.75rem 1.5rem; background:linear-gradient(135deg, #10b981, #059669); border-color:#10b981; color:#ffffff;">
-                                🌐 জাতীয় বিশ্ববিদ্যালয় অফিসিয়াল সার্ভারে রেজাল্ট দেখুন ↗
+                        <p style="color:#94a3b8; font-size:0.88rem; line-height:1.6; margin-bottom:1rem;">
+                            আপনি কি দেখতে চান জাতীয় বিশ্ববিদ্যালয়ের সম্পূর্ণ মার্কশিটটি আমাদের সাইটে কেমন রূপ ধারণ করে? নিচের <b>"নমুনা মার্কশিট ডেমো দেখুন"</b> বাটনে ক্লিক করুন:
+                        </p>
+                        <div style="display:flex; gap:0.65rem; flex-wrap:wrap;">
+                            <button type="button" class="btn-submit" onclick="loadSampleNuResult('${roll}', '${reg}', '${year}', '${examName}')" style="width:auto; padding:0.7rem 1.4rem; background:linear-gradient(135deg, #10b981, #059669); border-color:#10b981; color:#ffffff;">
+                                🌟 নমুনা মার্কশিট লেআউট দেখুন (Demo Marksheet)
+                            </button>
+                            <a href="${course.url}" target="_blank" rel="noopener noreferrer" class="btn-submit" style="text-decoration:none; display:inline-flex; align-items:center; width:auto; padding:0.7rem 1.25rem; background:#0284c7; border-color:#0284c7; color:#ffffff;">
+                                🌐 অফিসিয়াল NU পোর্টাল খুলুন ↗
                             </a>
-                            <button type="button" class="btn-submit" onclick="copyHigherSms()" style="width:auto; padding:0.75rem 1.25rem; background:#0f172a; border-color:#38bdf8; color:#38bdf8;">
-                                📋 SMS কোড পাঠান (16222)
+                            <button type="button" class="btn-submit" onclick="copyHigherSms()" style="width:auto; padding:0.7rem 1.15rem; background:#0f172a; border-color:#38bdf8; color:#38bdf8;">
+                                📋 SMS পাঠান (16222)
                             </button>
                         </div>
-                    </div>
-
-                    <div style="background:rgba(15,23,42,0.85); border:1px solid rgba(255,255,255,0.1); border-radius:12px; padding:1.25rem;">
-                        <h4 style="font-size:0.95rem; font-weight:700; color:#ffffff; margin-bottom:0.5rem;">📌 জাতীয় বিশ্ববিদ্যালয়ের গ্রেডিং স্কেল (CGPA 4.00):</h4>
-                        <p style="font-size:0.85rem; color:#94a3b8; line-height:1.6;">
-                            • 80% and above: A+ (Grade Point: 4.00)<br>
-                            • 75% to less than 80%: A (Grade Point: 3.75)<br>
-                            • 70% to less than 75%: A- (Grade Point: 3.50)<br>
-                            • 65% to less than 70%: B+ (Grade Point: 3.25)<br>
-                            • 60% to less than 65%: B (Grade Point: 3.00)<br>
-                            • 55% to less than 60%: B- (Grade Point: 2.75)<br>
-                            • 50% to less than 55%: C+ (Grade Point: 2.50)<br>
-                            • 45% to less than 50%: C (Grade Point: 2.25)<br>
-                            • 40% to less than 45%: D (Grade Point: 2.00)<br>
-                            • Less than 40%: F (Failed - 0.00)
-                        </p>
                     </div>
                 </div>
             </div>
@@ -2969,6 +3088,36 @@
         container.style.display = 'block';
         container.scrollIntoView({ behavior: 'smooth' });
     }
+
+    function loadSampleNuResult(roll, reg, year, examName) {
+        const sampleSubjects = [
+            { code: "241101", name: "Modern English Poetry & Drama", grade: "A+" },
+            { code: "241103", name: "Nineteenth Century Novel", grade: "A" },
+            { code: "241105", name: "Classics in Translation & Literary Criticism", grade: "A-" },
+            { code: "241107", name: "Continental Literature & Comparative Studies", grade: "B+" },
+            { code: "241109", name: "Research Methodology & Academic Writing", grade: "A+" },
+            { code: "241111", name: "Comprehensive Viva-Voce Examination", grade: "A+" }
+        ];
+
+        renderHigherResult({
+            success: true,
+            board: "NATIONAL UNIVERSITY",
+            exam_title: examName || "BACHELOR DEGREE HONOURS 4TH YEAR EXAMINATION",
+            name: "MD. SHAIFUL ISLAM",
+            father: "MD. NURUL ISLAM",
+            mother: "MST. SHAHIDA BEGUM",
+            roll: roll || "2145892",
+            reg: reg || "19225148963",
+            session: "2019-20",
+            year: year || "2024",
+            college: "Dinajpur Govt. College (College Code: 0401)",
+            course: "B.A. (Honours) in English",
+            gpa: "3.78",
+            result_status: "Passed (First Class Honors)",
+            subjects: sampleSubjects
+        });
+    }
+
 
     // Initialize state on page load
     document.addEventListener('DOMContentLoaded', () => {
