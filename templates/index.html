@@ -1128,7 +1128,7 @@
 
         .higher-cards-grid {
             display: grid;
-            grid-template-columns: repeat(3, 1fr);
+            grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
             gap: 1.1rem;
             margin-bottom: 2rem;
         }
@@ -1181,6 +1181,26 @@
             box-shadow: 0 0 25px rgba(168, 85, 247, 0.25), 0 10px 25px rgba(0,0,0,0.4);
         }
 
+        /* Fazil Theme (IAU) */
+        .higher-card.card-fazil {
+            border-color: rgba(16, 185, 129, 0.3);
+        }
+        .higher-card.card-fazil:hover, .higher-card.card-fazil.active {
+            border-color: #10b981;
+            background: linear-gradient(135deg, rgba(16, 185, 129, 0.2), rgba(5, 150, 105, 0.12));
+            box-shadow: 0 0 25px rgba(16, 185, 129, 0.25), 0 10px 25px rgba(0,0,0,0.4);
+        }
+
+        /* Kamil Theme (IAU) */
+        .higher-card.card-kamil {
+            border-color: rgba(234, 179, 8, 0.3);
+        }
+        .higher-card.card-kamil:hover, .higher-card.card-kamil.active {
+            border-color: #eab308;
+            background: linear-gradient(135deg, rgba(234, 179, 8, 0.2), rgba(217, 119, 6, 0.12));
+            box-shadow: 0 0 25px rgba(234, 179, 8, 0.25), 0 10px 25px rgba(0,0,0,0.4);
+        }
+
         .higher-card-icon {
             font-size: 2.3rem;
             margin-bottom: 0.5rem;
@@ -1210,6 +1230,8 @@
         .card-honours .higher-card-badge { background: rgba(6,182,212,0.2); color: #38bdf8; border: 1px solid rgba(6,182,212,0.3); }
         .card-degree .higher-card-badge { background: rgba(245,158,11,0.2); color: #fbbf24; border: 1px solid rgba(245,158,11,0.3); }
         .card-masters .higher-card-badge { background: rgba(168,85,247,0.2); color: #c084fc; border: 1px solid rgba(168,85,247,0.3); }
+        .card-fazil .higher-card-badge { background: rgba(16,185,129,0.2); color: #34d399; border: 1px solid rgba(16,185,129,0.3); }
+        .card-kamil .higher-card-badge { background: rgba(234,179,8,0.2); color: #facc15; border: 1px solid rgba(234,179,8,0.3); }
 
         .higher-card-desc {
             font-size: 0.82rem;
@@ -1307,7 +1329,7 @@
             </li>
             <li>
                 <button type="button" class="nav-link-btn" id="nav-item-higher" onclick="switchTab('higher')">
-                    🏛️ অনার্স/ডিগ্রি/মাস্টার্স
+                    🏛️ অনার্স / ডিগ্রি / ফাজিল / কামিল
                 </button>
             </li>
             <li>
@@ -1348,7 +1370,7 @@
             🔍 EIIN ডিরেক্টরি (স্কুল ও কলেজ খুঁজুন)
         </button>
         <button type="button" class="nav-link-btn" onclick="switchTab('higher'); closeMobileNav();">
-            🏛️ অনার্স, ডিগ্রি ও মাস্টার্স ফলাফল (NU)
+            🏛️ অনার্স, ডিগ্রি, ফাজিল ও কামিল ফলাফল (NU / IAU)
         </button>
         <button type="button" class="nav-link-btn" onclick="switchTab('sms'); closeMobileNav();">
             📱 SMS ব্যাকআপ নির্দেশিকা
@@ -1403,7 +1425,7 @@
             🔍 EIIN ডিরেক্টরি (সকল বোর্ড)
         </button>
         <button class="tab-btn" id="tab-higher" onclick="switchTab('higher')">
-            🏛️ অনার্স / ডিগ্রি / মাস্টার্স (NU)
+            🏛️ অনার্স / ডিগ্রি / ফাজিল / কামিল
         </button>
         <button class="tab-btn" id="tab-sms" onclick="switchTab('sms')">
             📱 SMS ব্যাকআপ
@@ -1720,7 +1742,7 @@
             </p>
         </div>
 
-        <!-- 3 DISTINCT COURSE SELECTION CARDS -->
+        <!-- 5 DISTINCT COURSE SELECTION CARDS -->
         <div class="higher-cards-grid">
             <!-- 1. HONOURS -->
             <div class="higher-card card-honours active" id="card-btn-honours" onclick="selectHigherCourse('honours')">
@@ -1728,7 +1750,7 @@
                 <span class="higher-card-icon">🎓</span>
                 <div class="higher-card-title">অনার্স (Honours)</div>
                 <span class="higher-card-badge">৪ বছর মেয়াদী ব্যাচেলর</span>
-                <p class="higher-card-desc">১ম বর্ষ, ২য় বর্ষ, ৩য় বর্ষ, ৪র্থ বর্ষ ও সিজিপিএ কনসোলিডেটেড রেজাল্ট</p>
+                <p class="higher-card-desc">জাতীয় বিশ্ববিদ্যালয় (১ম, ২য়, ৩য়, ৪র্থ বর্ষ ও সিজিপিএ কনসোলিডেটেড)</p>
             </div>
 
             <!-- 2. DEGREE PASS -->
@@ -1737,7 +1759,7 @@
                 <span class="higher-card-icon">📜</span>
                 <div class="higher-card-title">ডিগ্রি পাস (Degree)</div>
                 <span class="higher-card-badge">৩ বছর মেয়াদী কোর্স</span>
-                <p class="higher-card-desc">ডিগ্রি পাস ও সার্টিফিকেট কোর্স (১ম, ২য়, ৩য় বর্ষ ও সমন্বিত ফলাফল)</p>
+                <p class="higher-card-desc">জাতীয় বিশ্ববিদ্যালয় ডিগ্রি পাস ও সার্টিফিকেট (১ম, ২য়, ৩য় বর্ষ ও সমন্বিত)</p>
             </div>
 
             <!-- 3. MASTERS -->
@@ -1746,7 +1768,25 @@
                 <span class="higher-card-icon">👑</span>
                 <div class="higher-card-title">মাস্টার্স (Masters)</div>
                 <span class="higher-card-badge">স্নাতকোত্তর ডিগ্রী</span>
-                <p class="higher-card-desc">মাস্টার্স প্রিলিমিনারি (১ম পর্ব) ও মাস্টার্স শেষ পর্ব (ফাইনাল) ফলাফল</p>
+                <p class="higher-card-desc">জাতীয় বিশ্ববিদ্যালয় মাস্টার্স প্রিলিমিনারি ও শেষ পর্ব (ফাইনাল)</p>
+            </div>
+
+            <!-- 4. FAZIL PASS & HONOURS -->
+            <div class="higher-card card-fazil" id="card-btn-fazil" onclick="selectHigherCourse('fazil')">
+                <span class="higher-active-indicator"></span>
+                <span class="higher-card-icon">🕌</span>
+                <div class="higher-card-title">ফাজিল (Fazil)</div>
+                <span class="higher-card-badge">ফাজিল পাস ও অনার্স</span>
+                <p class="higher-card-desc">ইসলামী আরবি বিশ্ববিদ্যালয় (IAU) ফাজিল পাস ও ৪ বছর মেয়াদী অনার্স</p>
+            </div>
+
+            <!-- 5. KAMIL MASTERS -->
+            <div class="higher-card card-kamil" id="card-btn-kamil" onclick="selectHigherCourse('kamil')">
+                <span class="higher-active-indicator"></span>
+                <span class="higher-card-icon">📿</span>
+                <div class="higher-card-title">কামিল (Kamil)</div>
+                <span class="higher-card-badge">কামিল স্নাতকোত্তর</span>
+                <p class="higher-card-desc">ইসলামী আরবি বিশ্ববিদ্যালয় (IAU) কামিল ১ম ও শেষ পর্ব (মাস্টার্স)</p>
             </div>
         </div>
 
@@ -2832,6 +2872,33 @@
                 { val: '3302', text: 'মাস্টার্স শেষ পর্ব / ফাইনাল (Masters Final Result - 3302)', smsPart: 'MF' },
                 { val: '3303', text: 'মাস্টার্স আইসিটি কোর্স (ICT Course Result - 3303)', smsPart: 'MICT' }
             ]
+        },
+        'fazil': {
+            title: 'ফাজিল পাস ও অনার্স (Fazil)',
+            authority: 'ইসলামী আরবি বিশ্ববিদ্যালয় (Islamic Arabic University)',
+            smsPrefix: 'FAZ',
+            url: 'http://result.iau.edu.bd',
+            options: [
+                { val: 'fazil_pass_1', text: 'ফাজিল পাস ১ম বর্ষ (Fazil Pass 1st Year)', smsPart: 'FAZ1' },
+                { val: 'fazil_pass_2', text: 'ফাজিল পাস ২য় বর্ষ (Fazil Pass 2nd Year)', smsPart: 'FAZ2' },
+                { val: 'fazil_pass_3', text: 'ফাজিল পাস ৩য় বর্ষ / ফাইনাল (Fazil Pass 3rd Year)', smsPart: 'FAZ3' },
+                { val: 'fazil_hons_1', text: 'ফাজিল অনার্স ১ম বর্ষ (Fazil Honours 1st Year)', smsPart: 'FH1' },
+                { val: 'fazil_hons_2', text: 'ফাজিল অনার্স ২য় বর্ষ (Fazil Honours 2nd Year)', smsPart: 'FH2' },
+                { val: 'fazil_hons_3', text: 'ফাজিল অনার্স ৩য় বর্ষ (Fazil Honours 3rd Year)', smsPart: 'FH3' },
+                { val: 'fazil_hons_4', text: 'ফাজিল অনার্স ৪র্থ বর্ষ / ফাইনাল (Fazil Honours 4th Year)', smsPart: 'FH4' },
+                { val: 'fazil_cgpa', text: 'ফাজিল সমন্বিত ফলাফল (Fazil Consolidated CGPA)', smsPart: 'FAZ' }
+            ]
+        },
+        'kamil': {
+            title: 'কামিল স্নাতকোত্তর (Kamil Masters)',
+            authority: 'ইসলামী আরবি বিশ্ববিদ্যালয় (Islamic Arabic University)',
+            smsPrefix: 'KAM',
+            url: 'http://result.iau.edu.bd',
+            options: [
+                { val: 'kamil_1', text: 'কামিল ১ম পর্ব / প্রিলিমিনারি (Kamil 1st Year)', smsPart: 'KAM1' },
+                { val: 'kamil_2', text: 'কামিল শেষ পর্ব / ফাইনাল (Kamil Final Year)', smsPart: 'KAM2' },
+                { val: 'kamil_1year', text: 'কামিল ১ বছর মেয়াদী মাস্টার্স (Kamil Masters 1-Year)', smsPart: 'KAM' }
+            ]
         }
     };
 
@@ -2849,6 +2916,16 @@
         document.querySelectorAll('.higher-card').forEach(c => c.classList.remove('active'));
         const activeCard = document.getElementById(`card-btn-${course}`);
         if (activeCard) activeCard.classList.add('active');
+
+        // Update Label
+        const examLabel = document.getElementById('higher-exam-label');
+        if (examLabel) {
+            if (course === 'fazil' || course === 'kamil') {
+                examLabel.innerHTML = '🕌 ইসলামী আরবি বিশ্ববিদ্যালয় (IAU) - পরীক্ষার নাম ও বর্ষ <span class="req">*</span>';
+            } else {
+                examLabel.innerHTML = '🏛️ জাতীয় বিশ্ববিদ্যালয় (NU) - কোর্সের নাম ও বর্ষ <span class="req">*</span>';
+            }
+        }
 
         // Populate Exam Dropdown
         const select = document.getElementById('nu_exam_name');
@@ -2875,10 +2952,16 @@
 
         const rollInput = document.getElementById('nu_roll_input');
         const roll = rollInput && rollInput.value.trim() ? rollInput.value.trim() : '[রোল নম্বর]';
+        const yearInput = document.getElementById('nu_exam_year');
+        const year = yearInput && yearInput.value.trim() ? yearInput.value.trim() : '2024';
 
         const previewEl = document.getElementById('higher-live-sms-preview');
         if (previewEl) {
-            previewEl.textContent = `NU ${optData ? optData.smsPart : course.smsPrefix} ${roll}`;
+            if (activeHigherCourse === 'fazil' || activeHigherCourse === 'kamil') {
+                previewEl.textContent = `IAU ${optData ? optData.smsPart : course.smsPrefix} ${roll} ${year}`;
+            } else {
+                previewEl.textContent = `NU ${optData ? optData.smsPart : course.smsPrefix} ${roll}`;
+            }
         }
     }
 
@@ -3063,6 +3146,13 @@
             `;
         }
 
+        const isMadrasah = (activeHigherCourse === 'fazil' || activeHigherCourse === 'kamil');
+        const uniIcon = isMadrasah ? '🕌' : '🏛️';
+        const uniBn = isMadrasah ? 'ইসলামী আরবি বিশ্ববিদ্যালয় (Islamic Arabic University)' : 'জাতীয় বিশ্ববিদ্যালয় (National University)';
+        const uniEn = isMadrasah ? 'ISLAMIC ARABIC UNIVERSITY, BANGLADESH' : 'NATIONAL UNIVERSITY, BANGLADESH';
+        const instLabel = isMadrasah ? 'মাদ্রাসার নাম:' : 'কলেজের নাম:';
+        const defaultInst = isMadrasah ? 'ইসলামী আরবি বিশ্ববিদ্যালয় অধিভুক্ত মাদ্রাসা' : 'জাতীয় বিশ্ববিদ্যালয় অধিভুক্ত কলেজ';
+
         const scoreVal = data.cgpa || data.gpa || 'PASSED';
         const displayStatus = data.result_status || (isPassed ? 'কৃতকার্য (Passed)' : 'অকৃতকার্য');
 
@@ -3070,10 +3160,10 @@
             <div class="sheet-card">
                 <div class="sheet-header">
                     <div class="board-info">
-                        <div style="display:inline-flex; align-items:center; gap:0.5rem; background:rgba(168,85,247,0.12); border:1px solid rgba(168,85,247,0.3); border-radius:8px; padding:0.25rem 0.75rem; margin-bottom:0.6rem; color:#c084fc; font-weight:800; font-size:0.95rem;">
-                            🏛️ জাতীয় বিশ্ববিদ্যালয় (National University) · ${course.title}
+                        <div style="display:inline-flex; align-items:center; gap:0.5rem; background:${isMadrasah ? 'rgba(16,185,129,0.14)' : 'rgba(168,85,247,0.12)'}; border:1px solid ${isMadrasah ? 'rgba(16,185,129,0.35)' : 'rgba(168,85,247,0.3)'}; border-radius:8px; padding:0.25rem 0.75rem; margin-bottom:0.6rem; color:${isMadrasah ? '#34d399' : '#c084fc'}; font-weight:800; font-size:0.95rem;">
+                            ${uniIcon} ${uniBn} · ${course.title}
                         </div>
-                        <h2>NATIONAL UNIVERSITY, BANGLADESH</h2>
+                        <h2>${uniEn}</h2>
                         <h4>${data.exam_title || 'ACADEMIC TRANSCRIPT / RESULT SHEET'} · ${data.year}</h4>
                     </div>
                     <button class="btn-print" onclick="window.print()">
@@ -3103,7 +3193,7 @@
                         <div class="bio-row"><span class="bio-lbl">শিক্ষাবর্ষ (Session):</span><span class="bio-val">${data.session || 'N/A'}</span></div>
                         <div class="bio-row"><span class="bio-lbl">কোর্সের নাম / বিষয়:</span><span class="bio-val" style="font-weight:700; color:#2563eb;">${data.subject || data.course || course.title}</span></div>
                         <div class="bio-row"><span class="bio-lbl">শিক্ষার্থী ধরন:</span><span class="bio-val">${data.student_type || 'Regular'}</span></div>
-                        <div class="bio-row" style="grid-column: 1 / -1;"><span class="bio-lbl">কলেজের নাম:</span><span class="bio-val" style="font-weight:600;">${data.college || 'জাতীয় বিশ্ববিদ্যালয় অধিভুক্ত কলেজ'}</span></div>
+                        <div class="bio-row" style="grid-column: 1 / -1;"><span class="bio-lbl">${instLabel}</span><span class="bio-val" style="font-weight:600;">${data.college || defaultInst}</span></div>
                     </div>
 
                     ${breakdownHtml}
@@ -3142,7 +3232,10 @@
 
     function renderHigherFallback(roll, reg, year, examName, errorMsg) {
         const container = document.getElementById('result-container');
-        const course = HIGHER_COURSE_DATA[activeHigherCourse] || { title: 'NATIONAL UNIVERSITY', url: 'https://results.nu.ac.bd' };
+        const course = HIGHER_COURSE_DATA[activeHigherCourse] || { title: 'HIGHER EDUCATION', url: 'https://results.nu.ac.bd' };
+        const isMadrasah = (activeHigherCourse === 'fazil' || activeHigherCourse === 'kamil');
+        const uniShort = isMadrasah ? 'IAU' : 'NU';
+        const uniName = isMadrasah ? 'ইসলামী আরবি বিশ্ববিদ্যালয়' : 'জাতীয় বিশ্ববিদ্যালয়';
 
         container.innerHTML = `
             <div class="sheet-card" style="border-left: 4px solid #f59e0b;">
@@ -3159,17 +3252,17 @@
                 <div class="sheet-body">
                     <div style="background:rgba(15,23,42,0.8); border:1px dashed rgba(245,158,11,0.4); border-radius:12px; padding:1.25rem; margin-bottom:1.25rem;">
                         <p style="color:#f8fafc; font-size:0.95rem; font-weight:600; line-height:1.6; margin-bottom:0.75rem;">
-                            ${errorMsg || 'জাতীয় বিশ্ববিদ্যালয়ের ডাটাবেসে এই রোল ও রেজিস্ট্রেশনের কোনো ফলাফল মেলেনি।'}
+                            ${errorMsg || `${uniName}-এর সার্ভারে এই রোল ও রেজিস্ট্রেশনের কোনো ফলাফল মেলেনি বা সার্ভার রক্ষণাবেক্ষণাধীন রয়েছে।`}
                         </p>
                         <p style="color:#94a3b8; font-size:0.88rem; line-height:1.6; margin-bottom:1rem;">
-                            আপনি কি দেখতে চান জাতীয় বিশ্ববিদ্যালয়ের সম্পূর্ণ মার্কশিটটি আমাদের সাইটে কেমন রূপ ধারণ করে? নিচের <b>"নমুনা মার্কশিট ডেমো দেখুন"</b> বাটনে ক্লিক করুন:
+                            আপনি কি দেখতে চান ${uniName}-এর সম্পূর্ণ মার্কশিটটি আমাদের সাইটে কেমন রূপ ধারণ করে? নিচের <b>"নমুনা মার্কশিট ডেমো দেখুন"</b> বাটনে ক্লিক করুন:
                         </p>
                         <div style="display:flex; gap:0.65rem; flex-wrap:wrap;">
                             <button type="button" class="btn-submit" onclick="loadSampleNuResult('${roll}', '${reg}', '${year}', '${examName}')" style="width:auto; padding:0.7rem 1.4rem; background:linear-gradient(135deg, #10b981, #059669); border-color:#10b981; color:#ffffff;">
                                 🌟 নমুনা মার্কশিট লেআউট দেখুন (Demo Marksheet)
                             </button>
                             <a href="${course.url}" target="_blank" rel="noopener noreferrer" class="btn-submit" style="text-decoration:none; display:inline-flex; align-items:center; width:auto; padding:0.7rem 1.25rem; background:#0284c7; border-color:#0284c7; color:#ffffff;">
-                                🌐 অফিসিয়াল NU পোর্টাল খুলুন ↗
+                                🌐 অফিসিয়াল ${uniShort} পোর্টাল খুলুন ↗
                             </a>
                             <button type="button" class="btn-submit" onclick="copyHigherSms()" style="width:auto; padding:0.7rem 1.15rem; background:#0f172a; border-color:#38bdf8; color:#38bdf8;">
                                 📋 SMS পাঠান (16222)
@@ -3185,30 +3278,47 @@
     }
 
     function loadSampleNuResult(roll, reg, year, examName) {
-        const sampleSubjects = [
-            { code: "241101", name: "Modern English Poetry & Drama", grade: "A+" },
-            { code: "241103", name: "Nineteenth Century Novel", grade: "A" },
-            { code: "241105", name: "Classics in Translation & Literary Criticism", grade: "A-" },
-            { code: "241107", name: "Continental Literature & Comparative Studies", grade: "B+" },
-            { code: "241109", name: "Research Methodology & Academic Writing", grade: "A+" },
-            { code: "241111", name: "Comprehensive Viva-Voce Examination", grade: "A+" }
+        const isMadrasah = (activeHigherCourse === 'fazil' || activeHigherCourse === 'kamil');
+        const isKamil = (activeHigherCourse === 'kamil');
+
+        const madrasahSubjects = isKamil ? [
+            { code: "301", name: "আল-হাদিস ও উলুমুল হাদিস (Al-Hadith & Ulumul Hadith)", credit: "4", grade: "A+" },
+            { code: "302", name: "তাফসির ও উলুমুল কুরআন (Tafsir & Ulumul Quran)", credit: "4", grade: "A" },
+            { code: "303", name: "ফিকহ ও উসুলুল ফিকহ (Fiqh & Usulul Fiqh)", credit: "4", grade: "A" },
+            { code: "304", name: "ইসলামিক গবেষণা ও মৌখিক পরীক্ষা (Thesis & Viva-Voce)", credit: "4", grade: "A+" }
+        ] : [
+            { code: "201", name: "উলুমুল কুরআন ও উলুমুল হাদিস (Ulumul Quran & Hadith)", credit: "4", grade: "A" },
+            { code: "202", name: "আরবি সাহিত্য ও ব্যাকরণ (Arabic Literature & Grammar)", credit: "4", grade: "A-" },
+            { code: "203", name: "ইসলামের ইতিহাস ও সংস্কৃতি (Islamic History)", credit: "4", grade: "B+" },
+            { code: "204", name: "ইসলামিক দর্শন ও কালাম শাস্ত্র (Islamic Philosophy)", credit: "4", grade: "A" },
+            { code: "205", name: "মৌখিক পরীক্ষা (Viva-Voce)", credit: "2", grade: "A+" }
+        ];
+
+        const sampleSubjects = isMadrasah ? madrasahSubjects : [
+            { code: "241101", name: "Modern English Poetry & Drama", credit: "4", grade: "A+" },
+            { code: "241103", name: "Nineteenth Century Novel", credit: "4", grade: "A" },
+            { code: "241105", name: "Classics in Translation & Literary Criticism", credit: "4", grade: "A-" },
+            { code: "241107", name: "Continental Literature & Comparative Studies", credit: "4", grade: "B+" },
+            { code: "241109", name: "Research Methodology & Academic Writing", credit: "4", grade: "A+" },
+            { code: "241111", name: "Comprehensive Viva-Voce Examination", credit: "4", grade: "A+" }
         ];
 
         renderHigherResult({
             success: true,
-            board: "NATIONAL UNIVERSITY",
-            exam_title: examName || "BACHELOR DEGREE HONOURS 4TH YEAR EXAMINATION",
+            board: isMadrasah ? "ISLAMIC ARABIC UNIVERSITY, BANGLADESH" : "NATIONAL UNIVERSITY, BANGLADESH",
+            exam_title: examName || (isKamil ? "KAMIL MASTERS EXAMINATION" : (isMadrasah ? "FAZIL EXAMINATION" : "BACHELOR DEGREE HONOURS 4TH YEAR EXAMINATION")),
             name: "MD. SHAIFUL ISLAM",
-            father: "MD. NURUL ISLAM",
-            mother: "MST. SHAHIDA BEGUM",
-            roll: roll || "2145892",
-            reg: reg || "19225148963",
-            session: "2019-20",
-            year: year || "2024",
-            college: "Dinajpur Govt. College (College Code: 0401)",
-            course: "B.A. (Honours) in English",
-            gpa: "3.78",
-            result_status: "Passed (First Class Honors)",
+            father: "MD. ABDUL MANNAN",
+            mother: "SOKINA BEUGM",
+            roll: roll || "2116054",
+            reg: reg || "18228162522",
+            session: "2018-19",
+            year: year || "2022",
+            college: isMadrasah ? "চিরিরবন্দর কারামতিয়া ফাজিল ও কামিল মাদ্রাসা (EIIN: 120283)" : "দিনাজপুর সরকারি কলেজ (কলেজ কোড: ০৪০১)",
+            course: isKamil ? "কামিল স্নাতকোত্তর (হাদিস বিভাগ)" : (isMadrasah ? "ফাজিল পাস ও অনার্স" : "রসায়ন বিভাগ (Department of Chemistry)"),
+            gpa: "3.80",
+            cgpa: "3.80",
+            result_status: "Passed (First Class · প্রথম শ্রেণী)",
             subjects: sampleSubjects
         });
     }

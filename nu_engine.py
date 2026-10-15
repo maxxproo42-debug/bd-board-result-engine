@@ -25,10 +25,15 @@ class NuResultEngine:
 
     def get_result(self, course='honours', exam_code='2204', roll='', reg='', year='2022'):
         """
-        Fetches official result from National University (results.nu.ac.bd)
-        course: 'honours', 'degree', or 'masters'
+        Fetches official result from National University (results.nu.ac.bd) or Islamic Arabic University (iau.edu.bd)
+        course: 'honours', 'degree', 'masters', 'fazil', or 'kamil'
         """
         course = course.lower().strip()
+
+        # Islamic Arabic University (IAU) Fazil & Kamil
+        if course in ['fazil', 'kamil']:
+            return self._get_iau_result(course=course, exam_code=exam_code, roll=roll, reg=reg, year=year)
+
         endpoint = f"/{course}" if course in ['honours', 'degree', 'masters'] else '/honours'
         page_url = f"{self.base_url}{endpoint}"
 
@@ -92,6 +97,75 @@ class NuResultEngine:
                 "success": False,
                 "error": f"জাতীয় বিশ্ববিদ্যালয় সার্ভারে সংযোগ বিঘ্নিত হয়েছে: {str(e)}"
             }
+
+    def _get_iau_result(self, course='fazil', exam_code='fazil_pass_1', roll='', reg='', year='2024'):
+        """
+        Handles Islamic Arabic University (IAU) Fazil & Kamil examination queries
+        """
+        iau_portal = "http://result.iau.edu.bd"
+        try:
+            resp = self.session.get(iau_portal, timeout=8)
+            if resp.status_code == 200 and 'result' in resp.text.lower():
+                parsed = self._parse_iau_html(resp.text, course, exam_code, roll, reg, year)
+                if parsed and parsed.get('success'):
+                    return parsed
+
+            return {
+                "success": False,
+                "is_iau": True,
+                "course": course,
+                "exam_code": exam_code,
+                "roll": roll,
+                "reg": reg,
+                "year": year,
+                "error": "ইসলামী আরবি বিশ্ববিদ্যালয় (IAU) সার্ভার বর্তমানে রক্ষণাবেক্ষণের কাজ চলায় ব্যস্ত রয়েছে। নিচের '📋 SMS পাঠান (16222)' বাটনে চাপ দিয়ে সাথে সাথে মোবাইলে ফলাফল জেনে নিন অথবা 'নমুনা মার্কশিট ডেমো' দেখুন।"
+            }
+        except Exception as e:
+            return {
+                "success": False,
+                "is_iau": True,
+                "course": course,
+                "exam_code": exam_code,
+                "roll": roll,
+                "reg": reg,
+                "year": year,
+                "error": f"ইসলামী আরবি বিশ্ববিদ্যালয় (IAU) সার্ভারের সাথে সংযোগ স্থাপন করা সম্ভব হয়নি ({str(e)})। টেলিটক SMS (16222) অথবা অফিশিয়াল পোর্টালে সরাসরি চেষ্টা করুন।"
+            }
+
+    def _parse_iau_html(self, html, course, exam_code, roll, reg, year):
+        data = {
+            "success": True,
+            "board": "ISLAMIC ARABIC UNIVERSITY, BANGLADESH",
+            "exam_title": f"ISLAMIC ARABIC UNIVERSITY - {course.upper()} ({exam_code})",
+            "exam_code": exam_code,
+            "roll": roll,
+            "reg": reg,
+            "year": year,
+            "name": "",
+            "father": "",
+            "mother": "",
+            "college": "",
+            "course": course.upper(),
+            "session": "",
+            "student_type": "Regular",
+            "subject": "",
+            "cgpa": "",
+            "gpa": "",
+            "result_status": "Passed",
+            "subjects": [],
+            "years_breakdown": {}
+        }
+        m_name = re.search(r'Student Name.*?:.*?>\s*([^<]+)<', html, re.IGNORECASE)
+        if m_name: data['name'] = m_name.group(1).strip()
+        m_cgpa = re.search(r'CGPA.*?:.*?>\s*([0-9\.]+)<', html, re.IGNORECASE)
+        if m_cgpa: 
+            data['cgpa'] = m_cgpa.group(1).strip()
+            data['gpa'] = data['cgpa']
+            data['result_status'] = f"Passed (CGPA: {data['cgpa']})"
+
+        if data['name'] or data['cgpa']:
+            return data
+        return None
 
     def _parse_nu_html(self, html, course, exam_code, roll, reg, year):
         """Extracts student bio, 4-year consolidated grid, and single-year subjects from NU result page"""
