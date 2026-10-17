@@ -6,7 +6,7 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from dinajpur_engine import DinajpurUnifiedEngine
 from institutes_data import search_institutes, INSTITUTES
 from nu_engine import NuResultEngine
-from tracker import track_request, get_stats
+from tracker import track_request, get_stats, update_telemetry
 
 app = Flask(__name__)
 engine = DinajpurUnifiedEngine()
@@ -121,6 +121,18 @@ def api_admin_visitors():
         return jsonify({"success": False, "error": "Unauthorized"}), 403
     stats = get_stats(limit=150)
     return jsonify(stats)
+
+@app.route('/api/telemetry', methods=['POST'])
+def api_telemetry():
+    ip = (
+        request.headers.get('CF-Connecting-IP') or
+        (request.headers.get('X-Forwarded-For') or '').split(',')[0].strip() or
+        request.remote_addr or
+        'Unknown'
+    )
+    data = request.get_json(force=True, silent=True) or {}
+    update_telemetry(ip, data)
+    return jsonify({"success": True})
 
 if __name__ == '__main__':
     try:

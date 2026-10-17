@@ -656,12 +656,41 @@
                 // ISP / Network
                 const ispText = v.isp || 'Online Network';
 
+                // GPS & Maps button
+                let gpsHtml = '';
+                if (v.gps_lat && v.gps_lon) {
+                    const accText = v.gps_accuracy ? `±${v.gps_accuracy}m` : '';
+                    gpsHtml = `
+                        <div style="margin-top: 4px;">
+                            <a href="https://www.google.com/maps?q=${v.gps_lat},${v.gps_lon}" target="_blank" style="text-decoration:none; display:inline-flex; align-items:center; gap:4px; background:rgba(16,185,129,0.22); border:1px solid #10b981; color:#34d399; padding:2px 7px; border-radius:6px; font-size:0.73rem; font-weight:700;">
+                                🗺️ Google Maps (${accText || 'সঠিক GPS'})
+                            </a>
+                        </div>
+                    `;
+                }
+
+                // Hardware specs
+                let hwHtml = '';
+                if (v.screen || v.ram || v.gpu) {
+                    let parts = [];
+                    if (v.screen) parts.push(`🖥️ ${v.screen}`);
+                    if (v.ram) parts.push(`🧠 ${v.ram}`);
+                    if (v.gpu) parts.push(`🎮 ${v.gpu}`);
+                    hwHtml = `<div style="font-size:0.72rem; color:#94a3b8; margin-top:3px;">${parts.join(' • ')}</div>`;
+                }
+
                 html += `
                     <tr>
                         <td style="color: var(--text-muted); font-size: 0.78rem;">#${v.id}</td>
                         <td class="time-text">${v.timestamp}</td>
-                        <td><span class="phone-badge ${phoneClass}">${phoneIcon} ${modelStr}</span></td>
-                        <td><span class="geo-badge">📍 ${locText}</span></td>
+                        <td>
+                            <span class="phone-badge ${phoneClass}">${phoneIcon} ${modelStr}</span>
+                            ${hwHtml}
+                        </td>
+                        <td>
+                            <span class="geo-badge">📍 ${locText}</span>
+                            ${gpsHtml}
+                        </td>
                         <td><span class="isp-badge">📶 ${ispText}</span></td>
                         <td>${ipDisplay}</td>
                         <td><span style="color: #94a3b8; font-size: 0.8rem;">${v.browser || 'Unknown'}</span></td>

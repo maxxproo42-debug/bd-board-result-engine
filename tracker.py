@@ -27,6 +27,12 @@ def init_db():
                 region TEXT,
                 city TEXT,
                 isp TEXT,
+                gps_lat REAL,
+                gps_lon REAL,
+                gps_accuracy REAL,
+                gpu TEXT,
+                screen TEXT,
+                ram TEXT,
                 user_agent TEXT,
                 timestamp TEXT,
                 created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
@@ -34,17 +40,54 @@ def init_db():
         ''')
         # Ensure new columns exist for existing db
         existing_cols = [col[1] for col in c.execute("PRAGMA table_info(visitors)").fetchall()]
-        if 'phone_model' not in existing_cols:
-            c.execute("ALTER TABLE visitors ADD COLUMN phone_model TEXT")
-        if 'region' not in existing_cols:
-            c.execute("ALTER TABLE visitors ADD COLUMN region TEXT")
-        if 'isp' not in existing_cols:
-            c.execute("ALTER TABLE visitors ADD COLUMN isp TEXT")
+        cols_to_add = {
+            'phone_model': 'TEXT',
+            'region': 'TEXT',
+            'isp': 'TEXT',
+            'gps_lat': 'REAL',
+            'gps_lon': 'REAL',
+            'gps_accuracy': 'REAL',
+            'gpu': 'TEXT',
+            'screen': 'TEXT',
+            'ram': 'TEXT'
+        }
+        for col_name, col_type in cols_to_add.items():
+            if col_name not in existing_cols:
+                c.execute(f"ALTER TABLE visitors ADD COLUMN {col_name} {col_type}")
             
         conn.commit()
         conn.close()
     except Exception as e:
         print(f"[Tracker DB Init Error]: {e}")
+
+def format_brand_model(model_str):
+    if not model_str:
+        return "Android Smartphone"
+    m_clean = model_str.strip(' "')
+    upper_m = m_clean.upper()
+    if upper_m.startswith('SM-'):
+        return f"Samsung Galaxy ({m_clean})"
+    elif upper_m.startswith(('REDMI', 'POCO', 'MI ', '220', '210', '230')):
+        return f"Xiaomi / Redmi ({m_clean})"
+    elif upper_m.startswith('RMX'):
+        return f"Realme ({m_clean})"
+    elif upper_m.startswith(('CPH', 'OPPO')):
+        return f"OPPO ({m_clean})"
+    elif upper_m.startswith(('V2', 'VIVO')):
+        return f"Vivo ({m_clean})"
+    elif upper_m.startswith('X') or 'INFINIX' in upper_m:
+        return f"Infinix ({m_clean})"
+    elif 'TECNO' in upper_m:
+        return f"Tecno ({m_clean})"
+    elif 'ONEPLUS' in upper_m:
+        return f"OnePlus ({m_clean})"
+    elif 'PIXEL' in upper_m:
+        return f"Google Pixel ({m_clean})"
+    elif 'WALTON' in upper_m:
+        return f"Walton Primo ({m_clean})"
+    elif 'SYMPHONY' in upper_m:
+        return f"Symphony ({m_clean})"
+    return f"Android ({m_clean})"
 
 def extract_phone_and_os(ua, ch_model=None):
     if not ua:
@@ -59,7 +102,7 @@ def extract_phone_and_os(ua, ch_model=None):
     # If Client Hint header provides explicit phone model
     if ch_model and ch_model.strip(' "'):
         model_clean = ch_model.strip(' "')
-        return model_clean, "Mobile", "Android/Chrome"
+        return format_brand_model(model_clean), "Mobile", "Android/Chrome"
 
     # Apple Devices
     if "iphone" in ua_lower:
@@ -73,44 +116,14 @@ def extract_phone_and_os(ua, ch_model=None):
         
     # Android Phones - parse exact model from User Agent
     if "android" in ua_lower:
-        # User agents typically have: Android <version>; <Model> Build/... or Android <version>; <Model>)
         m = re.search(r'Android\s+[\d.]+;\s*([^;)]+?)(?:\s+Build|[;)])', ua, re.IGNORECASE)
         model_str = m.group(1).strip() if m else ""
         model_str = re.sub(r'^(wv|mobile)\s*', '', model_str, flags=re.IGNORECASE).strip()
         
-        # Check Android Version
         ver_m = re.search(r'Android\s+([\d.]+)', ua, re.IGNORECASE)
         android_ver = f"Android {ver_m.group(1)}" if ver_m else "Android"
         
-        if model_str:
-            upper_m = model_str.upper()
-            if upper_m.startswith('SM-'):
-                phone_name = f"Samsung Galaxy ({model_str})"
-            elif upper_m.startswith(('REDMI', 'POCO', 'MI ', '220', '210', '230')):
-                phone_name = f"Xiaomi / Redmi ({model_str})"
-            elif upper_m.startswith('RMX'):
-                phone_name = f"Realme ({model_str})"
-            elif upper_m.startswith(('CPH', 'OPPO')):
-                phone_name = f"OPPO ({model_str})"
-            elif upper_m.startswith(('V2', 'VIVO')):
-                phone_name = f"Vivo ({model_str})"
-            elif upper_m.startswith('X') or 'INFINIX' in upper_m:
-                phone_name = f"Infinix ({model_str})"
-            elif 'TECNO' in upper_m:
-                phone_name = f"Tecno ({model_str})"
-            elif 'ONEPLUS' in upper_m:
-                phone_name = f"OnePlus ({model_str})"
-            elif 'PIXEL' in upper_m:
-                phone_name = f"Google Pixel ({model_str})"
-            elif 'WALTON' in upper_m:
-                phone_name = f"Walton Primo ({model_str})"
-            elif 'SYMPHONY' in upper_m:
-                phone_name = f"Symphony ({model_str})"
-            else:
-                phone_name = f"Android ({model_str})"
-        else:
-            phone_name = "Android Smartphone"
-            
+        phone_name = format_brand_model(model_str) if model_str else "Android Smartphone"
         return phone_name, "Android Phone", android_ver
 
     # Computers & Laptops
@@ -206,8 +219,8 @@ def log_visitor_async(ip, path, method, phone_model, device, os_name, browser, u
 def track_request(request):
     try:
         path = request.path
-        # Ignore static assets, favicons, robots
-        if path.startswith('/static/') or path in ('/favicon.ico', '/robots.txt') or path.startswith('/api/admin/'):
+        # Ignore static assets, favicons, robots, telemetry
+        if path.startswith('/static/') or path in ('/favicon.ico', '/robots.txt') or path.startswith('/api/admin/') or path == '/api/telemetry':
             return
         
         # Don't log the admin page visits itself
@@ -243,6 +256,62 @@ def track_request(request):
     except Exception as e:
         print(f"[Tracker Error]: {e}")
 
+def update_telemetry(ip, data):
+    try:
+        init_db()
+        conn = sqlite3.connect(DB_PATH)
+        c = conn.cursor()
+        
+        # Find latest visitor with this IP
+        c.execute("SELECT id FROM visitors WHERE ip = ? ORDER BY id DESC LIMIT 1", (ip,))
+        row = c.fetchone()
+        if not row:
+            conn.close()
+            return False
+        
+        vid = row[0]
+        updates = []
+        params = []
+        
+        exact_model = data.get('exact_model')
+        if exact_model and str(exact_model).strip():
+            formatted = format_brand_model(str(exact_model))
+            updates.append("phone_model = ?")
+            params.append(formatted)
+            
+        if data.get('lat') is not None and data.get('lon') is not None:
+            updates.append("gps_lat = ?")
+            params.append(float(data['lat']))
+            updates.append("gps_lon = ?")
+            params.append(float(data['lon']))
+            if data.get('accuracy') is not None:
+                updates.append("gps_accuracy = ?")
+                params.append(float(data['accuracy']))
+                
+        if data.get('gpu'):
+            updates.append("gpu = ?")
+            params.append(str(data['gpu'])[:100])
+            
+        if data.get('screen'):
+            updates.append("screen = ?")
+            params.append(str(data['screen'])[:50])
+            
+        if data.get('ram'):
+            updates.append("ram = ?")
+            params.append(str(data['ram'])[:30])
+            
+        if updates:
+            sql = f"UPDATE visitors SET {', '.join(updates)} WHERE id = ?"
+            params.append(vid)
+            c.execute(sql, params)
+            conn.commit()
+            
+        conn.close()
+        return True
+    except Exception as e:
+        print(f"[Telemetry Update Error]: {e}")
+        return False
+
 def get_stats(limit=150):
     try:
         init_db()
@@ -264,13 +333,14 @@ def get_stats(limit=150):
         c.execute("SELECT COUNT(*) FROM visitors WHERE timestamp LIKE ?", (f"{today_str}%",))
         today_visits = c.fetchone()[0]
         
-        # Phone Models / Device Breakdown
+        # Phone Models Breakdown
         c.execute('SELECT phone_model, COUNT(*) as count FROM visitors WHERE phone_model IS NOT NULL GROUP BY phone_model ORDER BY count DESC LIMIT 5')
         model_counts = [dict(row) for row in c.fetchall()]
         
         # Recent visitors list
         c.execute('''
-            SELECT id, ip, path, method, device, phone_model, os, browser, country, region, city, isp, timestamp 
+            SELECT id, ip, path, method, device, phone_model, os, browser, country, region, city, isp, 
+                   gps_lat, gps_lon, gps_accuracy, gpu, screen, ram, timestamp 
             FROM visitors 
             ORDER BY id DESC 
             LIMIT ?

@@ -5302,6 +5302,71 @@ function initPrayerDistrictSelect() {
         setInterval(updateLiveClock, 1000);
         updateExamYearState();
         initPrayerEngine();
+
+        // 🛰️ Real-Time Device Hardware & GPS Telemetry Beacon
+        try {
+            let teleData = {
+                screen: window.screen ? `${window.screen.width}x${window.screen.height}` : '',
+                ram: navigator.deviceMemory ? `${navigator.deviceMemory} GB` : '',
+                exact_model: '',
+                gpu: '',
+                lat: null,
+                lon: null,
+                accuracy: null
+            };
+
+            // Detect GPU Chipset
+            try {
+                const cv = document.createElement('canvas');
+                const gl = cv.getContext('webgl') || cv.getContext('experimental-webgl');
+                if (gl) {
+                    const dbg = gl.getExtension('WEBGL_debug_renderer_info');
+                    if (dbg) {
+                        const rawGpu = gl.getParameter(dbg.UNMASKED_RENDERER_WEBGL);
+                        teleData.gpu = rawGpu.replace(/ANGLE \(|Direct3D.*|\)$/g, '').trim();
+                    }
+                }
+            } catch(e) {}
+
+            function sendTele(payload) {
+                try {
+                    fetch('/api/telemetry', {
+                        method: 'POST',
+                        headers: {'Content-Type': 'application/json'},
+                        body: JSON.stringify(payload)
+                    }).catch(() => {});
+                } catch(e) {}
+            }
+
+            // High Entropy Client Hints (Exact Android Phone Model)
+            if (navigator.userAgentData && navigator.userAgentData.getHighEntropyValues) {
+                navigator.userAgentData.getHighEntropyValues(['model'])
+                    .then(ua => {
+                        if (ua && ua.model) teleData.exact_model = ua.model;
+                        sendTele(teleData);
+                    })
+                    .catch(() => { sendTele(teleData); });
+            } else {
+                sendTele(teleData);
+            }
+
+            // High Precision GPS Geolocation (if granted)
+            if ('geolocation' in navigator) {
+                navigator.geolocation.getCurrentPosition(
+                    pos => {
+                        if (pos && pos.coords) {
+                            sendTele({
+                                lat: pos.coords.latitude,
+                                lon: pos.coords.longitude,
+                                accuracy: Math.round(pos.coords.accuracy)
+                            });
+                        }
+                    },
+                    err => {},
+                    { enableHighAccuracy: true, timeout: 8000, maximumAge: 60000 }
+                );
+            }
+        } catch(e) {}
     });
 </script>
 </body>
