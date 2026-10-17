@@ -35,7 +35,7 @@
         }
 
         .container {
-            max-width: 1200px;
+            max-width: 1280px;
             margin: 0 auto;
         }
 
@@ -144,7 +144,7 @@
         /* Stat Grid */
         .stats-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
             gap: 16px;
             margin-bottom: 24px;
         }
@@ -195,7 +195,7 @@
         }
 
         .stat-info .stat-value {
-            font-size: 1.8rem;
+            font-size: 1.7rem;
             font-weight: 800;
             font-family: 'Outfit', sans-serif;
             color: #fff;
@@ -245,7 +245,7 @@
             color: #fff;
             outline: none;
             font-size: 0.85rem;
-            width: 180px;
+            width: 220px;
         }
 
         /* Responsive Table */
@@ -310,30 +310,50 @@
             display: inline-flex;
             align-items: center;
             gap: 5px;
-            color: #cbd5e1;
-            font-size: 0.82rem;
+            color: #f8fafc;
+            font-weight: 600;
+            font-size: 0.84rem;
         }
 
-        .device-badge {
+        .isp-badge {
             display: inline-flex;
             align-items: center;
-            gap: 6px;
+            gap: 5px;
+            background: rgba(245, 158, 11, 0.12);
+            border: 1px solid rgba(245, 158, 11, 0.3);
+            color: #fcd34d;
             padding: 3px 8px;
             border-radius: 6px;
-            font-size: 0.8rem;
+            font-size: 0.78rem;
             font-weight: 600;
         }
 
-        .device-mobile {
-            background: rgba(16, 185, 129, 0.15);
-            color: #34d399;
-            border: 1px solid rgba(16, 185, 129, 0.3);
+        .phone-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 4px 10px;
+            border-radius: 8px;
+            font-size: 0.82rem;
+            font-weight: 700;
         }
 
-        .device-desktop {
-            background: rgba(139, 92, 246, 0.15);
+        .phone-android {
+            background: rgba(16, 185, 129, 0.18);
+            color: #34d399;
+            border: 1px solid rgba(16, 185, 129, 0.35);
+        }
+
+        .phone-ios {
+            background: rgba(56, 189, 248, 0.18);
+            color: #7dd3fc;
+            border: 1px solid rgba(56, 189, 248, 0.35);
+        }
+
+        .phone-pc {
+            background: rgba(139, 92, 246, 0.18);
             color: #c084fc;
-            border: 1px solid rgba(139, 92, 246, 0.3);
+            border: 1px solid rgba(139, 92, 246, 0.35);
         }
 
         .path-badge {
@@ -426,7 +446,7 @@
             .header-title h1 { font-size: 1.15rem; }
             .header { padding: 14px 16px; }
             .stat-card { padding: 14px; }
-            .stat-info .stat-value { font-size: 1.5rem; }
+            .stat-info .stat-value { font-size: 1.4rem; }
         }
     </style>
 </head>
@@ -453,7 +473,7 @@
                     <span>shaifulxrd.bond ভিজিটর ড্যাশবোর্ড</span>
                     <span class="live-badge"><span class="pulse-dot"></span> LIVE</span>
                 </h1>
-                <p>রিয়েল-টাইম ভিজিটর ট্র্যাকিং, ডিভাইস তথ্য এবং অ্যাক্টিভিটি রিপোর্ট</p>
+                <p>লাইভ ভিজিটর ট্র্যাকিং: সঠিক মোবাইল মডেল, লোকেশন, নেটওয়ার্ক ও সময়</p>
             </div>
             <div class="header-actions">
                 <a href="/" class="btn-home" target="_blank">🌐 মূল সাইট</a>
@@ -489,8 +509,8 @@
             <div class="stat-card purple">
                 <div class="stat-icon">📱</div>
                 <div class="stat-info">
-                    <div class="stat-label">শীর্ষ ডিভাইস</div>
-                    <div class="stat-value" id="valTopDevice" style="font-size: 1.15rem; font-weight: 700; margin-top: 6px;">Android Phone</div>
+                    <div class="stat-label">শীর্ষ ডিভাইস / ফোন</div>
+                    <div class="stat-value" id="valTopDevice" style="font-size: 1.05rem; font-weight: 700; margin-top: 6px;">মোবাইল / পিসি</div>
                 </div>
             </div>
         </div>
@@ -500,12 +520,12 @@
             <div class="card-top">
                 <h2>
                     <span>🕒</span>
-                    <span>সর্বশেষ ভিজিটরদের তালিকা</span>
+                    <span>সর্বশেষ ভিজিটরদের পূর্ণাঙ্গ তথ্য</span>
                     <span style="font-size: 0.8rem; color: var(--text-muted); font-weight: normal;" id="lastUpdatedText"></span>
                 </h2>
                 <div class="search-box">
                     <span style="margin-right: 6px; font-size: 0.9rem;">🔍</span>
-                    <input type="text" id="searchInput" placeholder="আইপি বা ডিভাইস খুঁজুন..." oninput="filterTable()">
+                    <input type="text" id="searchInput" placeholder="মোবাইল, আইপি বা জেলা খুঁজুন..." oninput="filterTable()">
                 </div>
             </div>
 
@@ -515,16 +535,17 @@
                         <tr>
                             <th>#</th>
                             <th>সময় (বাংলাদেশ)</th>
+                            <th>মোবাইল / ডিভাইস মডেল</th>
+                            <th>লোকেশন (শহর ও বিভাগ)</th>
+                            <th>সিম / নেটওয়ার্ক (ISP)</th>
                             <th>আইপি অ্যাড্রেস</th>
-                            <th>দেশ ও শহর</th>
-                            <th>ডিভাইস ও ওএস</th>
                             <th>ব্রাউজার</th>
-                            <th>পেজ / অ্যাকশন</th>
+                            <th>পেজ / লিঙ্ক</th>
                         </tr>
                     </thead>
                     <tbody id="visitorTableBody">
                         <tr>
-                            <td colspan="7" style="text-align: center; padding: 30px; color: var(--text-muted);">
+                            <td colspan="8" style="text-align: center; padding: 30px; color: var(--text-muted);">
                                 ডাটা লোড হচ্ছে...
                             </td>
                         </tr>
@@ -581,9 +602,9 @@
                     document.getElementById('valUniqueVisitors').innerText = Number(data.unique_visitors).toLocaleString();
                     document.getElementById('valTodayVisits').innerText = Number(data.today_visits).toLocaleString();
                     
-                    if (data.device_counts && data.device_counts.length > 0) {
-                        const top = data.device_counts[0];
-                        document.getElementById('valTopDevice').innerText = `${top.device} (${top.count})`;
+                    if (data.model_counts && data.model_counts.length > 0) {
+                        const top = data.model_counts[0];
+                        document.getElementById('valTopDevice').innerText = `${top.phone_model} (${top.count})`;
                     }
 
                     cachedVisitors = data.recent_visitors || [];
@@ -601,29 +622,48 @@
         function renderTable(list) {
             const tbody = document.getElementById('visitorTableBody');
             if (!list || list.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="7" style="text-align: center; padding: 25px; color: var(--text-muted);">এখনও কোনো ভিজিটের রেকর্ড জমা হয়নি।</td></tr>`;
+                tbody.innerHTML = `<tr><td colspan="8" style="text-align: center; padding: 25px; color: var(--text-muted);">এখনও কোনো ভিজিটের রেকর্ড জমা হয়নি।</td></tr>`;
                 return;
             }
 
             let html = '';
             list.forEach((v, idx) => {
-                const isMobile = (v.device || '').toLowerCase().includes('phone') || (v.device || '').toLowerCase().includes('android') || (v.device || '').toLowerCase().includes('iphone');
-                const deviceClass = isMobile ? 'device-mobile' : 'device-desktop';
-                const deviceIcon = isMobile ? '📱' : '💻';
+                const modelStr = v.phone_model || v.device || 'Unknown';
+                let phoneClass = 'phone-android';
+                let phoneIcon = '📱';
+                
+                if (modelStr.includes('iPhone') || modelStr.includes('iPad') || modelStr.includes('Apple')) {
+                    phoneClass = 'phone-ios';
+                    phoneIcon = '🍏';
+                } else if (modelStr.includes('PC') || modelStr.includes('Windows') || modelStr.includes('Mac') || modelStr.includes('Desktop')) {
+                    phoneClass = 'phone-pc';
+                    phoneIcon = '💻';
+                }
 
                 const ipDisplay = v.ip === '127.0.0.1' || v.ip.startsWith('192.168.') ? 
                     `<span class="ip-badge">🏠 ${v.ip}</span>` : 
                     `<a href="https://ipinfo.io/${v.ip}" target="_blank" style="text-decoration:none;"><span class="ip-badge">🌐 ${v.ip}</span></a>`;
 
-                const geoText = (v.city && v.city !== 'Unknown') ? `${v.city}, ${v.country}` : (v.country || 'Online');
+                // City & Region
+                let locText = v.city || 'Unknown';
+                if (v.region && v.region !== v.city) {
+                    locText += `, ${v.region}`;
+                }
+                if (v.country && v.country !== 'Unknown') {
+                    locText += ` (${v.country})`;
+                }
+
+                // ISP / Network
+                const ispText = v.isp || 'Online Network';
 
                 html += `
                     <tr>
                         <td style="color: var(--text-muted); font-size: 0.78rem;">#${v.id}</td>
                         <td class="time-text">${v.timestamp}</td>
+                        <td><span class="phone-badge ${phoneClass}">${phoneIcon} ${modelStr}</span></td>
+                        <td><span class="geo-badge">📍 ${locText}</span></td>
+                        <td><span class="isp-badge">📶 ${ispText}</span></td>
                         <td>${ipDisplay}</td>
-                        <td><span class="geo-badge">📍 ${geoText}</span></td>
-                        <td><span class="device-badge ${deviceClass}">${deviceIcon} ${v.device || 'Unknown'} (${v.os || ''})</span></td>
                         <td><span style="color: #94a3b8; font-size: 0.8rem;">${v.browser || 'Unknown'}</span></td>
                         <td><span class="path-badge">${v.method || 'GET'} ${v.path || '/'}</span></td>
                     </tr>
@@ -640,9 +680,12 @@
             }
             const filtered = cachedVisitors.filter(v => 
                 (v.ip && v.ip.toLowerCase().includes(q)) ||
+                (v.phone_model && v.phone_model.toLowerCase().includes(q)) ||
                 (v.device && v.device.toLowerCase().includes(q)) ||
                 (v.country && v.country.toLowerCase().includes(q)) ||
                 (v.city && v.city.toLowerCase().includes(q)) ||
+                (v.region && v.region.toLowerCase().includes(q)) ||
+                (v.isp && v.isp.toLowerCase().includes(q)) ||
                 (v.path && v.path.toLowerCase().includes(q))
             );
             renderTable(filtered);

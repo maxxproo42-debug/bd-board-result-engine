@@ -16,6 +16,11 @@ nu_engine = NuResultEngine()
 def log_incoming_visitor():
     track_request(request)
 
+@app.after_request
+def add_client_hints(response):
+    response.headers['Accept-CH'] = 'Sec-CH-UA-Model, Sec-CH-UA-Platform, Sec-CH-UA-Platform-Version'
+    return response
+
 @app.route('/api/nu_student', methods=['POST'])
 def api_nu_student():
     data = request.get_json(force=True, silent=True) or {}
