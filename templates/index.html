@@ -2007,21 +2007,21 @@
             .qadr-badge { background: #fef3c7 !important; color: #92400e !important; border: 1px solid #b45309 !important; font-size: 7.5pt !important; }
         }
 
-        /* 🌐 Domain Alert Banner & Server Mirror Card */
+        /* 🌐 Top Domain Notice & Switcher Bar */
         .domain-alert-bar {
             background: linear-gradient(90deg, #1e1b4b, #1e293b 50%, #0f172a);
             border-bottom: 1px solid rgba(56, 189, 248, 0.35);
-            padding: 8px 16px;
-            font-size: 0.85rem;
+            padding: 9px 16px;
+            font-size: 0.88rem;
             color: #f1f5f9;
             display: none;
             position: relative;
             z-index: 1000;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+            box-shadow: 0 4px 18px rgba(0, 0, 0, 0.35);
         }
         .domain-alert-bar.render-alert {
-            background: linear-gradient(90deg, #311042, #1e1b4b 50%, #0f172a);
-            border-bottom-color: rgba(236, 72, 153, 0.4);
+            background: linear-gradient(90deg, #2e1065, #1e1b4b 50%, #0f172a);
+            border-bottom-color: rgba(147, 51, 234, 0.45);
         }
         .domain-alert-content {
             max-width: 1200px;
@@ -2030,19 +2030,22 @@
             align-items: center;
             justify-content: center;
             flex-wrap: wrap;
-            gap: 10px;
+            gap: 12px;
             text-align: center;
-            padding-right: 25px;
+            padding-right: 32px;
         }
         .domain-alert-badge {
-            font-size: 0.72rem;
+            font-size: 0.74rem;
             font-weight: 800;
-            padding: 2px 8px;
+            padding: 3px 10px;
             border-radius: 9999px;
             background: rgba(236, 72, 153, 0.2);
             color: #f472b6;
             border: 1px solid rgba(236, 72, 153, 0.4);
             letter-spacing: 0.5px;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
         }
         .domain-alert-badge.green {
             background: rgba(16, 185, 129, 0.2);
@@ -2051,168 +2054,63 @@
         }
         .domain-alert-text {
             color: #e2e8f0;
-            font-size: 0.86rem;
+            font-size: 0.88rem;
+            line-height: 1.45;
+        }
+        .domain-alert-text b, .domain-alert-text strong {
+            color: #38bdf8;
+            font-family: 'Outfit', sans-serif;
+            letter-spacing: 0.02em;
         }
         .btn-domain-switch {
-            background: linear-gradient(135deg, #2563eb, #1d4ed8);
+            background: linear-gradient(135deg, #10b981, #059669);
             color: #ffffff !important;
-            padding: 4px 12px;
+            padding: 6px 14px;
             border-radius: 8px;
-            font-size: 0.8rem;
+            font-size: 0.82rem;
             font-weight: 700;
             text-decoration: none;
             display: inline-flex;
             align-items: center;
-            gap: 4px;
-            transition: all 0.2s;
-            box-shadow: 0 2px 8px rgba(37, 99, 235, 0.3);
+            gap: 6px;
+            transition: all 0.2s ease;
+            box-shadow: 0 2px 10px rgba(16, 185, 129, 0.35);
+            white-space: nowrap;
         }
         .btn-domain-switch:hover {
             transform: translateY(-1px);
-            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.5);
+            box-shadow: 0 4px 14px rgba(16, 185, 129, 0.55);
+            background: linear-gradient(135deg, #059669, #047857);
         }
         .btn-domain-switch.backup {
-            background: rgba(255, 255, 255, 0.1);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            color: #cbd5e1 !important;
+            background: linear-gradient(135deg, #3b82f6, #2563eb);
+            box-shadow: 0 2px 10px rgba(59, 130, 246, 0.35);
         }
         .btn-domain-switch.backup:hover {
-            background: rgba(255, 255, 255, 0.18);
-            color: #ffffff !important;
+            background: linear-gradient(135deg, #2563eb, #1d4ed8);
+            box-shadow: 0 4px 14px rgba(59, 130, 246, 0.55);
         }
         .btn-domain-close {
             position: absolute;
             right: 12px;
             top: 50%;
             transform: translateY(-50%);
-            background: transparent;
-            border: none;
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 6px;
             color: #94a3b8;
-            font-size: 1rem;
+            font-size: 0.9rem;
             cursor: pointer;
-            padding: 4px 8px;
+            padding: 3px 8px;
             line-height: 1;
+            transition: all 0.2s;
         }
         .btn-domain-close:hover {
             color: #ffffff;
+            background: rgba(239, 68, 68, 0.3);
+            border-color: rgba(239, 68, 68, 0.5);
         }
 
-        /* Dual Server Mirror Card inside App Header */
-        .server-mirror-card {
-            background: rgba(15, 23, 42, 0.7);
-            backdrop-filter: blur(12px);
-            border: 1px solid rgba(56, 189, 248, 0.25);
-            border-radius: 16px;
-            padding: 14px 18px;
-            margin: 1.1rem auto 1.25rem;
-            max-width: 860px;
-            text-align: left;
-            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
-        }
-        .sm-header {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            flex-wrap: wrap;
-            gap: 8px;
-            margin-bottom: 10px;
-        }
-        .sm-title {
-            font-size: 0.95rem;
-            font-weight: 700;
-            color: #ffffff;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-        }
-        .sm-tag {
-            font-size: 0.72rem;
-            font-weight: 700;
-            color: #34d399;
-            background: rgba(16, 185, 129, 0.15);
-            border: 1px solid rgba(16, 185, 129, 0.35);
-            padding: 2px 8px;
-            border-radius: 9999px;
-            display: inline-flex;
-            align-items: center;
-            gap: 4px;
-        }
-        .sm-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 10px;
-            margin-bottom: 8px;
-        }
-        .sm-item {
-            background: rgba(10, 14, 23, 0.85);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 12px;
-            padding: 10px 14px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            text-decoration: none;
-            transition: all 0.2s ease;
-        }
-        .sm-item:hover {
-            border-color: rgba(56, 189, 248, 0.5);
-            transform: translateY(-2px);
-            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.3);
-        }
-        .sm-item.primary {
-            border-color: rgba(16, 185, 129, 0.35);
-            background: linear-gradient(135deg, rgba(16, 185, 129, 0.08), rgba(10, 14, 23, 0.9));
-        }
-        .sm-item-left {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-        .sm-item-icon {
-            font-size: 1.35rem;
-        }
-        .sm-item-name {
-            font-size: 0.88rem;
-            font-weight: 700;
-            color: #f1f5f9;
-            font-family: 'Outfit', sans-serif;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-        }
-        .sm-item-desc {
-            font-size: 0.74rem;
-            color: #94a3b8;
-            margin-top: 1px;
-        }
-        .sm-badge-official {
-            font-size: 0.65rem;
-            background: #10b981;
-            color: #ffffff;
-            padding: 1px 5px;
-            border-radius: 4px;
-            font-weight: 800;
-        }
-        .sm-badge-backup {
-            font-size: 0.65rem;
-            background: rgba(255, 255, 255, 0.12);
-            color: #93c5fd;
-            padding: 1px 5px;
-            border-radius: 4px;
-            font-weight: 700;
-        }
-        .sm-arrow {
-            font-size: 0.9rem;
-            color: #38bdf8;
-            font-weight: bold;
-        }
-        .sm-note {
-            font-size: 0.78rem;
-            color: #94a3b8;
-            line-height: 1.45;
-            margin: 0;
-            padding-top: 4px;
-        }
     </style>
 </head>
 <body>
@@ -2330,50 +2228,6 @@
         </div>
         <h1 class="app-title">Bangladesh All Education Board Result Portal <a href="https://t.me/ShaifulXD" target="_blank" rel="noopener noreferrer" style="font-size:0.55em; font-weight:700; color:#38bdf8; letter-spacing:0.04em; display:inline-block; border-radius:8px; padding:0.18rem 0.65rem; background:rgba(56,189,248,0.12); border:1px solid rgba(56,189,248,0.3); vertical-align:middle; text-transform:none; text-decoration:none; cursor:pointer; transition:all 0.2s ease;" title="Contact on Telegram: @ShaifulXD" onmouseover="this.style.background='rgba(56,189,248,0.25)'; this.style.borderColor='#38bdf8';" onmouseout="this.style.background='rgba(56,189,248,0.12)'; this.style.borderColor='rgba(56,189,248,0.3)';">by ShaifulXRD ↗</a></h1>
 
-        <!-- ⚡ DUAL SERVER MIRROR & BACKUP CARD -->
-        <div class="server-mirror-card" id="server-mirror-card">
-            <div class="sm-header">
-                <div class="sm-title">
-                    <span>⚡ ডুয়াল ক্লাউড সার্ভার মিরর (24/7 লাইভ ব্যাকআপ)</span>
-                </div>
-                <div class="sm-tag">
-                    <span class="live-dot" style="width:6px; height:6px;"></span>
-                    <span>উভয় সার্ভার ১০০% সক্রিয়</span>
-                </div>
-            </div>
-            <div class="sm-grid">
-                <a href="https://shaifulxrd.bond/" class="sm-item primary" id="sm-link-primary" title="আমাদের অফিশিয়াল প্রধান ডোমেন">
-                    <div class="sm-item-left">
-                        <div class="sm-item-icon">🌐</div>
-                        <div>
-                            <div class="sm-item-name">
-                                <span>shaifulxrd.bond</span>
-                                <span class="sm-badge-official">মূল ডোমেন</span>
-                            </div>
-                            <div class="sm-item-desc">দ্রুততম এসএসএল কানেকশন ও প্রধান পোর্টাল</div>
-                        </div>
-                    </div>
-                    <span class="sm-arrow">↗</span>
-                </a>
-
-                <a href="https://bd-board-result-engine-1.onrender.com/" class="sm-item" id="sm-link-backup" title="বিকল্প ব্যাকআপ সার্ভার">
-                    <div class="sm-item-left">
-                        <div class="sm-item-icon">⚡</div>
-                        <div>
-                            <div class="sm-item-name">
-                                <span>onrender.com</span>
-                                <span class="sm-badge-backup">ব্যাকআপ মিরর</span>
-                            </div>
-                            <div class="sm-item-desc">ফলাফলের দিন ট্রাফিকের জন্য বিকল্প সার্ভার</div>
-                        </div>
-                    </div>
-                    <span class="sm-arrow">↗</span>
-                </a>
-            </div>
-            <p class="sm-note">
-                💡 <b>টিপস:</b> পরীক্ষার ফলাফল প্রকাশের সময় সরকারি সার্ভার বা ইন্টারনেটে অতিরিক্ত ট্রাফিক থাকলে যেকোনো একটি ডোমেনে সমস্যা হলে অন্য লিঙ্কটিতে তাৎক্ষণিক ফলাফল দেখা যাবে।
-            </p>
-        </div>
 
         <!-- LIVE RUNNING CLOCK & DATE WIDGET (HOURS, MINUTES, SECONDS & DATE) -->
         <div class="live-clock-card" id="main-live-clock">
@@ -5565,30 +5419,31 @@ function initPrayerDistrictSelect() {
             return;
         }
 
-        const host = window.location.hostname || '';
-        const isRender = host.includes('onrender.com');
+        const host = (window.location.hostname || '').toLowerCase();
+        // Check if user is on Render, localhost (for testing) or on the custom domain
+        const isRenderOrLocal = host.includes('onrender.com') || host === 'localhost' || host === '127.0.0.1';
 
-        if (isRender) {
+        if (isRenderOrLocal) {
             bar.className = 'domain-alert-bar render-alert';
             content.innerHTML = `
-                <span class="domain-alert-badge">⚡ ব্যাকআপ সার্ভার</span>
+                <span class="domain-alert-badge">📢 নোটিশ</span>
                 <span class="domain-alert-text">
-                    আমাদের অফিশিয়াল মূল পোর্টাল: <b>https://shaifulxrd.bond/</b> — কোনো কারণে এই সার্ভার ধীরগতির হলে সরাসরি মূল ডোমেনে যেতে পারেন!
+                    আমাদের প্রধান অফিশিয়াল ওয়েবসাইট চালু রয়েছে (<b>https://shaifulxrd.bond</b>)। দ্রুততম স্পিড পেতে:
                 </span>
                 <a href="https://shaifulxrd.bond/" class="btn-domain-switch" target="_blank" rel="noopener">
-                    🌐 shaifulxrd.bond এ যান ↗
+                    🌐 মূল সার্ভার ভিজিট করতে ক্লিক করুন ↗
                 </a>
             `;
             bar.style.display = 'block';
         } else {
             bar.className = 'domain-alert-bar';
             content.innerHTML = `
-                <span class="domain-alert-badge green">🌐 অফিশিয়াল ডোমেন</span>
+                <span class="domain-alert-badge green">📢 নোটিশ</span>
                 <span class="domain-alert-text">
-                    রেজাল্টের দিন অতিরিক্ত ট্রাফিকের সময় কোনো সমস্যা হলে আমাদের বিকল্প ব্যাকআপ সার্ভার ব্যবহার করুন:
+                    ফলাফলের দিন ট্রাফিকের চাপ থাকলে বা সাইট লোড হতে সমস্যা হলে আমাদের বিকল্প ব্যাকআপ সার্ভার ব্যবহার করুন:
                 </span>
                 <a href="https://bd-board-result-engine-1.onrender.com/" target="_blank" rel="noopener" class="btn-domain-switch backup">
-                    ⚡ বিকল্প ব্যাকআপ সার্ভার (Render) ↗
+                    ⚡ বিকল্প সার্ভারে যেতে ক্লিক করুন ↗
                 </a>
             `;
             bar.style.display = 'block';
