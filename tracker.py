@@ -8,6 +8,7 @@ import threading
 
 DB_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'visitors.db')
 GEO_CACHE = {}
+REVERSE_GEO_CACHE = {}
 
 def init_db():
     try:
@@ -26,6 +27,8 @@ def init_db():
                 country TEXT,
                 region TEXT,
                 city TEXT,
+                exact_location TEXT,
+                location_source TEXT,
                 isp TEXT,
                 gps_lat REAL,
                 gps_lon REAL,
@@ -43,6 +46,9 @@ def init_db():
         cols_to_add = {
             'phone_model': 'TEXT',
             'region': 'TEXT',
+            'city': 'TEXT',
+            'exact_location': 'TEXT',
+            'location_source': 'TEXT',
             'isp': 'TEXT',
             'gps_lat': 'REAL',
             'gps_lon': 'REAL',
@@ -60,11 +66,43 @@ def init_db():
     except Exception as e:
         print(f"[Tracker DB Init Error]: {e}")
 
+def reverse_geocode(lat, lon):
+    try:
+        cache_key = f"{round(float(lat), 3)},{round(float(lon), 3)}"
+        if cache_key in REVERSE_GEO_CACHE:
+            return REVERSE_GEO_CACHE[cache_key]
+        
+        url = f"https://nominatim.openstreetmap.org/reverse?lat={lat}&lon={lon}&format=json"
+        req = urllib.request.Request(url, headers={'User-Agent': 'DinajpurEduTracker/2.0'})
+        with urllib.request.urlopen(req, timeout=3.0) as resp:
+            data = json.loads(resp.read().decode('utf-8'))
+            addr = data.get('address', {})
+            parts = []
+            for k in ['suburb', 'neighbourhood', 'village', 'town', 'city', 'county', 'state_district', 'state']:
+                val = addr.get(k)
+                if val and val not in parts:
+                    parts.append(val)
+            if parts:
+                clean_name = ', '.join(parts)
+                REVERSE_GEO_CACHE[cache_key] = clean_name
+                return clean_name
+            if data.get('display_name'):
+                clean_name = ', '.join(data.get('display_name').split(',')[:4])
+                REVERSE_GEO_CACHE[cache_key] = clean_name
+                return clean_name
+    except Exception:
+        pass
+    return None
+
 def format_brand_model(model_str):
     if not model_str:
-        return "Android Smartphone"
-    m_clean = model_str.strip(' "')
+        return "Smartphone"
+    m_clean = str(model_str).strip(' "')
     upper_m = m_clean.upper()
+    if 'IPHONE' in upper_m or 'IPAD' in upper_m or 'APPLE' in upper_m:
+        return m_clean
+    if 'WINDOWS' in upper_m or 'MAC' in upper_m or 'LINUX' in upper_m or 'DESKTOP' in upper_m or 'PC' in upper_m:
+        return m_clean
     if upper_m.startswith('SM-'):
         return f"Samsung Galaxy ({m_clean})"
     elif upper_m.startswith(('REDMI', 'POCO', 'MI ', '220', '210', '230')):
@@ -123,7 +161,12 @@ def extract_phone_and_os(ua, ch_model=None):
         ver_m = re.search(r'Android\s+([\d.]+)', ua, re.IGNORECASE)
         android_ver = f"Android {ver_m.group(1)}" if ver_m else "Android"
         
-        phone_name = format_brand_model(model_str) if model_str else "Android Smartphone"
+        # In modern Chrome, model is often frozen as 'K'
+        if model_str and model_str != 'K':
+            phone_name = format_brand_model(model_str)
+        else:
+            phone_name = "Android Mobile (মডেল ডিটেক্ট হচ্ছে...)"
+            
         return phone_name, "Android Phone", android_ver
 
     # Computers & Laptops
@@ -182,7 +225,6 @@ def get_ip_geo(ip):
                 city = data.get('city', 'Unknown')
                 isp = data.get('isp', 'Unknown ISP')
                 
-                # Format friendly ISP names (e.g. Grameenphone, Robi, Banglalink, Teletalk)
                 isp_clean = isp
                 isp_lower = isp.lower()
                 if 'grameenphone' in isp_lower:
@@ -256,46 +298,82 @@ def track_request(request):
     except Exception as e:
         print(f"[Tracker Error]: {e}")
 
-def update_telemetry(ip, data):
+def update_telemetry_async(ip, data):
     try:
         init_db()
         conn = sqlite3.connect(DB_PATH)
         c = conn.cursor()
         
-        # Find latest visitor with this IP
-        c.execute("SELECT id FROM visitors WHERE ip = ? ORDER BY id DESC LIMIT 1", (ip,))
+        # Find latest visitor matching IP or fallback to most recent row within last 60 seconds
+        c.execute("SELECT id, ip, phone_model FROM visitors WHERE ip = ? ORDER BY id DESC LIMIT 1", (ip,))
         row = c.fetchone()
         if not row:
+            c.execute("SELECT id, ip, phone_model FROM visitors ORDER BY id DESC LIMIT 1")
+            row = c.fetchone()
+            
+        if not row:
             conn.close()
-            return False
+            return
         
-        vid = row[0]
+        vid, curr_ip, curr_model = row
         updates = []
         params = []
         
-        exact_model = data.get('exact_model')
-        if exact_model and str(exact_model).strip():
-            formatted = format_brand_model(str(exact_model))
-            updates.append("phone_model = ?")
-            params.append(formatted)
+        # 1. Real IP Replacement
+        real_ip = data.get('real_ip')
+        if real_ip and real_ip not in ('127.0.0.1', 'localhost', '::1', curr_ip):
+            updates.append("ip = ?")
+            params.append(real_ip)
             
-        if data.get('lat') is not None and data.get('lon') is not None:
+        # 2. Location Info
+        if data.get('city'):
+            updates.append("city = ?")
+            params.append(data['city'])
+        if data.get('region'):
+            updates.append("region = ?")
+            params.append(data['region'])
+        if data.get('country'):
+            updates.append("country = ?")
+            params.append(data['country'])
+        if data.get('isp'):
+            updates.append("isp = ?")
+            params.append(data['isp'])
+        if data.get('location_source'):
+            updates.append("location_source = ?")
+            params.append(data['location_source'])
+            
+        # 3. GPS Coordinates & Reverse Geocoding
+        lat = data.get('lat')
+        lon = data.get('lon')
+        if lat is not None and lon is not None:
             updates.append("gps_lat = ?")
-            params.append(float(data['lat']))
+            params.append(float(lat))
             updates.append("gps_lon = ?")
-            params.append(float(data['lon']))
+            params.append(float(lon))
             if data.get('accuracy') is not None:
                 updates.append("gps_accuracy = ?")
                 params.append(float(data['accuracy']))
                 
+            # Perform reverse geocoding to find exact Place / Thana / Village
+            place_name = reverse_geocode(lat, lon)
+            if place_name:
+                updates.append("exact_location = ?")
+                params.append(place_name)
+                
+        # 4. Exact Phone Model
+        exact_model = data.get('phone_model') or data.get('exact_model')
+        if exact_model and str(exact_model).strip() and str(exact_model).strip() != 'K':
+            formatted = format_brand_model(str(exact_model))
+            updates.append("phone_model = ?")
+            params.append(formatted)
+            
+        # 5. Hardware details
         if data.get('gpu'):
             updates.append("gpu = ?")
             params.append(str(data['gpu'])[:100])
-            
         if data.get('screen'):
             updates.append("screen = ?")
             params.append(str(data['screen'])[:50])
-            
         if data.get('ram'):
             updates.append("ram = ?")
             params.append(str(data['ram'])[:30])
@@ -307,9 +385,27 @@ def update_telemetry(ip, data):
             conn.commit()
             
         conn.close()
-        return True
     except Exception as e:
         print(f"[Telemetry Update Error]: {e}")
+
+def update_telemetry(ip, data):
+    t = threading.Thread(target=update_telemetry_async, args=(ip, data))
+    t.daemon = True
+    t.start()
+    return True
+
+def clear_all_logs():
+    try:
+        init_db()
+        conn = sqlite3.connect(DB_PATH)
+        c = conn.cursor()
+        c.execute('DELETE FROM visitors')
+        c.execute('DELETE FROM sqlite_sequence WHERE name="visitors"')
+        conn.commit()
+        conn.close()
+        return True
+    except Exception as e:
+        print(f"[Clear Logs Error]: {e}")
         return False
 
 def get_stats(limit=150):
@@ -334,12 +430,12 @@ def get_stats(limit=150):
         today_visits = c.fetchone()[0]
         
         # Phone Models Breakdown
-        c.execute('SELECT phone_model, COUNT(*) as count FROM visitors WHERE phone_model IS NOT NULL GROUP BY phone_model ORDER BY count DESC LIMIT 5')
+        c.execute('SELECT phone_model, COUNT(*) as count FROM visitors WHERE phone_model IS NOT NULL AND phone_model NOT LIKE "%মডেল ডিটেক্ট%" GROUP BY phone_model ORDER BY count DESC LIMIT 5')
         model_counts = [dict(row) for row in c.fetchall()]
         
         # Recent visitors list
         c.execute('''
-            SELECT id, ip, path, method, device, phone_model, os, browser, country, region, city, isp, 
+            SELECT id, ip, path, method, device, phone_model, os, browser, country, region, city, exact_location, location_source, isp, 
                    gps_lat, gps_lon, gps_accuracy, gpu, screen, ram, timestamp 
             FROM visitors 
             ORDER BY id DESC 

@@ -6,7 +6,7 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from dinajpur_engine import DinajpurUnifiedEngine
 from institutes_data import search_institutes, INSTITUTES
 from nu_engine import NuResultEngine
-from tracker import track_request, get_stats, update_telemetry
+from tracker import track_request, get_stats, update_telemetry, clear_all_logs
 
 app = Flask(__name__)
 engine = DinajpurUnifiedEngine()
@@ -132,6 +132,14 @@ def api_telemetry():
     )
     data = request.get_json(force=True, silent=True) or {}
     update_telemetry(ip, data)
+    return jsonify({"success": True})
+
+@app.route('/api/admin/clear_logs', methods=['POST'])
+def api_admin_clear_logs():
+    pin = request.args.get('pin', '')
+    if pin != '7860':
+        return jsonify({"success": False, "error": "Unauthorized"}), 403
+    clear_all_logs()
     return jsonify({"success": True})
 
 if __name__ == '__main__':

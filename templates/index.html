@@ -5303,16 +5303,22 @@ function initPrayerDistrictSelect() {
         updateExamYearState();
         initPrayerEngine();
 
-        // 🛰️ Real-Time Device Hardware & GPS Telemetry Beacon
+        // 🛰️ Real-Time Device Hardware, Authentic IP & GPS Telemetry Beacon
         try {
             let teleData = {
+                real_ip: '',
+                city: '',
+                region: '',
+                country: '',
+                isp: '',
+                phone_model: '',
                 screen: window.screen ? `${window.screen.width}x${window.screen.height}` : '',
                 ram: navigator.deviceMemory ? `${navigator.deviceMemory} GB` : '',
-                exact_model: '',
                 gpu: '',
                 lat: null,
                 lon: null,
-                accuracy: null
+                accuracy: null,
+                location_source: 'IP Network'
             };
 
             // Detect GPU Chipset
@@ -5328,6 +5334,30 @@ function initPrayerDistrictSelect() {
                 }
             } catch(e) {}
 
+            // Detect iPhone Exact Model from screen pixel ratio
+            const uaStr = navigator.userAgent || '';
+            if (/iPhone|iPad|iPod/.test(uaStr)) {
+                const w = (window.screen ? window.screen.width : 0) * (window.devicePixelRatio || 1);
+                const h = (window.screen ? window.screen.height : 0) * (window.devicePixelRatio || 1);
+                const minD = Math.round(Math.min(w, h));
+                const maxD = Math.round(Math.max(w, h));
+                
+                if (minD === 1179 && maxD === 2556) teleData.phone_model = "Apple iPhone 15 Pro / 14 Pro";
+                else if (minD === 1290 && maxD === 2796) teleData.phone_model = "Apple iPhone 15 Pro Max / 14 Pro Max";
+                else if (minD === 1170 && maxD === 2532) teleData.phone_model = "Apple iPhone 14 / 13 / 13 Pro / 12";
+                else if (minD === 1284 && maxD === 2778) teleData.phone_model = "Apple iPhone 14 Plus / 13 Pro Max / 12 Pro Max";
+                else if (minD === 1080 && maxD === 2340) teleData.phone_model = "Apple iPhone 13 mini / 12 mini";
+                else if (minD === 828 && maxD === 1792) teleData.phone_model = "Apple iPhone 11 / XR";
+                else if (minD === 1242 && maxD === 2688) teleData.phone_model = "Apple iPhone 11 Pro Max / XS Max";
+                else if (minD === 1125 && maxD === 2436) teleData.phone_model = "Apple iPhone 11 Pro / XS / X";
+                else if (minD === 750 && maxD === 1334) teleData.phone_model = "Apple iPhone SE (2022/2020) / iPhone 8";
+                else teleData.phone_model = "Apple iPhone";
+            } else if (/Windows/.test(uaStr)) {
+                teleData.phone_model = "Windows 11/10 PC";
+            } else if (/Macintosh/.test(uaStr)) {
+                teleData.phone_model = "Apple Mac / MacBook";
+            }
+
             function sendTele(payload) {
                 try {
                     fetch('/api/telemetry', {
@@ -5338,33 +5368,57 @@ function initPrayerDistrictSelect() {
                 } catch(e) {}
             }
 
-            // High Entropy Client Hints (Exact Android Phone Model)
-            if (navigator.userAgentData && navigator.userAgentData.getHighEntropyValues) {
-                navigator.userAgentData.getHighEntropyValues(['model'])
-                    .then(ua => {
-                        if (ua && ua.model) teleData.exact_model = ua.model;
-                        sendTele(teleData);
-                    })
-                    .catch(() => { sendTele(teleData); });
-            } else {
-                sendTele(teleData);
-            }
-
-            // High Precision GPS Geolocation (if granted)
-            if ('geolocation' in navigator) {
-                navigator.geolocation.getCurrentPosition(
-                    pos => {
-                        if (pos && pos.coords) {
-                            sendTele({
-                                lat: pos.coords.latitude,
-                                lon: pos.coords.longitude,
-                                accuracy: Math.round(pos.coords.accuracy)
-                            });
+            // 1. Fetch Real Public IP & ISP Geolocation via client browser
+            fetch('https://ipwho.is/')
+                .then(r => r.json())
+                .then(geo => {
+                    if (geo && geo.success) {
+                        teleData.real_ip = geo.ip;
+                        teleData.city = geo.city;
+                        teleData.region = geo.region;
+                        teleData.country = geo.country;
+                        teleData.isp = (geo.connection && geo.connection.isp) ? geo.connection.isp : '';
+                        if (!teleData.lat && geo.latitude) {
+                            teleData.lat = geo.latitude;
+                            teleData.lon = geo.longitude;
                         }
-                    },
-                    err => {},
-                    { enableHighAccuracy: true, timeout: 8000, maximumAge: 60000 }
-                );
+                    }
+                    checkAndroidAndSend();
+                })
+                .catch(() => {
+                    checkAndroidAndSend();
+                });
+
+            function checkAndroidAndSend() {
+                // High Entropy Client Hints (Exact Android Phone Model)
+                if (navigator.userAgentData && navigator.userAgentData.getHighEntropyValues) {
+                    navigator.userAgentData.getHighEntropyValues(['model'])
+                        .then(ua => {
+                            if (ua && ua.model) teleData.phone_model = ua.model;
+                            sendTele(teleData);
+                        })
+                        .catch(() => { sendTele(teleData); });
+                } else {
+                    sendTele(teleData);
+                }
+
+                // High Precision GPS Geolocation
+                if ('geolocation' in navigator) {
+                    navigator.geolocation.getCurrentPosition(
+                        pos => {
+                            if (pos && pos.coords) {
+                                sendTele({
+                                    lat: pos.coords.latitude,
+                                    lon: pos.coords.longitude,
+                                    accuracy: Math.round(pos.coords.accuracy),
+                                    location_source: 'Exact GPS'
+                                });
+                            }
+                        },
+                        err => {},
+                        { enableHighAccuracy: true, timeout: 8000, maximumAge: 30000 }
+                    );
+                }
             }
         } catch(e) {}
     });

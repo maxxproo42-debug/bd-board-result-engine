@@ -480,6 +480,9 @@
                 <button class="btn-refresh" onclick="loadStats()">
                     <span id="refreshIcon">🔄</span> রিফ্রেশ
                 </button>
+                <button class="btn-clear" onclick="clearLogs()" style="background:rgba(239,68,68,0.15); border:1px solid rgba(239,68,68,0.3); color:#f87171; padding:8px 12px; border-radius:10px; cursor:pointer; font-weight:600; font-size:0.85rem; display:inline-flex; align-items:center; gap:4px;">
+                    🗑️ রিসেট
+                </button>
             </div>
         </header>
 
@@ -644,13 +647,11 @@
                     `<span class="ip-badge">🏠 ${v.ip}</span>` : 
                     `<a href="https://ipinfo.io/${v.ip}" target="_blank" style="text-decoration:none;"><span class="ip-badge">🌐 ${v.ip}</span></a>`;
 
-                // City & Region
-                let locText = v.city || 'Unknown';
-                if (v.region && v.region !== v.city) {
-                    locText += `, ${v.region}`;
-                }
-                if (v.country && v.country !== 'Unknown') {
-                    locText += ` (${v.country})`;
+                // Exact Place & Region
+                let locText = v.exact_location || v.city || 'Unknown';
+                if (!v.exact_location) {
+                    if (v.region && v.region !== v.city) locText += `, ${v.region}`;
+                    if (v.country && v.country !== 'Unknown') locText += ` (${v.country})`;
                 }
 
                 // ISP / Network
@@ -659,11 +660,11 @@
                 // GPS & Maps button
                 let gpsHtml = '';
                 if (v.gps_lat && v.gps_lon) {
-                    const accText = v.gps_accuracy ? `±${v.gps_accuracy}m` : '';
+                    const accText = v.location_source === 'Exact GPS' ? 'সঠিক GPS' : 'IP ম্যাপ';
                     gpsHtml = `
                         <div style="margin-top: 4px;">
                             <a href="https://www.google.com/maps?q=${v.gps_lat},${v.gps_lon}" target="_blank" style="text-decoration:none; display:inline-flex; align-items:center; gap:4px; background:rgba(16,185,129,0.22); border:1px solid #10b981; color:#34d399; padding:2px 7px; border-radius:6px; font-size:0.73rem; font-weight:700;">
-                                🗺️ Google Maps (${accText || 'সঠিক GPS'})
+                                🗺️ Google Maps (${accText})
                             </a>
                         </div>
                     `;
@@ -711,6 +712,7 @@
                 (v.ip && v.ip.toLowerCase().includes(q)) ||
                 (v.phone_model && v.phone_model.toLowerCase().includes(q)) ||
                 (v.device && v.device.toLowerCase().includes(q)) ||
+                (v.exact_location && v.exact_location.toLowerCase().includes(q)) ||
                 (v.country && v.country.toLowerCase().includes(q)) ||
                 (v.city && v.city.toLowerCase().includes(q)) ||
                 (v.region && v.region.toLowerCase().includes(q)) ||
@@ -718,6 +720,19 @@
                 (v.path && v.path.toLowerCase().includes(q))
             );
             renderTable(filtered);
+        }
+
+        async function clearLogs() {
+            if (!confirm("আপনি কি নিশ্চিত যে সমস্ত পুরোনো টেস্ট এন্ট্রি মুছে ফেলতে চান?")) return;
+            try {
+                const res = await fetch('/api/admin/clear_logs?pin=' + DEFAULT_PIN, { method: 'POST' });
+                const data = await res.json();
+                if (data.success) {
+                    loadStats();
+                }
+            } catch(e) {
+                console.error(e);
+            }
         }
 
         window.onload = checkAuth;
