@@ -7,3 +7,5 @@ venv/
 scratch_ranking.html
 vercel.json.bak
 templates/institutes_bundle.js
+visitors.db
+scratch/

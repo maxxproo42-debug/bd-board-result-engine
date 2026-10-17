@@ -6,10 +6,15 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from dinajpur_engine import DinajpurUnifiedEngine
 from institutes_data import search_institutes, INSTITUTES
 from nu_engine import NuResultEngine
+from tracker import track_request, get_stats
 
 app = Flask(__name__)
 engine = DinajpurUnifiedEngine()
 nu_engine = NuResultEngine()
+
+@app.before_request
+def log_incoming_visitor():
+    track_request(request)
 
 @app.route('/api/nu_student', methods=['POST'])
 def api_nu_student():
@@ -98,6 +103,19 @@ def api_institute_pdf():
 @app.route('/api/health')
 def health():
     return jsonify({"status": "healthy", "service": "Dinajpur Unified Multi-Year Engine (2015-2026)", "board": "DINAJPUR"})
+
+@app.route('/admin-stats')
+@app.route('/visitors')
+def admin_visitors_page():
+    return render_template('admin_visitors.html')
+
+@app.route('/api/admin/visitors')
+def api_admin_visitors():
+    pin = request.args.get('pin', '')
+    if pin != '7860':
+        return jsonify({"success": False, "error": "Unauthorized"}), 403
+    stats = get_stats(limit=150)
+    return jsonify(stats)
 
 if __name__ == '__main__':
     try:
