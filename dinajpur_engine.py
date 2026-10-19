@@ -10,6 +10,7 @@ import hashlib
 import base64
 import io
 import sys
+import threading
 from collections import Counter
 from PIL import Image, ImageEnhance
 
@@ -28,14 +29,14 @@ class DinajpurUnifiedEngine:
     """
 
     CHAR_MAP = {
-        'o': '0', 'O': '0', 'D': '0', 'Q': '0', 'd': '0',
-        'l': '1', 'I': '1', 'i': '1', '(': '1', ')': '1', '|': '1', '[': '1', '/': '1', 'J': '1', 'j': '1', 't': '1',
+        'o': '0', 'O': '0', 'D': '0', 'Q': '0', 'd': '0', 'C': '0', 'c': '0', 'u': '0',
+        'l': '1', 'I': '1', 'i': '1', '(': '1', ')': '1', '|': '1', '[': '1', '/': '1', 'J': '1', 'j': '1', 't': '1', 'r': '1', 'k': '1',
         'z': '2', 'Z': '2',
         'E': '3', 'e': '3',
-        'A': '4', 'h': '4', 'H': '4', 'M': '4',
+        'A': '4', 'h': '4', 'H': '4', 'M': '4', 'w': '4',
         's': '5', 'S': '5',
         'b': '6', 'G': '6',
-        'T': '7', 'F': '7',
+        'T': '7', 'F': '7', 'Y': '7', 'v': '7', 'V': '7',
         'B': '8', '&': '8',
         'g': '9', 'q': '9', 'p': '9', 'P': '9'
     }
@@ -127,7 +128,19 @@ class DinajpurUnifiedEngine:
         self._student_cache = {}
         self._institute_cache = {}
 
-        # Sessions are ready to initialize on demand
+        # Background pre-warming worker so sessions are instantly active before first user query
+        threading.Thread(target=self._prewarm_sessions, daemon=True).start()
+
+    def _prewarm_sessions(self):
+        """Asynchronously pre-warms Dinajpur and eBoard sessions on startup."""
+        try:
+            self._ensure_dinajpur_session()
+        except Exception:
+            pass
+        try:
+            self._bypass_eboard_robot()
+        except Exception:
+            pass
 
     # =========================================================================
     # Dinajpur Direct Portal Engine (2023 - 2026)
@@ -363,11 +376,11 @@ class DinajpurUnifiedEngine:
             im_contrast = ImageEnhance.Contrast(im_gray).enhance(2.0)
 
             candidates = []
-            # Order by highest probability cuts first
-            y_slices = [42, 45, 48, int(h * 0.75), 40, 52, 56, int(h * 0.82), int(h * 0.70), h]
+            # Order by highest probability cuts first (38-42 avoids the wavy bottom dome)
+            y_slices = [38, 42, 45, 40, 48, 52, int(h * 0.75)]
 
             for y_cut in y_slices:
-                for src in [im, im_gray, im_contrast]:
+                for src in [im_gray, im_contrast, im]:
                     crop = src.crop((0, 0, w, y_cut)) if y_cut < h else src
                     buf = io.BytesIO()
                     crop.save(buf, format='PNG')
@@ -380,10 +393,10 @@ class DinajpurUnifiedEngine:
                             digits += self.CHAR_MAP[ch]
                     if len(digits) == 4:
                         candidates.append(digits)
-                # Early exit if we already have strong consensus (3+ identical votes)
+                # Fast early exit if we already have strong consensus (2+ identical votes)
                 if candidates:
                     most_common, freq = Counter(candidates).most_common(1)[0]
-                    if freq >= 3:
+                    if freq >= 2:
                         return most_common
 
             if candidates:
@@ -753,7 +766,7 @@ class DinajpurUnifiedEngine:
         cache_key = f"{board_clean}:{exam_upper}:{year}:{roll_clean}:{reg_clean}"
         if not captcha and cache_key in self._student_cache:
             ts, cached_res = self._student_cache[cache_key]
-            if time.time() - ts < 3600:
+            if time.time() - ts < 86400:
                 return cached_res
 
         # Dedicated Technical Board (BTEB) Router
@@ -822,7 +835,7 @@ class DinajpurUnifiedEngine:
         cache_key = f"{board_clean}:{exam_code}:{year}:{eiin_clean}"
         if cache_key in self._institute_cache:
             ts, cached_res, cached_pdf, cached_pdf_name = self._institute_cache[cache_key]
-            if time.time() - ts < 3600:
+            if time.time() - ts < 86400:
                 if cached_pdf:
                     self._last_pdf_bytes = cached_pdf
                     self._last_pdf_name = cached_pdf_name

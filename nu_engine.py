@@ -1,5 +1,6 @@
 import requests
 import re
+import time
 from urllib.parse import urljoin
 from html.parser import HTMLParser
 
@@ -12,6 +13,7 @@ class NuResultEngine:
             'Accept-Language': 'en-US,en;q=0.9,bn;q=0.8',
         })
         self.base_url = "https://results.nu.ac.bd"
+        self._cache = {}
 
     def _solve_math_captcha(self, html):
         """Extracts and solves NU's math captcha (e.g. 15 + 12 =)"""
@@ -30,6 +32,16 @@ class NuResultEngine:
         course: 'honours', 'degree', 'masters', 'fazil', or 'kamil'
         """
         course = course.lower().strip()
+        roll_clean = str(roll).strip()
+        reg_clean = str(reg).strip()
+        year_clean = str(year).strip()
+        exam_code_clean = str(exam_code).strip()
+
+        cache_key = f"{course}:{exam_code_clean}:{roll_clean}:{reg_clean}:{year_clean}"
+        if cache_key in self._cache:
+            ts, cached = self._cache[cache_key]
+            if time.time() - ts < 86400:
+                return cached
 
         # Islamic Arabic University (IAU) Fazil & Kamil
         if course in ['fazil', 'kamil']:
@@ -90,6 +102,7 @@ class NuResultEngine:
             # 5. Parse Student Information & Subject Results
             parsed = self._parse_nu_html(html, course, exam_code, roll, reg, year)
             if parsed and parsed.get('success'):
+                self._cache[cache_key] = (time.time(), parsed)
                 return parsed
 
             if clean_alerts:
