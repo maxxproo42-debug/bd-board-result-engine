@@ -1,5 +1,6 @@
 import requests
 import re
+from urllib.parse import urljoin
 from html.parser import HTMLParser
 
 class NuResultEngine:
@@ -48,6 +49,13 @@ class NuResultEngine:
                 return {"success": False, "error": "জাতীয় বিশ্ববিদ্যালয় সিকিউরিটি টোকেন পাওয়া যায়নি।"}
             csrf_token = token_m.group(1)
 
+            # Extract dynamic form action URL (handles Laravel action endpoints like /page...)
+            action_m = re.search(r'<form[^>]*action="([^"]+)"', r.text)
+            if action_m:
+                post_url = urljoin(page_url, action_m.group(1))
+            else:
+                post_url = page_url
+
             # 2. Solve Math Captcha
             captcha_ans = self._solve_math_captcha(r.text)
 
@@ -66,7 +74,7 @@ class NuResultEngine:
                 'Origin': self.base_url
             }
 
-            res = self.session.post(page_url, data=payload, headers=post_headers, timeout=15)
+            res = self.session.post(post_url, data=payload, headers=post_headers, timeout=15)
             html = res.text
 
             # 4. Check for alerts / errors
@@ -215,6 +223,7 @@ class NuResultEngine:
             if match:
                 clean = re.sub(r'<[^>]+>', '', match.group(1)).strip()
                 clean = re.sub(r'[^\x20-\x7E]+', ' - ', clean)
+                clean = re.sub(r'(\s*-\s*)+', ' - ', clean)
                 clean = re.sub(r'\s+', ' ', clean)
                 return clean.strip(' -')
             return ""
