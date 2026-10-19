@@ -3827,7 +3827,14 @@
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ roll, reg, exam, year, board, captcha })
             });
-            const data = await res.json();
+            let data;
+            try {
+                data = await res.json();
+            } catch (jsonErr) {
+                showError('সরকারি সার্ভারে অতিরিক্ত ট্রাফিকের কারণে সাময়িক বিলম্ব হচ্ছে। অনুগ্রহ করে কয়েক সেকেন্ড পর পুনরায় চেষ্টা করুন।');
+                document.getElementById('result-container').style.display = 'none';
+                return;
+            }
 
             if (!data.success) {
                 if (data.need_captcha) {
@@ -3916,7 +3923,14 @@
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ eiin, exam, year, board })
             });
-            const data = await res.json();
+            let data;
+            try {
+                data = await res.json();
+            } catch (jsonErr) {
+                showError('সরকারি সার্ভারে অতিরিক্ত ট্রাফিকের কারণে বিলম্ব হচ্ছে। অনুগ্রহ করে কয়েক সেকেন্ড পর পুনরায় চেষ্টা করুন।');
+                document.getElementById('result-container').style.display = 'none';
+                return;
+            }
 
             if (!data.success) {
                 showError(data.error || 'প্রতিষ্ঠানের রেজাল্ট পাওয়া যায়নি।');
@@ -4586,7 +4600,15 @@
                 })
             });
 
-            const data = await res.json();
+            let data;
+            try {
+                data = await res.json();
+            } catch (jsonErr) {
+                higherBtn.innerHTML = originalBtnHtml;
+                higherBtn.disabled = false;
+                showError('বিশ্ববিদ্যালয় সার্ভারে অতিরিক্ত ট্রাফিকের কারণে বিলম্ব হচ্ছে। অনুগ্রহ করে পুনরায় সাবমিট করুন।');
+                return;
+            }
             higherBtn.innerHTML = originalBtnHtml;
             higherBtn.disabled = false;
 

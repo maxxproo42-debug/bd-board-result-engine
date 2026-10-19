@@ -76,8 +76,14 @@ def api_student():
     if not roll:
         return jsonify({"success": False, "error": "রোল নম্বর প্রদান করুন।"}), 400
 
-    result = engine.get_student_result(roll_no=roll, regi_no=reg, exam=exam, year=year, board=board, captcha=captcha)
-    return jsonify(result)
+    try:
+        result = engine.get_student_result(roll_no=roll, regi_no=reg, exam=exam, year=year, board=board, captcha=captcha)
+        return jsonify(result)
+    except Exception as e:
+        return jsonify({
+            "success": False,
+            "error": f"সরকারি সার্ভারে সাময়িক বিলম্ব দেখা দিয়েছে। অনুগ্রহ করে কয়েক সেকেন্ড পর পুনরায় চেষ্টা করুন। ({str(e)})"
+        }), 200
 
 @app.route('/api/institute', methods=['POST'])
 def api_institute():
@@ -90,20 +96,29 @@ def api_institute():
     if not eiin:
         return jsonify({"success": False, "error": "প্রতিষ্ঠানের EIIN নম্বর প্রদান করুন।"}), 400
 
-    result = engine.get_institute_result(eiin_no=eiin, exam=exam, year=year, board=board)
-    return jsonify(result)
+    try:
+        result = engine.get_institute_result(eiin_no=eiin, exam=exam, year=year, board=board)
+        return jsonify(result)
+    except Exception as e:
+        return jsonify({
+            "success": False,
+            "error": f"সরকারি সার্ভারে সাময়িক ট্রাফিকের কারণে বিলম্ব হচ্ছে। অনুগ্রহ করে কয়েক সেকেন্ড পর পুনরায় চেষ্টা করুন। ({str(e)})"
+        }), 200
 
 @app.route('/api/institute/pdf')
 def api_institute_pdf():
-    pdf_bytes, filename = engine.download_institution_pdf()
-    if pdf_bytes:
-        from flask import Response
-        return Response(
-            pdf_bytes,
-            mimetype='application/pdf',
-            headers={'Content-Disposition': f'attachment; filename="{filename}"'}
-        )
-    return jsonify({"success": False, "error": "PDF রেজাল্ট শিট পাওয়া যায়নি।"}), 404
+    try:
+        pdf_bytes, filename = engine.download_institution_pdf(timeout=25)
+        if pdf_bytes:
+            from flask import Response
+            return Response(
+                pdf_bytes,
+                mimetype='application/pdf',
+                headers={'Content-Disposition': f'attachment; filename="{filename}"'}
+            )
+        return jsonify({"success": False, "error": "বোর্ড সার্ভার থেকে PDF ফাইলটি এখনও প্রস্তুত হয়নি বা অতিরিক্ত ট্রাফিকের কারণে লোড হতে বিলম্ব হচ্ছে। অনুগ্রহ করে ২-৩ সেকেন্ড পর আবার চেষ্টা করুন।"}), 200
+    except Exception as e:
+        return jsonify({"success": False, "error": f"PDF ডাউনলোডে সাময়িক বিলম্ব: {str(e)}"}), 200
 
 @app.route('/api/health')
 def health():

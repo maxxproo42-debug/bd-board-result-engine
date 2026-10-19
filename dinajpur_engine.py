@@ -1010,17 +1010,20 @@ class DinajpurUnifiedEngine:
                 self._last_pdf_name = extra.get('pdfname', f"{board_clean}_{exam_code}_{year}_{eiin_clean}.pdf")
                 has_pdf = bool(extra.get('download'))
                 
-                # If official board PDF is available, parse individual student rolls for interactive UI
+                # ⚡ Result-Day Resilience: Immediate Instant Delivery
+                # Do NOT block the user on downloading multi-megabyte PDFs (which takes 20-35s and triggers 504 Gateway Timeouts).
+                # The instant summary from eBoard JSON is delivered immediately (< 1 second).
+                # If PDF was already cached, extract rolls instantly; otherwise pre-fetch in background for 1-click download.
                 if has_pdf:
-                    try:
-                        pdf_data, _ = self.download_institution_pdf()
-                        if pdf_data:
-                            self._last_pdf_bytes = pdf_data
-                            pdf_groups = self._parse_rolls_from_pdf(pdf_data)
+                    if hasattr(self, '_last_pdf_bytes') and self._last_pdf_bytes:
+                        try:
+                            pdf_groups = self._parse_rolls_from_pdf(self._last_pdf_bytes)
                             if pdf_groups and any(len(v) > 0 for v in pdf_groups.values()):
                                 groups = pdf_groups
-                    except Exception as e:
-                        print(f"[PDF Extract Warning]: {e}")
+                        except Exception:
+                            pass
+                    else:
+                        threading.Thread(target=self._background_download_pdf, args=(cache_key,), daemon=True).start()
 
                 res_dict = {
                     "success": True,
@@ -1093,13 +1096,23 @@ class DinajpurUnifiedEngine:
             print(f"[PDF Roll Extraction Error]: {e}")
             return {}
 
-    def download_institution_pdf(self):
+    def _background_download_pdf(self, cache_key=None):
+        """Asynchronously pre-downloads official board PDF into memory cache so user gets instant 1-click download."""
+        try:
+            pdf_bytes, pdf_name = self.download_institution_pdf(timeout=25)
+            if pdf_bytes and cache_key and cache_key in self._institute_cache:
+                ts, res_dict, _, _ = self._institute_cache[cache_key]
+                self._institute_cache[cache_key] = (ts, res_dict, pdf_bytes, pdf_name)
+        except Exception as e:
+            print(f"[Background PDF Download]: {e}")
+
+    def download_institution_pdf(self, timeout=20):
         """Fetches the official board PDF from /v2/pdl for the last searched institution."""
         if hasattr(self, '_last_pdf_bytes') and self._last_pdf_bytes:
             return self._last_pdf_bytes, self._last_pdf_name or 'institute_result.pdf'
         try:
             req = urllib.request.Request(f"{self.eboard_base}/v2/pdl")
-            res = self.eboard_opener.open(req, timeout=20)
+            res = self.eboard_opener.open(req, timeout=timeout)
             data = res.read()
             if data.startswith(b'%PDF'):
                 self._last_pdf_bytes = data
