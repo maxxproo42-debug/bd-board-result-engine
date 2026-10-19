@@ -345,6 +345,7 @@
 
         .error-banner {
             display: none;
+            flex-direction: column;
             background: rgba(244, 63, 94, 0.12);
             border: 1px solid rgba(244, 63, 94, 0.3);
             color: #fda4af;
@@ -352,8 +353,6 @@
             border-radius: 12px;
             margin-bottom: 1.5rem;
             font-size: 0.95rem;
-            align-items: center;
-            gap: 0.75rem;
             line-height: 1.5;
         }
 
@@ -2362,8 +2361,19 @@
 
     <!-- Error Banner -->
     <div class="error-banner" id="error-banner">
-        <span style="font-size:1.3rem">⚠️</span>
-        <span id="error-msg">কোনো ত্রুটি হয়েছে।</span>
+        <div style="display:flex; align-items:flex-start; gap:0.75rem; width:100%;">
+            <span style="font-size:1.3rem; line-height:1.2;">⚠️</span>
+            <div id="error-msg" style="flex:1; font-weight:600; line-height:1.5;">কোনো ত্রুটি হয়েছে।</div>
+        </div>
+        <div id="error-refresh-hint" style="display:none; margin-top:0.75rem; padding-top:0.65rem; border-top:1px dashed rgba(244,63,94,0.3); font-size:0.86rem; color:#fecdd3; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:0.6rem;">
+            <span style="display:inline-flex; align-items:center; gap:0.4rem;">
+                <span style="opacity:0.9;">💡</span>
+                <span>সমস্যা হলে পেজটি পুনরায় রিফ্রেশ করে আবার চেষ্টা করুন</span>
+            </span>
+            <button type="button" onclick="location.reload()" style="background:rgba(255,255,255,0.12); border:1px solid rgba(255,255,255,0.25); color:#ffffff; padding:0.28rem 0.75rem; border-radius:8px; font-size:0.82rem; font-weight:700; cursor:pointer; display:inline-flex; align-items:center; gap:0.35rem; transition:all 0.2s;" onmouseover="this.style.background='rgba(255,255,255,0.25)'" onmouseout="this.style.background='rgba(255,255,255,0.12)'">
+                🔄 পেজ রিফ্রেশ করুন
+            </button>
+        </div>
     </div>
 
     <!-- TAB 1: Student Search Form -->
@@ -3610,15 +3620,22 @@
         updateExamYearState();
     }
 
-    function showError(msg) {
+    function showError(msg, showRefresh = false) {
         const banner = document.getElementById('error-banner');
         document.getElementById('error-msg').innerText = msg;
+        const refreshHint = document.getElementById('error-refresh-hint');
+        if (refreshHint) {
+            refreshHint.style.display = showRefresh ? 'flex' : 'none';
+        }
         banner.style.display = 'flex';
         banner.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
     }
 
     function hideError() {
-        document.getElementById('error-banner').style.display = 'none';
+        const banner = document.getElementById('error-banner');
+        if (banner) banner.style.display = 'none';
+        const refreshHint = document.getElementById('error-refresh-hint');
+        if (refreshHint) refreshHint.style.display = 'none';
     }
 
     function isDirectPortal(exam, year, board) {
@@ -3831,7 +3848,7 @@
             try {
                 data = await res.json();
             } catch (jsonErr) {
-                showError('সার্ভারের সাথে সংযোগে সাময়িক বিলম্ব দেখা দিয়েছে। অনুগ্রহ করে আবার সাবমিট করুন।');
+                showError('সার্ভারের সাথে সংযোগে সাময়িক বিলম্ব দেখা দিয়েছে। অনুগ্রহ করে আবার সাবমিট করুন।', true);
                 document.getElementById('result-container').style.display = 'none';
                 return;
             }
@@ -3852,7 +3869,7 @@
                     }
                     document.getElementById('archive-captcha-input').focus();
                 }
-                showError(data.error || 'রেজাল্ট আনতে ব্যর্থ হয়েছে।');
+                showError(data.error || 'রেজাল্ট আনতে ব্যর্থ হয়েছে।', !data.need_captcha);
                 document.getElementById('result-container').style.display = 'none';
             } else {
                 renderStudentResult(data);
@@ -3861,7 +3878,7 @@
                 }
             }
         } catch (err) {
-            showError('সার্ভারের সাথে যোগাযোগে ত্রুটি হয়েছে: ' + err.message);
+            showError('সার্ভারের সাথে যোগাযোগে ত্রুটি হয়েছে: ' + err.message, true);
         } finally {
             if (cycleInterval) clearInterval(cycleInterval);
             btn.classList.remove('loading');
@@ -3927,19 +3944,19 @@
             try {
                 data = await res.json();
             } catch (jsonErr) {
-                showError('সার্ভারের সাথে সংযোগে সাময়িক বিলম্ব দেখা দিয়েছে। অনুগ্রহ করে আবার সাবমিট করুন।');
+                showError('সার্ভারের সাথে সংযোগে সাময়িক বিলম্ব দেখা দিয়েছে। অনুগ্রহ করে আবার সাবমিট করুন।', true);
                 document.getElementById('result-container').style.display = 'none';
                 return;
             }
 
             if (!data.success) {
-                showError(data.error || 'প্রতিষ্ঠানের রেজাল্ট পাওয়া যায়নি।');
+                showError(data.error || 'প্রতিষ্ঠানের রেজাল্ট পাওয়া যায়নি।', true);
                 document.getElementById('result-container').style.display = 'none';
             } else {
                 renderInstituteResult(data);
             }
         } catch (err) {
-            showError('সার্ভারের সাথে যোগাযোগে ত্রুটি হয়েছে: ' + err.message);
+            showError('সার্ভারের সাথে যোগাযোগে ত্রুটি হয়েছে: ' + err.message, true);
         } finally {
             clearInterval(cycleInterval);
             btn.classList.remove('loading');
@@ -4606,7 +4623,7 @@
             } catch (jsonErr) {
                 higherBtn.innerHTML = originalBtnHtml;
                 higherBtn.disabled = false;
-                showError('বিশ্ববিদ্যালয় সার্ভারের সাথে সংযোগে সাময়িক বিলম্ব দেখা দিয়েছে। অনুগ্রহ করে পুনরায় সাবমিট করুন।');
+                showError('বিশ্ববিদ্যালয় সার্ভারের সাথে সংযোগে সাময়িক বিলম্ব দেখা দিয়েছে। অনুগ্রহ করে পুনরায় সাবমিট করুন।', true);
                 return;
             }
             higherBtn.innerHTML = originalBtnHtml;
@@ -4615,13 +4632,13 @@
             if (data.success) {
                 renderHigherResult(data);
             } else {
-                showError(data.error || 'জাতীয় বিশ্ববিদ্যালয়ের সার্ভারে এই তথ্যের কোনো ফলাফল মেলেনি।');
+                showError(data.error || 'জাতীয় বিশ্ববিদ্যালয়ের সার্ভারে এই তথ্যের কোনো ফলাফল মেলেনি।', true);
                 renderHigherFallback(roll, reg, year, examName, data.error);
             }
         } catch (err) {
             higherBtn.innerHTML = originalBtnHtml;
             higherBtn.disabled = false;
-            showError('সার্ভারের সাথে সংযোগ স্থাপন করা সম্ভব হয়নি। জাতীয় বিশ্ববিদ্যালয় সার্ভার ব্যস্ত থাকতে পারে।');
+            showError('সার্ভারের সাথে সংযোগ স্থাপন করা সম্ভব হয়নি। জাতীয় বিশ্ববিদ্যালয় সার্ভার ব্যস্ত থাকতে পারে।', true);
             renderHigherFallback(roll, reg, year, examName, 'সার্ভার সংযোগ বিচ্ছিন্ন হয়েছে।');
         }
     }
