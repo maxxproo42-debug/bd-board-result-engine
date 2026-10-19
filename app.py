@@ -82,7 +82,7 @@ def api_student():
     except Exception as e:
         return jsonify({
             "success": False,
-            "error": f"সরকারি সার্ভারে সাময়িক বিলম্ব দেখা দিয়েছে। অনুগ্রহ করে কয়েক সেকেন্ড পর পুনরায় চেষ্টা করুন। ({str(e)})"
+            "error": f"সার্ভার থেকে ফলাফল লোড হতে সাময়িক বিলম্ব হয়েছে। অনুগ্রহ করে আবার চেষ্টা করুন। ({str(e)})"
         }), 200
 
 @app.route('/api/institute', methods=['POST'])
@@ -102,7 +102,7 @@ def api_institute():
     except Exception as e:
         return jsonify({
             "success": False,
-            "error": f"সরকারি সার্ভারে সাময়িক ট্রাফিকের কারণে বিলম্ব হচ্ছে। অনুগ্রহ করে কয়েক সেকেন্ড পর পুনরায় চেষ্টা করুন। ({str(e)})"
+            "error": f"সার্ভার থেকে প্রতিষ্ঠানের ফলাফল লোড হতে সাময়িক বিলম্ব হয়েছে। অনুগ্রহ করে আবার চেষ্টা করুন। ({str(e)})"
         }), 200
 
 @app.route('/api/institute/pdf')

@@ -376,11 +376,11 @@ class DinajpurUnifiedEngine:
             im_contrast = ImageEnhance.Contrast(im_gray).enhance(2.0)
 
             candidates = []
-            # Order by highest probability cuts first (38-42 avoids the wavy bottom dome)
-            y_slices = [38, 42, 45, 40, 48, 52, int(h * 0.75)]
+            # Order by highest probability cuts first: full image (h), then high-to-low slices
+            y_slices = [h, 55, 48, 42, 38, 60]
 
             for y_cut in y_slices:
-                for src in [im_gray, im_contrast, im]:
+                for src in [im, im_gray, im_contrast]:
                     crop = src.crop((0, 0, w, y_cut)) if y_cut < h else src
                     buf = io.BytesIO()
                     crop.save(buf, format='PNG')
@@ -440,13 +440,13 @@ class DinajpurUnifiedEngine:
         manual_code = str(captcha).strip() if captcha else ""
 
         # Robust Auto-Bypass Loop:
-        # Only counts attempts where a verified 4-digit code is dispatched to government server.
-        max_valid_attempts = 1 if manual_code else 10
+        # Fast exit: max 3 attempts to prevent gateway timeouts
+        max_valid_attempts = 1 if manual_code else 3
         valid_attempts = 0
         fetch_tries = 0
         last_error = ""
 
-        while valid_attempts < max_valid_attempts and fetch_tries < 30:
+        while valid_attempts < max_valid_attempts and fetch_tries < 6:
             fetch_tries += 1
             if manual_code and valid_attempts == 0:
                 cur_captcha = manual_code
@@ -921,7 +921,7 @@ class DinajpurUnifiedEngine:
 
         valid_attempts = 0
         fetch_tries = 0
-        while valid_attempts < 10 and fetch_tries < 30:
+        while valid_attempts < 3 and fetch_tries < 6:
             fetch_tries += 1
             try:
                 c_res = self.eboard_opener.open(f'{self.eboard_base}/v2/captcha', timeout=8)

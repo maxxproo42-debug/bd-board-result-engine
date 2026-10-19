@@ -3831,7 +3831,7 @@
             try {
                 data = await res.json();
             } catch (jsonErr) {
-                showError('সরকারি সার্ভারে অতিরিক্ত ট্রাফিকের কারণে সাময়িক বিলম্ব হচ্ছে। অনুগ্রহ করে কয়েক সেকেন্ড পর পুনরায় চেষ্টা করুন।');
+                showError('সার্ভারের সাথে সংযোগে সাময়িক বিলম্ব দেখা দিয়েছে। অনুগ্রহ করে আবার সাবমিট করুন।');
                 document.getElementById('result-container').style.display = 'none';
                 return;
             }
@@ -3927,7 +3927,7 @@
             try {
                 data = await res.json();
             } catch (jsonErr) {
-                showError('সরকারি সার্ভারে অতিরিক্ত ট্রাফিকের কারণে বিলম্ব হচ্ছে। অনুগ্রহ করে কয়েক সেকেন্ড পর পুনরায় চেষ্টা করুন।');
+                showError('সার্ভারের সাথে সংযোগে সাময়িক বিলম্ব দেখা দিয়েছে। অনুগ্রহ করে আবার সাবমিট করুন।');
                 document.getElementById('result-container').style.display = 'none';
                 return;
             }
@@ -4606,7 +4606,7 @@
             } catch (jsonErr) {
                 higherBtn.innerHTML = originalBtnHtml;
                 higherBtn.disabled = false;
-                showError('বিশ্ববিদ্যালয় সার্ভারে অতিরিক্ত ট্রাফিকের কারণে বিলম্ব হচ্ছে। অনুগ্রহ করে পুনরায় সাবমিট করুন।');
+                showError('বিশ্ববিদ্যালয় সার্ভারের সাথে সংযোগে সাময়িক বিলম্ব দেখা দিয়েছে। অনুগ্রহ করে পুনরায় সাবমিট করুন।');
                 return;
             }
             higherBtn.innerHTML = originalBtnHtml;
