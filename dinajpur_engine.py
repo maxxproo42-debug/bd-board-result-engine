@@ -1013,17 +1013,17 @@ class DinajpurUnifiedEngine:
                 # ⚡ Result-Day Resilience: Immediate Instant Delivery
                 # Do NOT block the user on downloading multi-megabyte PDFs (which takes 20-35s and triggers 504 Gateway Timeouts).
                 # The instant summary from eBoard JSON is delivered immediately (< 1 second).
-                # If PDF was already cached, extract rolls instantly; otherwise pre-fetch in background for 1-click download.
+                # Parse individual student roll numbers from official board PDF
                 if has_pdf:
-                    if hasattr(self, '_last_pdf_bytes') and self._last_pdf_bytes:
-                        try:
-                            pdf_groups = self._parse_rolls_from_pdf(self._last_pdf_bytes)
+                    try:
+                        pdf_data, _ = self.download_institution_pdf(timeout=5)
+                        if pdf_data:
+                            self._last_pdf_bytes = pdf_data
+                            pdf_groups = self._parse_rolls_from_pdf(pdf_data)
                             if pdf_groups and any(len(v) > 0 for v in pdf_groups.values()):
                                 groups = pdf_groups
-                        except Exception:
-                            pass
-                    else:
-                        threading.Thread(target=self._background_download_pdf, args=(cache_key,), daemon=True).start()
+                    except Exception as e:
+                        print(f"[PDF Extract Notice]: {e}")
 
                 res_dict = {
                     "success": True,
