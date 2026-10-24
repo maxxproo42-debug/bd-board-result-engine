@@ -231,12 +231,6 @@ class DinajpurUnifiedEngine:
                     html = res.read().decode('utf-8', errors='ignore')
 
                 if 'result-timer' in html or 'publishes in' in html.lower() or 'not published yet' in html.lower() or ('<form' not in html and 'heading' in html.lower()):
-                    if str(year) == '2026':
-                        return {
-                            "success": False,
-                            "not_in_direct": False,
-                            "error": f"দিনাজপুর শিক্ষা বোর্ডের ২০২৬ সালের {exam} পরীক্ষার ফলাফল এখনও আনুষ্ঠানিকভাবে প্রকাশিত হয়নি। বোর্ড ফলাফল প্রকাশ করা মাত্রই শুধুমাত্র রোল নম্বর দিয়ে এখান থেকেই সরাসরি পূর্ণ মার্কশিট দেখা যাবে।"
-                        }
                     return {"success": False, "not_in_direct": True}
 
                 token_m = re.search(r'name="_token"\s+value="([^"]+)"', html)
@@ -801,6 +795,13 @@ class DinajpurUnifiedEngine:
         # Registration number is strictly required by the central government archive:
         if not reg_clean:
             board_label = self.BOARD_NAME_BN.get(board_clean, board_clean)
+            if board_clean == "dinajpur" and str(year) == "2026":
+                return {
+                    "success": False,
+                    "need_captcha": False,
+                    "need_reg": True,
+                    "error": f"দিনাজপুর বোর্ডের নিজস্ব সার্ভারে ২০২৬ সালের শুধুমাত্র রোলে রেজাল্ট দেখার অপশনটি এখনও লক অবস্থায় রয়েছে। সেন্ট্রাল সার্ভার থেকে ২০২৬ সালের একক রেজাল্ট দেখতে অনুগ্রহ করে রোল নম্বরের সাথে ১০ সংখ্যার রেজিস্ট্রেশন নম্বরটি লিখুন (অথবা পাশের 'পুরো প্রতিষ্ঠানের রেজাল্ট (EIIN)' ট্যাব থেকে প্রতিষ্ঠানের রেজাল্ট দেখুন)।"
+                }
             return {
                 "success": False,
                 "need_captcha": False,
