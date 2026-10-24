@@ -2,7 +2,7 @@
 title Auto Deploy to Render (bd-board-result-engine)
 color 0B
 echo ================================================================
-echo    BD BOARD RESULT ENGINE - AUTO DEPLOY TO GITHUB & RENDER
+echo    BD BOARD RESULT ENGINE - AUTO DEPLOY TO GITHUB ^& RENDER
 echo ================================================================
 echo.
 
