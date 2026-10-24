@@ -3274,6 +3274,9 @@
 
         if (tab === 'institute') {
             syncStudentToInst();
+            if (currentInstituteResult && !document.querySelector('.inst-stats')) {
+                renderInstituteResult(currentInstituteResult);
+            }
         } else if (tab === 'student') {
             syncInstToStudent();
         } else if (tab === 'directory') {
@@ -4014,7 +4017,68 @@
             }).join('');
         }
 
+        let instNavHtml = '';
+        let bottomNavHtml = '';
+        if (currentInstituteResult) {
+            const studentList = getStudentNavigationList();
+            const activeRoll = data.roll || (lastClickedRollInfo ? lastClickedRollInfo.roll : '');
+            const activeIdx = studentList.findIndex(s => s.roll === activeRoll);
+            const prevStudent = activeIdx > 0 ? studentList[activeIdx - 1] : null;
+            const nextStudent = activeIdx >= 0 && activeIdx < studentList.length - 1 ? studentList[activeIdx + 1] : null;
+
+            instNavHtml = `
+                <div class="inst-nav-header-bar" style="background: linear-gradient(135deg, rgba(15, 23, 42, 0.96), rgba(30, 41, 59, 0.96)); border: 1.5px solid rgba(56, 189, 248, 0.4); border-radius: 14px; padding: 1.1rem 1.35rem; margin-bottom: 1.5rem; box-shadow: 0 12px 28px -5px rgba(0,0,0,0.35);">
+                    <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 0.8rem; margin-bottom: 0.85rem; border-bottom: 1px solid rgba(255,255,255,0.08); padding-bottom: 0.75rem;">
+                        <div style="display: flex; align-items: center; gap: 0.7rem;">
+                            <div style="width: 40px; height: 40px; border-radius: 10px; background: rgba(56, 189, 248, 0.15); border: 1px solid rgba(56, 189, 248, 0.3); display: flex; align-items: center; justify-content: center; font-size: 1.35rem;">
+                                🏫
+                            </div>
+                            <div>
+                                <div style="font-weight: 800; color: #ffffff; font-size: 1.08rem; letter-spacing: -0.3px;">
+                                    ${currentInstituteResult.institute}
+                                </div>
+                                <div style="font-size: 0.84rem; color: #94a3b8; margin-top: 0.15rem;">
+                                    EIIN: <b style="color: #38bdf8;">${currentInstituteResult.eiin}</b> · প্রতিষ্ঠান শিক্ষার্থী: <b>${studentList.length} জন</b> ${activeIdx >= 0 ? `· (ক্রমিক: <b style="color:#38bdf8;">${activeIdx + 1}</b> / ${studentList.length})` : ''}
+                                </div>
+                            </div>
+                        </div>
+                        <button type="button" onclick="restoreInstituteView('${activeRoll}')" class="btn-print" style="background: linear-gradient(135deg, #0284c7, #0369a1); color: #ffffff; border: none; font-weight: 700; font-size: 0.92rem; padding: 0.6rem 1.25rem; border-radius: 8px; cursor: pointer; display: inline-flex; align-items: center; gap: 0.45rem; box-shadow: 0 4px 14px rgba(2,132,199,0.35); transition: transform 0.2s;" onmouseover="this.style.transform='scale(1.03)'" onmouseout="this.style.transform='none'">
+                            ↩️ পুরো প্রতিষ্ঠানের তালিকায় ফিরুন
+                        </button>
+                    </div>
+                    <div style="display: flex; align-items: center; justify-content: space-between; gap: 0.6rem; flex-wrap: wrap;">
+                        ${prevStudent ? `
+                            <button type="button" onclick="searchThisRoll('${prevStudent.roll}', '${prevStudent.item.replace(/'/g, "\\'")}', '${prevStudent.group.replace(/'/g, "\\'")}')" style="background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.15); color: #e2e8f0; font-weight: 700; font-size: 0.88rem; padding: 0.5rem 1.05rem; border-radius: 8px; cursor: pointer; display: inline-flex; align-items: center; gap: 0.4rem; transition: all 0.2s;" onmouseover="this.style.background='rgba(255,255,255,0.14)'" onmouseout="this.style.background='rgba(255,255,255,0.06)'">
+                                ⬅️ আগের রোল: ${prevStudent.roll} (${prevStudent.gpa || ''})
+                            </button>
+                        ` : `<div style="visibility: hidden;"></div>`}
+                        <div style="color: #94a3b8; font-size: 0.86rem; font-weight: 600;">
+                            চলতি শিক্ষার্থী: <span style="color: #38bdf8; font-weight: 800; font-family: monospace; font-size: 1.05rem;">${activeRoll}</span>
+                        </div>
+                        ${nextStudent ? `
+                            <button type="button" onclick="searchThisRoll('${nextStudent.roll}', '${nextStudent.item.replace(/'/g, "\\'")}', '${nextStudent.group.replace(/'/g, "\\'")}')" style="background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.15); color: #e2e8f0; font-weight: 700; font-size: 0.88rem; padding: 0.5rem 1.05rem; border-radius: 8px; cursor: pointer; display: inline-flex; align-items: center; gap: 0.4rem; transition: all 0.2s;" onmouseover="this.style.background='rgba(255,255,255,0.14)'" onmouseout="this.style.background='rgba(255,255,255,0.06)'">
+                                পরের রোল: ${nextStudent.roll} (${nextStudent.gpa || ''}) ➡️
+                            </button>
+                        ` : `<div style="visibility: hidden;"></div>`}
+                    </div>
+                </div>
+            `;
+
+            bottomNavHtml = `
+                <div style="margin-top: 1.75rem; padding-top: 1.35rem; border-top: 1px dashed rgba(0,0,0,0.12); display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 0.8rem;">
+                    <button type="button" onclick="restoreInstituteView('${activeRoll}')" class="btn-print" style="background: linear-gradient(135deg, #0284c7, #0369a1); color: #ffffff; border: none; font-weight: 700; padding: 0.65rem 1.35rem; border-radius: 8px; cursor: pointer; display: inline-flex; align-items: center; gap: 0.45rem;">
+                        ↩️ পুরো প্রতিষ্ঠানের তালিকায় ফিরুন (${currentInstituteResult.institute})
+                    </button>
+                    <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+                        ${prevStudent ? `<button type="button" onclick="searchThisRoll('${prevStudent.roll}', '${prevStudent.item.replace(/'/g, "\\'")}', '${prevStudent.group.replace(/'/g, "\\'")}')" class="btn-print" style="background: #f1f5f9; color: #334155; border-color: #cbd5e1; font-weight: 700; padding: 0.65rem 1rem;">⬅️ আগের রোল (${prevStudent.roll})</button>` : ''}
+                        ${nextStudent ? `<button type="button" onclick="searchThisRoll('${nextStudent.roll}', '${nextStudent.item.replace(/'/g, "\\'")}', '${nextStudent.group.replace(/'/g, "\\'")}')" class="btn-print" style="background: #f1f5f9; color: #334155; border-color: #cbd5e1; font-weight: 700; padding: 0.65rem 1rem;">পরের রোল (${nextStudent.roll}) ➡️</button>` : ''}
+                    </div>
+                </div>
+            `;
+        }
+
         container.innerHTML = `
+            ${instNavHtml}
             <div class="sheet-card">
                 <div class="sheet-header">
                     <div class="board-info">
@@ -4078,6 +4142,8 @@
                         </a>
                     </div>
                     ` : ''}
+
+                    ${bottomNavHtml}
                 </div>
             </div>
         `;
@@ -4221,6 +4287,49 @@
 
     let currentInstituteResult = null;
 
+    function getStudentNavigationList() {
+        if (!currentInstituteResult || !currentInstituteResult.groups) return [];
+        const list = [];
+        for (const [groupName, items] of Object.entries(currentInstituteResult.groups)) {
+            if (Array.isArray(items)) {
+                for (const item of items) {
+                    const roll = item.split('[')[0].trim();
+                    if (/^\d+/.test(roll)) {
+                        const gpa = (item.includes('[') && item.includes(']')) ? item.substring(item.indexOf('[') + 1, item.indexOf(']')).trim() : '';
+                        list.push({ roll, item, group: groupName, gpa });
+                    }
+                }
+            }
+        }
+        return list;
+    }
+
+    function restoreInstituteView(highlightRoll) {
+        switchTab('institute');
+        if (currentInstituteResult) {
+            renderInstituteResult(currentInstituteResult);
+            if (highlightRoll) {
+                setTimeout(() => {
+                    const chip = document.getElementById(`roll-chip-${highlightRoll}`);
+                    if (chip) {
+                        chip.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                        chip.style.transition = 'all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1)';
+                        chip.style.transform = 'scale(1.22)';
+                        chip.style.boxShadow = '0 0 0 4px #38bdf8, 0 10px 25px rgba(56, 189, 248, 0.5)';
+                        chip.style.borderColor = '#38bdf8';
+                        chip.style.background = 'rgba(56, 189, 248, 0.28)';
+                        setTimeout(() => {
+                            chip.style.transform = '';
+                            chip.style.boxShadow = '';
+                            chip.style.borderColor = '';
+                            chip.style.background = '';
+                        }, 2800);
+                    }
+                }, 80);
+            }
+        }
+    }
+
     function renderInstituteResult(data) {
         currentInstituteResult = data;
         const container = document.getElementById('result-container');
@@ -4231,7 +4340,10 @@
                 const isRollList = items.length > 0 && /^\d+/.test(items[0].trim());
                 let bodyHtml = '';
                 if (isRollList) {
-                    const chips = items.map(item => `<span class="roll-chip" onclick="searchThisRoll('${item.split('[')[0]}', '${item.replace(/'/g, "\\'")}', '${groupName.replace(/'/g, "\\'")}')">${item}</span>`).join('');
+                    const chips = items.map(item => {
+                        const roll = item.split('[')[0].trim();
+                        return `<span id="roll-chip-${roll}" class="roll-chip" onclick="searchThisRoll('${roll}', '${item.replace(/'/g, "\\'")}', '${groupName.replace(/'/g, "\\'")}')">${item}</span>`;
+                    }).join('');
                     bodyHtml = `
                         <div>
                             <div class="group-tag">📌 বিভাগ: ${groupName} (${items.length} জন শিক্ষার্থী)</div>
@@ -4365,12 +4477,71 @@
         const badgeBg = isPassed ? 'rgba(22, 163, 74, 0.12)' : 'rgba(220, 38, 38, 0.12)';
         const resultLabel = isPassed ? `উত্তীর্ণ (GPA: ${info.gpa})` : `অনুত্তীর্ণ (${info.gpa})`;
 
+        let instNavHtml = '';
+        let prevStudent = null;
+        let nextStudent = null;
+        let studentList = [];
+        let activeIdx = -1;
+
+        if (currentInstituteResult) {
+            studentList = getStudentNavigationList();
+            const activeRoll = info.roll || '';
+            activeIdx = studentList.findIndex(s => s.roll === activeRoll);
+            prevStudent = activeIdx > 0 ? studentList[activeIdx - 1] : null;
+            nextStudent = activeIdx >= 0 && activeIdx < studentList.length - 1 ? studentList[activeIdx + 1] : null;
+
+            instNavHtml = `
+                <div class="inst-nav-header-bar" style="background: linear-gradient(135deg, rgba(15, 23, 42, 0.96), rgba(30, 41, 59, 0.96)); border: 1.5px solid rgba(56, 189, 248, 0.4); border-radius: 14px; padding: 1.1rem 1.35rem; margin-bottom: 1.5rem; box-shadow: 0 12px 28px -5px rgba(0,0,0,0.35);">
+                    <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 0.8rem; margin-bottom: 0.85rem; border-bottom: 1px solid rgba(255,255,255,0.08); padding-bottom: 0.75rem;">
+                        <div style="display: flex; align-items: center; gap: 0.7rem;">
+                            <div style="width: 40px; height: 40px; border-radius: 10px; background: rgba(56, 189, 248, 0.15); border: 1px solid rgba(56, 189, 248, 0.3); display: flex; align-items: center; justify-content: center; font-size: 1.35rem;">
+                                🏫
+                            </div>
+                            <div>
+                                <div style="font-weight: 800; color: #ffffff; font-size: 1.08rem; letter-spacing: -0.3px;">
+                                    ${currentInstituteResult.institute}
+                                </div>
+                                <div style="font-size: 0.84rem; color: #94a3b8; margin-top: 0.15rem;">
+                                    EIIN: <b style="color: #38bdf8;">${currentInstituteResult.eiin}</b> · প্রতিষ্ঠান শিক্ষার্থী: <b>${studentList.length} জন</b> ${activeIdx >= 0 ? `· (ক্রমিক: <b style="color:#38bdf8;">${activeIdx + 1}</b> / ${studentList.length})` : ''}
+                                </div>
+                            </div>
+                        </div>
+                        <button type="button" onclick="restoreInstituteView('${info.roll}')" class="btn-print" style="background: linear-gradient(135deg, #0284c7, #0369a1); color: #ffffff; border: none; font-weight: 700; font-size: 0.92rem; padding: 0.6rem 1.25rem; border-radius: 8px; cursor: pointer; display: inline-flex; align-items: center; gap: 0.45rem; box-shadow: 0 4px 14px rgba(2,132,199,0.35); transition: transform 0.2s;" onmouseover="this.style.transform='scale(1.03)'" onmouseout="this.style.transform='none'">
+                            ↩️ পুরো প্রতিষ্ঠানের তালিকায় ফিরুন
+                        </button>
+                    </div>
+                    <div style="display: flex; align-items: center; justify-content: space-between; gap: 0.6rem; flex-wrap: wrap;">
+                        ${prevStudent ? `
+                            <button type="button" onclick="searchThisRoll('${prevStudent.roll}', '${prevStudent.item.replace(/'/g, "\\'")}', '${prevStudent.group.replace(/'/g, "\\'")}')" style="background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.15); color: #e2e8f0; font-weight: 700; font-size: 0.88rem; padding: 0.5rem 1.05rem; border-radius: 8px; cursor: pointer; display: inline-flex; align-items: center; gap: 0.4rem; transition: all 0.2s;" onmouseover="this.style.background='rgba(255,255,255,0.14)'" onmouseout="this.style.background='rgba(255,255,255,0.06)'">
+                                ⬅️ আগের রোল: ${prevStudent.roll} (${prevStudent.gpa || ''})
+                            </button>
+                        ` : `<div style="visibility: hidden;"></div>`}
+                        <div style="color: #94a3b8; font-size: 0.86rem; font-weight: 600;">
+                            চলতি শিক্ষার্থী: <span style="color: #38bdf8; font-weight: 800; font-family: monospace; font-size: 1.05rem;">${info.roll}</span>
+                        </div>
+                        ${nextStudent ? `
+                            <button type="button" onclick="searchThisRoll('${nextStudent.roll}', '${nextStudent.item.replace(/'/g, "\\'")}', '${nextStudent.group.replace(/'/g, "\\'")}')" style="background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.15); color: #e2e8f0; font-weight: 700; font-size: 0.88rem; padding: 0.5rem 1.05rem; border-radius: 8px; cursor: pointer; display: inline-flex; align-items: center; gap: 0.4rem; transition: all 0.2s;" onmouseover="this.style.background='rgba(255,255,255,0.14)'" onmouseout="this.style.background='rgba(255,255,255,0.06)'">
+                                পরের রোল: ${nextStudent.roll} (${nextStudent.gpa || ''}) ➡️
+                            </button>
+                        ` : `<div style="visibility: hidden;"></div>`}
+                    </div>
+                </div>
+            `;
+        }
+
+        const pdfDownloadBtn = (currentInstituteResult && currentInstituteResult.has_pdf) ? `
+            <a href="/api/institute/pdf" target="_blank" class="btn-print" style="display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem; background: #059669; border-color: #059669; color: #ffffff; font-weight: 700; padding: 0.75rem 1.25rem; text-decoration: none; border-radius: 8px;">
+                📥 অফিসিয়াল বোর্ড রেজাল্ট PDF শিট
+            </a>
+        ` : '';
+
         container.innerHTML = `
+            ${instNavHtml}
             <div class="sheet-card" style="border: 2px solid ${badgeColor}; box-shadow: 0 10px 25px -5px rgba(0,0,0,0.1);">
                 <div class="sheet-header" style="background: ${badgeBg}; padding: 1.25rem 1.5rem; border-bottom: 1px solid rgba(0,0,0,0.08);">
                     <div class="board-info">
                         <div style="display:inline-flex; align-items:center; gap:0.5rem; background:#ffffff; border:1px solid rgba(0,0,0,0.1); border-radius:8px; padding:0.25rem 0.75rem; margin-bottom:0.5rem; color:#0f172a; font-weight:800; font-size:0.9rem;">
-                            🏛️ ${info.institute || 'প্রতিষ্ঠান'} · EIIN: ${info.eiin || 'N/A'}
+                            🏛️ ${info.institute || (currentInstituteResult ? currentInstituteResult.institute : 'প্রতিষ্ঠান')} · EIIN: ${info.eiin || (currentInstituteResult ? currentInstituteResult.eiin : 'N/A')}
                         </div>
                         <h2 style="font-size:1.45rem; font-weight:800; color:#0f172a; margin:0.3rem 0;">রোল: ${info.roll} · ফলাফল বিবরণ</h2>
                         <h4 style="color:#475569; font-weight:600; font-size:0.95rem;">${info.exam} পরীক্ষা ${info.year} · ${info.board || 'দিনাজপুর'} বোর্ড</h4>
@@ -4386,7 +4557,7 @@
 
                     <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 10px; padding: 1rem 1.25rem; margin-bottom: 1.5rem;">
                         <p style="margin: 0; color: #475569; font-size: 0.92rem; line-height: 1.5;">
-                            ℹ️ <b>নোট:</b> প্রতিষ্ঠানের অফিসিয়াল বোর্ড রেজাল্ট শিট থেকে এই শিক্ষার্থীর ফলাফল ও জিপিএ তাৎক্ষণিক নিশ্চিত করা হয়েছে। বিষয়ভিত্তিক পূর্ণ মার্কশিট সার্ভারে ট্রাফিকের কারণে লোড হতে সাময়িক বিলম্ব হলে নিচের বাটনে ক্লিক করে পুনরায় চেষ্টা করতে পারেন।
+                            ℹ️ <b>বোর্ড ফলাফল নিশ্চিতকরণ:</b> প্রতিষ্ঠানের অফিসিয়াল বোর্ড রেজাল্ট শিট থেকে এই শিক্ষার্থীর ফলাফল ও জিপিএ তাৎক্ষণিক নিশ্চিত করা হয়েছে। বোর্ড সার্ভারে একক বিষয়ভিত্তিক মার্কশিট উন্মুক্ত থাকলে নিচের <b>"পূর্ণ মার্কশিট পুনরায় চেষ্টা করুন"</b> বাটনে ক্লিক করুন, অথবা পুরো প্রতিষ্ঠানের অফিসিয়াল বোর্ড PDF ডাউনলোড করে দেখতে পারেন।
                         </p>
                     </div>
 
@@ -4394,8 +4565,9 @@
                         <button onclick="document.getElementById('student-btn').click();" class="btn-print" style="flex: 1; min-width: 200px; display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem; background: #0284c7; color: #ffffff; border-color: #0284c7; font-weight: 700; padding: 0.75rem 1rem;">
                             🔄 পূর্ণ মার্কশিট পুনরায় চেষ্টা করুন
                         </button>
-                        <button onclick="switchTab('institute');" class="btn-print" style="display: inline-flex; align-items: center; justify-content: center; gap: 0.4rem; background: #f1f5f9; color: #334155; border-color: #cbd5e1; font-weight: 700; padding: 0.75rem 1rem;">
-                            ⬅️ প্রতিষ্ঠানের তালিকায় ফিরুন
+                        ${pdfDownloadBtn}
+                        <button onclick="restoreInstituteView('${info.roll}')" class="btn-print" style="display: inline-flex; align-items: center; justify-content: center; gap: 0.4rem; background: #f1f5f9; color: #334155; border-color: #cbd5e1; font-weight: 700; padding: 0.75rem 1rem;">
+                            ↩️ প্রতিষ্ঠানের তালিকায় ফিরুন
                         </button>
                     </div>
                 </div>

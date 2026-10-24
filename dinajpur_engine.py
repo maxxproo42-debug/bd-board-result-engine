@@ -11,8 +11,12 @@ import base64
 import io
 import sys
 import threading
+import requests
+import urllib3
 from collections import Counter
 from PIL import Image, ImageEnhance
+
+urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
 try:
     import ddddocr
@@ -100,17 +104,13 @@ class DinajpurUnifiedEngine:
 
         # Dinajpur Direct Session
         self.dinajpur_base = "https://results.dinajpurboard.gov.bd"
-        self.dinajpur_cj = http.cookiejar.CookieJar()
-        self.dinajpur_opener = urllib.request.build_opener(
-            urllib.request.HTTPCookieProcessor(self.dinajpur_cj),
-            urllib.request.HTTPSHandler(context=self.ctx)
-        )
-        self.dinajpur_opener.addheaders = [
-            ('User-Agent', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36'),
-            ('Accept-Language', 'en-US,en;q=0.9,bn;q=0.8'),
-            ('Referer', self.dinajpur_base),
-            ('Connection', 'close')
-        ]
+        self.dinajpur_session = requests.Session()
+        self.dinajpur_session.headers.update({
+            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36',
+            'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
+            'Accept-Language': 'en-US,en;q=0.9,bn;q=0.8',
+            'Accept-Encoding': 'gzip, deflate',
+        })
         self._dinajpur_ready = False
 
         # Central eBoard Archive Session
@@ -146,22 +146,29 @@ class DinajpurUnifiedEngine:
     # =========================================================================
     # Dinajpur Direct Portal Engine (2023 - 2026)
     # =========================================================================
-    def _solve_dinajpur_challenge_html(self, html):
+    def _solve_dinajpur_challenge_html(self, html, referer_url=""):
         """Solves Dinajpur Board robot/human challenge directly from the page HTML."""
         try:
             token_m = re.search(r'name="_token"\s+value="([^"]+)"', html)
             c_token_m = re.search(r'name="challenge_token"\s+value="([^"]+)"', html)
             if not token_m or not c_token_m:
-                return False
+                return False, ""
             
             token = token_m.group(1)
             c_token = c_token_m.group(1)
             ans = ""
 
             # 1. Symbol grid challenge (Choose different symbol)
-            choices = re.findall(r'value="(\d+)"[^>]*>\s*<span[^>]*aria-hidden="true">([^<]+)</span>', html)
+            labels = re.findall(r'<label[^>]*>([\s\S]*?)</label>', html)
+            choices = []
+            for lbl in labels:
+                v_m = re.search(r'value="(\d+)"', lbl)
+                s_m = re.search(r'<span[^>]*aria-hidden="true">([^<]+)</span>', lbl)
+                if v_m and s_m:
+                    choices.append((v_m.group(1), s_m.group(1).strip()))
+
             if choices:
-                symbols = [sym.strip() for val, sym in choices]
+                symbols = [c[1] for c in choices]
                 counts = Counter(symbols)
                 unique_syms = [s for s, count in counts.items() if count == 1]
                 if unique_syms:
@@ -175,32 +182,38 @@ class DinajpurUnifiedEngine:
                     ans = str(eval(f"{n1} {op} {n2}"))
 
             if not ans:
-                return False
+                return False, ""
 
-            post_data = urllib.parse.urlencode({
+            post_data = {
                 '_token': token,
                 'challenge_token': c_token,
                 'answer': ans
-            }).encode('utf-8')
-
-            req2 = urllib.request.Request(f"{self.dinajpur_base}/result-check", data=post_data)
-            req2.add_header('Connection', 'close')
-            self.dinajpur_opener.open(req2, timeout=10)
+            }
+            headers = {
+                'Referer': referer_url or f"{self.dinajpur_base}/results",
+                'Origin': self.dinajpur_base
+            }
+            r_post = self.dinajpur_session.post(
+                f"{self.dinajpur_base}/result-check",
+                data=post_data,
+                headers=headers,
+                timeout=10,
+                verify=False
+            )
             self._dinajpur_ready = True
-            return True
+            return True, r_post.text
         except Exception as e:
             print(f"[Dinajpur Challenge Solve Error]: {e}")
-            return False
+            return False, ""
 
     def _ensure_dinajpur_session(self):
         try:
-            req = urllib.request.Request(f"{self.dinajpur_base}/results")
-            req.add_header('Connection', 'close')
-            res = self.dinajpur_opener.open(req, timeout=10)
-            html = res.read().decode('utf-8', errors='ignore')
-
+            url = f"{self.dinajpur_base}/results"
+            res = self.dinajpur_session.get(url, timeout=10, verify=False)
+            html = res.text
             if 'challenge-page' in html or 'result-check' in html or 'challenge-form' in html or 'Human Check' in html:
-                return self._solve_dinajpur_challenge_html(html)
+                solved, _ = self._solve_dinajpur_challenge_html(html, referer_url=url)
+                return solved
             self._dinajpur_ready = True
             return True
         except Exception as e:
@@ -220,31 +233,25 @@ class DinajpurUnifiedEngine:
         archive = cfg['archive']
         exam_title = cfg.get('title', f'{exam} {year}')
 
+        search_url = f"{self.dinajpur_base}/search/student"
+        params = []
+        if archive:
+            params.append(f"archive={archive}")
+        if exam_id:
+            params.append(f"exam_id={exam_id}")
+        if params:
+            search_url += "?" + "&".join(params)
+
         for attempt in range(2):
             try:
-                if not self._dinajpur_ready and attempt == 0:
-                    self._ensure_dinajpur_session()
+                res = self.dinajpur_session.get(search_url, timeout=12, verify=False)
+                html = res.text
 
-                search_url = f"{self.dinajpur_base}/search/student"
-                params = []
-                if archive:
-                    params.append(f"archive={archive}")
-                if exam_id:
-                    params.append(f"exam_id={exam_id}")
-                if params:
-                    search_url += "?" + "&".join(params)
-
-                req = urllib.request.Request(search_url)
-                req.add_header('Connection', 'close')
-                res = self.dinajpur_opener.open(req, timeout=12)
-                html = res.read().decode('utf-8', errors='ignore')
-
-                if 'challenge-page' in html or 'result-check' in html or 'Human Check' in html:
-                    if self._solve_dinajpur_challenge_html(html):
-                        req_refetch = urllib.request.Request(search_url)
-                        req_refetch.add_header('Connection', 'close')
-                        res = self.dinajpur_opener.open(req_refetch, timeout=12)
-                        html = res.read().decode('utf-8', errors='ignore')
+                if 'challenge' in html or 'result-check' in html or 'Human Check' in html or 'challenge-form' in html:
+                    solved, _ = self._solve_dinajpur_challenge_html(html, referer_url=search_url)
+                    if solved:
+                        res = self.dinajpur_session.get(search_url, timeout=12, verify=False)
+                        html = res.text
 
                 if 'result-timer' in html or 'publishes in' in html.lower() or 'not published yet' in html.lower() or ('<form' not in html and 'heading' in html.lower()):
                     return {"success": False, "not_in_direct": True}
@@ -257,7 +264,9 @@ class DinajpurUnifiedEngine:
                     return {"success": False, "error": f"দিনাজপুর বোর্ডের {year} সালের {exam} পরীক্ষার ফলাফল সার্ভার এখনও উন্মুক্ত করেনি। অনুগ্রহ করে সাল বা পরীক্ষা সঠিক আছে কি না মিলিয়ে নিন।"}
                 token = token_m.group(1)
 
-                cap_match = re.search(r'class="board-captcha-q"[^>]*>(\d+)\s*([\+\-\*])\s*(\d+)\s*=\s*\?</span>', html)
+                cap_match = re.search(r'class="[^"]*board-captcha-q[^"]*"[^>]*>(\d+)\s*([\+\-\*])\s*(\d+)\s*=\s*\?</span>', html)
+                if not cap_match:
+                    cap_match = re.search(r'(\d+)\s*([\+\-\*])\s*(\d+)\s*=\s*\?', html)
                 if not cap_match:
                     return {"success": False, "error": "ক্যাপচা সমাধান সম্ভব হয়নি।"}
                 n1, op, n2 = cap_match.group(1), cap_match.group(2), cap_match.group(3)
@@ -275,15 +284,23 @@ class DinajpurUnifiedEngine:
                 if exam_id:
                     post_data_dict['exam_id'] = exam_id
 
-                post_data = urllib.parse.urlencode(post_data_dict).encode('utf-8')
-                req_post = urllib.request.Request(f"{self.dinajpur_base}/search/student", data=post_data)
-                req_post.add_header('Connection', 'close')
-                res_post = self.dinajpur_opener.open(req_post, timeout=15)
-                out_html = res_post.read().decode('utf-8', errors='ignore')
+                headers = {
+                    'Referer': search_url,
+                    'Origin': self.dinajpur_base
+                }
+                res_post = self.dinajpur_session.post(
+                    f"{self.dinajpur_base}/search/student",
+                    data=post_data_dict,
+                    headers=headers,
+                    timeout=15,
+                    verify=False
+                )
+                out_html = res_post.text
 
-                if "No Result Found" in out_html or "not found" in out_html.lower():
+                if res_post.status_code == 404 or "No Result Found" in out_html or "not found" in out_html.lower() or "sorry" in out_html.lower():
                     return {
                         "success": False,
+                        "not_in_direct": True,
                         "error": f"রোল {roll_clean} এর কোনো রেজাল্ট {year} সালের {exam} পরীক্ষায় পাওয়া যায়নি।"
                     }
 
@@ -325,26 +342,8 @@ class DinajpurUnifiedEngine:
                 if not data['reg'] and reg_clean: data['reg'] = reg_clean
                 return data
 
-            except urllib.error.HTTPError as err:
-                if err.code == 419:
-                    self.dinajpur_cj.clear()
-                    self._dinajpur_ready = False
-                    self._ensure_dinajpur_session()
-                    continue
-                elif err.code == 404:
-                    return {
-                        "success": False,
-                        "error": f"রোল {roll_clean} এর কোনো রেজাল্ট {year} সালের {exam} পরীক্ষায় পাওয়া যায়নি। রোল নম্বর বা পরীক্ষার সাল সঠিক আছে কি না মিলিয়ে নিন।"
-                    }
-                elif err.code == 429:
-                    time.sleep(2)
-                    continue
-                else:
-                    return {"success": False, "error": f"বোর্ড সার্ভার ত্রুটি (HTTP {err.code})"}
             except Exception as e:
                 if attempt == 0:
-                    self.dinajpur_cj.clear()
-                    self._dinajpur_ready = False
                     time.sleep(0.5)
                     continue
                 return {"success": False, "not_in_direct": True, "error": f"দিনাজপুর সরাসরি সার্ভারে সংযোগে সাময়িক বিলম্ব হয়েছে। অনুগ্রহ করে কয়েক সেকেন্ড পর পুনরায় চেষ্টা করুন। ({str(e)})"}
@@ -878,8 +877,6 @@ class DinajpurUnifiedEngine:
             exam_id = cfg.get('exam_id')
             archive = cfg.get('archive')
             try:
-                if not self._dinajpur_ready:
-                    self._ensure_dinajpur_session()
                 # 1. Fetch form token
                 init_url = f"{self.dinajpur_base}/search/institute"
                 params = []
@@ -887,13 +884,11 @@ class DinajpurUnifiedEngine:
                 if exam_id: params.append(f"exam_id={exam_id}")
                 if params: init_url += "?" + "&".join(params)
                 
-                req = urllib.request.Request(init_url)
-                res = self.dinajpur_opener.open(req, timeout=8)
-                html = res.read().decode('utf-8', errors='ignore')
-                if 'challenge-form' in html or 'result-check' in html:
-                    self._ensure_dinajpur_session()
-                    res = self.dinajpur_opener.open(req, timeout=8)
-                    html = res.read().decode('utf-8', errors='ignore')
+                res = self.dinajpur_session.get(init_url, timeout=10, verify=False)
+                if 'challenge' in html or 'result-check' in html or 'Human Check' in html or 'challenge-form' in html:
+                    self._solve_dinajpur_challenge_html(html, referer_url=init_url)
+                    res = self.dinajpur_session.get(init_url, timeout=10, verify=False)
+                    html = res.text
 
                 if 'result-timer' not in html and 'publishes in' not in html.lower() and ('<form' in html or 'heading' not in html.lower()):
                     token_m = re.search(r'name="_token"\s+value="([^"]+)"', html)
@@ -906,10 +901,15 @@ class DinajpurUnifiedEngine:
                         if archive: post_data_dict['archive'] = archive
                         if exam_id: post_data_dict['exam_id'] = exam_id
                         
-                        p_data = urllib.parse.urlencode(post_data_dict).encode('utf-8')
-                        req_p = urllib.request.Request(f"{self.dinajpur_base}/search/institute", data=p_data)
-                        res_p = self.dinajpur_opener.open(req_p, timeout=12)
-                        html_post = res_p.read().decode('utf-8', errors='ignore')
+                        headers = {'Referer': init_url, 'Origin': self.dinajpur_base}
+                        res_p = self.dinajpur_session.post(
+                            f"{self.dinajpur_base}/search/institute",
+                            data=post_data_dict,
+                            headers=headers,
+                            timeout=15,
+                            verify=False
+                        )
+                        html_post = res_p.text
                         
                         if "No Result Found" not in html_post and "not found" not in html_post.lower():
                             m_inst = re.search(r'Institute</td>\s*<td[^>]*><b>([^<]+)</b>', html_post)
