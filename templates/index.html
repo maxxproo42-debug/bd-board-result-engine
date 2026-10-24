@@ -3868,6 +3868,10 @@
             }
 
             if (!data.success) {
+                if (lastClickedRollInfo && lastClickedRollInfo.roll === roll) {
+                    renderChipSummaryFallback(lastClickedRollInfo, data.error);
+                    return;
+                }
                 if (data.need_captcha) {
                     document.getElementById('archive-captcha-box').style.display = 'block';
                     if (data.captcha_img) {
@@ -3887,11 +3891,16 @@
                 document.getElementById('result-container').style.display = 'none';
             } else {
                 renderStudentResult(data);
+                lastClickedRollInfo = null;
                 if (data.gpa === '5.00' && window.confetti) {
                     confetti({ particleCount: 120, spread: 70, origin: { y: 0.6 } });
                 }
             }
         } catch (err) {
+            if (lastClickedRollInfo && lastClickedRollInfo.roll === roll) {
+                renderChipSummaryFallback(lastClickedRollInfo, err.message);
+                return;
+            }
             showError('সার্ভারের সাথে যোগাযোগে ত্রুটি হয়েছে: ' + err.message, true);
         } finally {
             if (cycleInterval) clearInterval(cycleInterval);
@@ -4222,7 +4231,7 @@
                 const isRollList = items.length > 0 && /^\d+/.test(items[0].trim());
                 let bodyHtml = '';
                 if (isRollList) {
-                    const chips = items.map(item => `<span class="roll-chip" onclick="searchThisRoll('${item.split('[')[0]}')">${item}</span>`).join('');
+                    const chips = items.map(item => `<span class="roll-chip" onclick="searchThisRoll('${item.split('[')[0]}', '${item.replace(/'/g, "\\'")}', '${groupName.replace(/'/g, "\\'")}')">${item}</span>`).join('');
                     bodyHtml = `
                         <div>
                             <div class="group-tag">📌 বিভাগ: ${groupName} (${items.length} জন শিক্ষার্থী)</div>
@@ -4314,7 +4323,20 @@
         container.scrollIntoView({ behavior: 'smooth' });
     }
 
-    function searchThisRoll(roll) {
+    let lastClickedRollInfo = null;
+
+    function searchThisRoll(roll, item, groupName) {
+        lastClickedRollInfo = {
+            roll: roll,
+            rawItem: item || roll,
+            group: groupName || '',
+            gpa: (item && item.includes('[') && item.includes(']')) ? item.substring(item.indexOf('[')+1, item.indexOf(']')).trim() : '',
+            institute: currentInstituteResult ? currentInstituteResult.institute : '',
+            eiin: currentInstituteResult ? currentInstituteResult.eiin : '',
+            year: currentInstituteResult ? currentInstituteResult.year : '',
+            exam: currentInstituteResult ? currentInstituteResult.exam : '',
+            board: currentInstituteResult ? currentInstituteResult.board : ''
+        };
         if (currentInstituteResult) {
             if (currentInstituteResult.year && document.getElementById('year_select')) {
                 document.getElementById('year_select').value = currentInstituteResult.year;
@@ -4322,11 +4344,65 @@
             if (currentInstituteResult.exam && document.getElementById('exam_select')) {
                 document.getElementById('exam_select').value = currentInstituteResult.exam;
             }
+            if (currentInstituteResult.board && document.getElementById('board_select')) {
+                document.getElementById('board_select').value = currentInstituteResult.board.toLowerCase();
+            }
         }
         switchTab('student');
         document.getElementById('roll_input').value = roll;
         updateExamYearState();
         document.getElementById('student-btn').click();
+    }
+
+    function renderChipSummaryFallback(info, err) {
+        const container = document.getElementById('result-container');
+        if (!container) return;
+        const banner = document.getElementById('error-banner');
+        if (banner) banner.style.display = 'none';
+
+        const isPassed = !info.gpa.startsWith('F');
+        const badgeColor = isPassed ? '#16a34a' : '#dc2626';
+        const badgeBg = isPassed ? 'rgba(22, 163, 74, 0.12)' : 'rgba(220, 38, 38, 0.12)';
+        const resultLabel = isPassed ? `উত্তীর্ণ (GPA: ${info.gpa})` : `অনুত্তীর্ণ (${info.gpa})`;
+
+        container.innerHTML = `
+            <div class="sheet-card" style="border: 2px solid ${badgeColor}; box-shadow: 0 10px 25px -5px rgba(0,0,0,0.1);">
+                <div class="sheet-header" style="background: ${badgeBg}; padding: 1.25rem 1.5rem; border-bottom: 1px solid rgba(0,0,0,0.08);">
+                    <div class="board-info">
+                        <div style="display:inline-flex; align-items:center; gap:0.5rem; background:#ffffff; border:1px solid rgba(0,0,0,0.1); border-radius:8px; padding:0.25rem 0.75rem; margin-bottom:0.5rem; color:#0f172a; font-weight:800; font-size:0.9rem;">
+                            🏛️ ${info.institute || 'প্রতিষ্ঠান'} · EIIN: ${info.eiin || 'N/A'}
+                        </div>
+                        <h2 style="font-size:1.45rem; font-weight:800; color:#0f172a; margin:0.3rem 0;">রোল: ${info.roll} · ফলাফল বিবরণ</h2>
+                        <h4 style="color:#475569; font-weight:600; font-size:0.95rem;">${info.exam} পরীক্ষা ${info.year} · ${info.board || 'দিনাজপুর'} বোর্ড</h4>
+                    </div>
+                </div>
+
+                <div class="sheet-body" style="padding: 1.5rem;">
+                    <div style="background: ${badgeBg}; border: 1.5px solid ${badgeColor}; border-radius: 12px; padding: 1.25rem; text-align: center; margin-bottom: 1.5rem;">
+                        <div style="font-size: 0.95rem; font-weight: 700; color: #475569; text-transform: uppercase; margin-bottom: 0.35rem;">অফিসিয়াল বোর্ড রেজাল্ট স্ট্যাটাস</div>
+                        <div style="font-size: 1.85rem; font-weight: 900; color: ${badgeColor}; letter-spacing: -0.5px;">${resultLabel}</div>
+                        ${info.group ? `<div style="display:inline-block; margin-top:0.5rem; background:#ffffff; color:#334155; font-weight:700; font-size:0.88rem; padding:0.3rem 0.8rem; border-radius:6px; border:1px solid rgba(0,0,0,0.08);">📌 বিভাগ: ${info.group}</div>` : ''}
+                    </div>
+
+                    <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 10px; padding: 1rem 1.25rem; margin-bottom: 1.5rem;">
+                        <p style="margin: 0; color: #475569; font-size: 0.92rem; line-height: 1.5;">
+                            ℹ️ <b>নোট:</b> প্রতিষ্ঠানের অফিসিয়াল বোর্ড রেজাল্ট শিট থেকে এই শিক্ষার্থীর ফলাফল ও জিপিএ তাৎক্ষণিক নিশ্চিত করা হয়েছে। বিষয়ভিত্তিক পূর্ণ মার্কশিট সার্ভারে ট্রাফিকের কারণে লোড হতে সাময়িক বিলম্ব হলে নিচের বাটনে ক্লিক করে পুনরায় চেষ্টা করতে পারেন।
+                        </p>
+                    </div>
+
+                    <div style="display: flex; gap: 0.75rem; flex-wrap: wrap;">
+                        <button onclick="document.getElementById('student-btn').click();" class="btn-print" style="flex: 1; min-width: 200px; display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem; background: #0284c7; color: #ffffff; border-color: #0284c7; font-weight: 700; padding: 0.75rem 1rem;">
+                            🔄 পূর্ণ মার্কশিট পুনরায় চেষ্টা করুন
+                        </button>
+                        <button onclick="switchTab('institute');" class="btn-print" style="display: inline-flex; align-items: center; justify-content: center; gap: 0.4rem; background: #f1f5f9; color: #334155; border-color: #cbd5e1; font-weight: 700; padding: 0.75rem 1rem;">
+                            ⬅️ প্রতিষ্ঠানের তালিকায় ফিরুন
+                        </button>
+                    </div>
+                </div>
+            </div>
+        `;
+        container.style.display = 'block';
+        container.scrollIntoView({ behavior: 'smooth' });
     }
 
     // ============================================================

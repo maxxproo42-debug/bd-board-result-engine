@@ -108,7 +108,8 @@ class DinajpurUnifiedEngine:
         self.dinajpur_opener.addheaders = [
             ('User-Agent', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36'),
             ('Accept-Language', 'en-US,en;q=0.9,bn;q=0.8'),
-            ('Referer', self.dinajpur_base)
+            ('Referer', self.dinajpur_base),
+            ('Connection', 'close')
         ]
         self._dinajpur_ready = False
 
@@ -145,49 +146,61 @@ class DinajpurUnifiedEngine:
     # =========================================================================
     # Dinajpur Direct Portal Engine (2023 - 2026)
     # =========================================================================
+    def _solve_dinajpur_challenge_html(self, html):
+        """Solves Dinajpur Board robot/human challenge directly from the page HTML."""
+        try:
+            token_m = re.search(r'name="_token"\s+value="([^"]+)"', html)
+            c_token_m = re.search(r'name="challenge_token"\s+value="([^"]+)"', html)
+            if not token_m or not c_token_m:
+                return False
+            
+            token = token_m.group(1)
+            c_token = c_token_m.group(1)
+            ans = ""
+
+            # 1. Symbol grid challenge (Choose different symbol)
+            choices = re.findall(r'value="(\d+)"[^>]*>\s*<span[^>]*aria-hidden="true">([^<]+)</span>', html)
+            if choices:
+                symbols = [sym.strip() for val, sym in choices]
+                counts = Counter(symbols)
+                unique_syms = [s for s, count in counts.items() if count == 1]
+                if unique_syms:
+                    ans = [val for val, sym in choices if sym.strip() == unique_syms[0]][0]
+
+            # 2. Math question challenge (Fallback)
+            if not ans:
+                q_match = re.search(r'<div class="question">(\d+)\s*([\+\-\*])\s*(\d+)\s*=\s*\?</div>', html)
+                if q_match:
+                    n1, op, n2 = q_match.group(1), q_match.group(2), q_match.group(3)
+                    ans = str(eval(f"{n1} {op} {n2}"))
+
+            if not ans:
+                return False
+
+            post_data = urllib.parse.urlencode({
+                '_token': token,
+                'challenge_token': c_token,
+                'answer': ans
+            }).encode('utf-8')
+
+            req2 = urllib.request.Request(f"{self.dinajpur_base}/result-check", data=post_data)
+            req2.add_header('Connection', 'close')
+            self.dinajpur_opener.open(req2, timeout=10)
+            self._dinajpur_ready = True
+            return True
+        except Exception as e:
+            print(f"[Dinajpur Challenge Solve Error]: {e}")
+            return False
+
     def _ensure_dinajpur_session(self):
         try:
             req = urllib.request.Request(f"{self.dinajpur_base}/results")
-            res = self.dinajpur_opener.open(req, timeout=8)
+            req.add_header('Connection', 'close')
+            res = self.dinajpur_opener.open(req, timeout=10)
             html = res.read().decode('utf-8', errors='ignore')
 
-            if 'challenge-page' in html or 'result-check' in html or 'challenge-form' in html:
-                token_m = re.search(r'name="_token"\s+value="([^"]+)"', html)
-                c_token_m = re.search(r'name="challenge_token"\s+value="([^"]+)"', html)
-                if not token_m or not c_token_m:
-                    return False
-                
-                token = token_m.group(1)
-                c_token = c_token_m.group(1)
-                ans = ""
-
-                # 1. Symbol grid challenge (Choose different symbol)
-                choices = re.findall(r'value="(\d+)"[^>]*>\s*<span[^>]*aria-hidden="true">([^<]+)</span>', html)
-                if choices:
-                    symbols = [sym.strip() for val, sym in choices]
-                    counts = Counter(symbols)
-                    unique_syms = [s for s, count in counts.items() if count == 1]
-                    if unique_syms:
-                        ans = [val for val, sym in choices if sym.strip() == unique_syms[0]][0]
-
-                # 2. Math question challenge (Fallback)
-                if not ans:
-                    q_match = re.search(r'<div class="question">(\d+)\s*([\+\-\*])\s*(\d+)\s*=\s*\?</div>', html)
-                    if q_match:
-                        n1, op, n2 = q_match.group(1), q_match.group(2), q_match.group(3)
-                        ans = str(eval(f"{n1} {op} {n2}"))
-
-                if not ans:
-                    return False
-
-                post_data = urllib.parse.urlencode({
-                    '_token': token,
-                    'challenge_token': c_token,
-                    'answer': ans
-                }).encode('utf-8')
-
-                req2 = urllib.request.Request(f"{self.dinajpur_base}/result-check", data=post_data)
-                self.dinajpur_opener.open(req2, timeout=8)
+            if 'challenge-page' in html or 'result-check' in html or 'challenge-form' in html or 'Human Check' in html:
+                return self._solve_dinajpur_challenge_html(html)
             self._dinajpur_ready = True
             return True
         except Exception as e:
@@ -222,13 +235,16 @@ class DinajpurUnifiedEngine:
                     search_url += "?" + "&".join(params)
 
                 req = urllib.request.Request(search_url)
-                res = self.dinajpur_opener.open(req, timeout=10)
+                req.add_header('Connection', 'close')
+                res = self.dinajpur_opener.open(req, timeout=12)
                 html = res.read().decode('utf-8', errors='ignore')
 
-                if 'challenge-page' in html or 'result-check' in html:
-                    self._ensure_dinajpur_session()
-                    res = self.dinajpur_opener.open(req, timeout=10)
-                    html = res.read().decode('utf-8', errors='ignore')
+                if 'challenge-page' in html or 'result-check' in html or 'Human Check' in html:
+                    if self._solve_dinajpur_challenge_html(html):
+                        req_refetch = urllib.request.Request(search_url)
+                        req_refetch.add_header('Connection', 'close')
+                        res = self.dinajpur_opener.open(req_refetch, timeout=12)
+                        html = res.read().decode('utf-8', errors='ignore')
 
                 if 'result-timer' in html or 'publishes in' in html.lower() or 'not published yet' in html.lower() or ('<form' not in html and 'heading' in html.lower()):
                     return {"success": False, "not_in_direct": True}
@@ -261,7 +277,8 @@ class DinajpurUnifiedEngine:
 
                 post_data = urllib.parse.urlencode(post_data_dict).encode('utf-8')
                 req_post = urllib.request.Request(f"{self.dinajpur_base}/search/student", data=post_data)
-                res_post = self.dinajpur_opener.open(req_post, timeout=12)
+                req_post.add_header('Connection', 'close')
+                res_post = self.dinajpur_opener.open(req_post, timeout=15)
                 out_html = res_post.read().decode('utf-8', errors='ignore')
 
                 if "No Result Found" in out_html or "not found" in out_html.lower():
@@ -326,9 +343,11 @@ class DinajpurUnifiedEngine:
                     return {"success": False, "error": f"বোর্ড সার্ভার ত্রুটি (HTTP {err.code})"}
             except Exception as e:
                 if attempt == 0:
-                    time.sleep(1)
+                    self.dinajpur_cj.clear()
+                    self._dinajpur_ready = False
+                    time.sleep(0.5)
                     continue
-                return {"success": False, "error": f"সার্ভার সংযোগে ত্রুটি: {str(e)}"}
+                return {"success": False, "not_in_direct": True, "error": f"দিনাজপুর সরাসরি সার্ভারে সংযোগে সাময়িক বিলম্ব হয়েছে। অনুগ্রহ করে কয়েক সেকেন্ড পর পুনরায় চেষ্টা করুন। ({str(e)})"}
         return {"success": False, "error": "রেজাল্ট আনতে ব্যর্থ হয়েছে।"}
 
     # =========================================================================
