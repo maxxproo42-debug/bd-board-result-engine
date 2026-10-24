@@ -1,23 +1,31 @@
-name: 24/7 Render Keep-Alive Ping
+name: 24/7 Render Keep-Alive & Session Pre-Warmer
 
 on:
   schedule:
-    # Runs every 10 minutes to keep Render Web Service 100% awake 24/7
-    - cron: '*/10 * * * *'
+    # Runs frequently at offset minutes to avoid GitHub's top-of-hour congestion
+    - cron: '3,13,23,33,43,53 * * * *'
   workflow_dispatch:
 
 jobs:
   keep_alive:
-    name: Ping Render Health Check
+    name: Ping & Pre-Warm Render Engine
     runs-on: ubuntu-latest
+    timeout-minutes: 5
     steps:
-      - name: Send Keep-Alive Ping
+      - name: Ping Health Endpoint (Render URL)
         run: |
-          echo "Sending keep-alive ping to Render..."
-          HTTP_STATUS=$(curl -s -o /dev/null -w "%{http_code}" https://bd-board-result-engine-1.onrender.com/api/health)
-          echo "Response HTTP Status: $HTTP_STATUS"
-          if [ "$HTTP_STATUS" -eq 200 ]; then
-            echo "SUCCESS: Render Web Service is Awake and Healthy!"
-          else
-            echo "Status: $HTTP_STATUS - Server will be awake on next cycle."
-          fi
+          echo "Pinging bd-board-result-engine-1.onrender.com..."
+          STATUS=$(curl -s -o /dev/null -w "%{http_code}" --max-time 30 https://bd-board-result-engine-1.onrender.com/api/health)
+          echo "Render URL Status: $STATUS"
+
+      - name: Ping Health Endpoint (Custom Domain)
+        run: |
+          echo "Pinging shaifulxrd.bond..."
+          STATUS=$(curl -s -o /dev/null -w "%{http_code}" --max-time 30 https://shaifulxrd.bond/api/health)
+          echo "Custom Domain Status: $STATUS"
+
+      - name: Pre-Warm AI Captcha & Engine Sessions
+        run: |
+          echo "Pre-warming OCR and board sessions..."
+          STATUS=$(curl -s -o /dev/null -w "%{http_code}" --max-time 30 https://shaifulxrd.bond/api/captcha)
+          echo "Pre-Warm Status: $STATUS"
