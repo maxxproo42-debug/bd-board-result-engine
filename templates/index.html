@@ -3642,8 +3642,8 @@
         if ((board || '').toLowerCase() !== 'dinajpur') return false; // Only Dinajpur has a direct sub-portal
         const y = parseInt(year, 10);
         const ex = (exam || '').toUpperCase();
-        if (ex === 'HSC' && y === 2025) return true;
-        if (ex === 'SSC' && (y >= 2023 && y <= 2025)) return true;
+        if (ex === 'HSC' && (y >= 2025 && y <= 2026)) return true;
+        if (ex === 'SSC' && (y >= 2023 && y <= 2026)) return true;
         return false;
     }
 
@@ -3742,10 +3742,16 @@
             regBadge.style.color = '#10b981';
             regBadge.textContent = 'ঐচ্ছিক (শুধু রোল দিলেই চলবে)';
             regInput.placeholder = 'ঐচ্ছিক (পূর্ণ নম্বর দেখতে)';
-            if (infoNote) infoNote.style.display = 'none';
+            if (infoNote) {
+                infoNote.style.display = 'block';
+                infoNote.style.background = 'rgba(16, 185, 129, 0.12)';
+                infoNote.style.borderColor = 'rgba(16, 185, 129, 0.35)';
+                infoNote.style.color = '#a7f3d0';
+                infoNote.innerHTML = '🟢 <b>দিনাজপুর বোর্ড সরাসরি পোর্টাল সক্রিয়:</b> এই পরীক্ষার জন্য রেজিস্ট্রেশন নম্বর আবশ্যক নয়, <b>শুধুমাত্র রোল নম্বর লিখলেই সরাসরি সম্পূর্ণ মার্কশিট ও ফলাফল দেখতে পাবেন</b>। (রেজিস্ট্রেশন নম্বর দিলে রেজাল্টে রেজিস্ট্রেশন নম্বরও প্রদর্শিত হবে)।';
+            }
             if (bypassIndicator) bypassIndicator.style.display = 'none';
             if (captchaBox) captchaBox.style.display = 'none';
-            if (btnText) btnText.innerHTML = '⚡ রেজাল্ট বের করুন';
+            if (btnText) btnText.innerHTML = '⚡ রেজাল্ট বের করুন <span style="font-size:0.85rem; opacity:0.9;">(🟢 শুধু রোলে রেজাল্ট)</span>';
         } else {
             regBadge.className = 'req';
             regBadge.style.color = '#f59e0b';
@@ -3756,7 +3762,11 @@
                 infoNote.style.background = 'rgba(245, 158, 11, 0.12)';
                 infoNote.style.borderColor = 'rgba(245, 158, 11, 0.35)';
                 infoNote.style.color = '#fde68a';
-                infoNote.innerHTML = '⚠️ <b>সেন্ট্রাল আর্কাইভ নির্দেশিকা:</b> শিক্ষা বোর্ডের নিয়মানুযায়ী ২০১৫ থেকে ২০২৪ সালের সেন্ট্রাল আর্কাইভে রেজাল্ট দেখতে <b>রোল ও রেজিস্ট্রেশন নম্বর উভয়ই প্রদান করা আবশ্যক</b>। (আপনার কাছে রেজিস্ট্রেশন নম্বর না থাকলে পাশের <b>"পুরো প্রতিষ্ঠানের রেজাল্ট (EIIN)"</b> ট্যাব থেকে রোল ও জিপিএ দেখতে পারেন)।';
+                if (board === 'madrasah') {
+                    infoNote.innerHTML = '⚠️ <b>মাদ্রাসা শিক্ষা বোর্ড নির্দেশিকা:</b> সরকারি নিয়মানুযায়ী সেন্ট্রাল আর্কাইভে দাখিল ও আলিম পরীক্ষার একক রেজাল্ট দেখতে <b>রোল ও রেজিস্ট্রেশন নম্বর উভয়ই প্রদান করা আবশ্যক</b>। (আপনার কাছে রেজিস্ট্রেশন নম্বর না থাকলে পাশের <b>"পুরো প্রতিষ্ঠানের রেজাল্ট (EIIN)"</b> ট্যাব থেকে মাদ্রাসার EIIN দিয়ে সকল শিক্ষার্থীর রোল ও জিপিএ দেখতে পারেন)।';
+                } else {
+                    infoNote.innerHTML = '⚠️ <b>সেন্ট্রাল আর্কাইভ নির্দেশিকা:</b> শিক্ষা বোর্ডের নিয়মানুযায়ী সেন্ট্রাল আর্কাইভে রেজাল্ট দেখতে <b>রোল ও রেজিস্ট্রেশন নম্বর উভয়ই প্রদান করা আবশ্যক</b>। (আপনার কাছে রেজিস্ট্রেশন নম্বর না থাকলে পাশের <b>"পুরো প্রতিষ্ঠানের রেজাল্ট (EIIN)"</b> ট্যাব থেকে রোল ও জিপিএ দেখতে পারেন)।';
+                }
             }
             if (bypassIndicator) bypassIndicator.style.display = 'flex';
             if (captchaBox) captchaBox.style.display = 'none'; // Auto-bypass handles it!

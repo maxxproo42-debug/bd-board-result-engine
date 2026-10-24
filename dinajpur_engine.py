@@ -230,7 +230,13 @@ class DinajpurUnifiedEngine:
                     res = self.dinajpur_opener.open(req, timeout=10)
                     html = res.read().decode('utf-8', errors='ignore')
 
-                if 'result-timer' in html or 'publishes in' in html.lower() or ('<form' not in html and 'heading' in html.lower()):
+                if 'result-timer' in html or 'publishes in' in html.lower() or 'not published yet' in html.lower() or ('<form' not in html and 'heading' in html.lower()):
+                    if str(year) == '2026':
+                        return {
+                            "success": False,
+                            "not_in_direct": False,
+                            "error": f"দিনাজপুর শিক্ষা বোর্ডের ২০২৬ সালের {exam} পরীক্ষার ফলাফল এখনও আনুষ্ঠানিকভাবে প্রকাশিত হয়নি। বোর্ড ফলাফল প্রকাশ করা মাত্রই শুধুমাত্র রোল নম্বর দিয়ে এখান থেকেই সরাসরি পূর্ণ মার্কশিট দেখা যাবে।"
+                        }
                     return {"success": False, "not_in_direct": True}
 
                 token_m = re.search(r'name="_token"\s+value="([^"]+)"', html)
@@ -309,7 +315,12 @@ class DinajpurUnifiedEngine:
                 return data
 
             except urllib.error.HTTPError as err:
-                if err.code == 404:
+                if err.code == 419:
+                    self.dinajpur_cj.clear()
+                    self._dinajpur_ready = False
+                    self._ensure_dinajpur_session()
+                    continue
+                elif err.code == 404:
                     return {
                         "success": False,
                         "error": f"রোল {roll_clean} এর কোনো রেজাল্ট {year} সালের {exam} পরীক্ষায় পাওয়া যায়নি। রোল নম্বর বা পরীক্ষার সাল সঠিক আছে কি না মিলিয়ে নিন।"
