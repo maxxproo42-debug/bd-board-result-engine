@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 """
 Extensive Educational Institution (EIIN) Directory for all 11 Education Boards in Bangladesh.
-Covers secondary schools, higher secondary colleges, cadet colleges, madrasahs, and polytechnics.
-Total institutions: 4864
+Comprehensive coverage of Secondary Schools, Colleges, Cadet Colleges, Madrasahs, and Polytechnics.
+Total institutions: 5047
 """
 
 INSTITUTES = [
@@ -1269,6 +1269,51 @@ INSTITUTES = [
         "type": "Madrasah"
     },
     {
+        "eiin": "120019",
+        "name": "BEPARITOLA ADARSHA COLLEGE (ব্যাপারীতলা আদর্শ কলেজ)",
+        "alt_names": "Beparitola Adarsha College ব্যাপারিতলা আদর্শ কলেজ বিরামপুর",
+        "board": "dinajpur",
+        "district": "দিনাজপুর",
+        "thana": "বিরামপুর",
+        "type": "College"
+    },
+    {
+        "eiin": "120020",
+        "name": "BIRAMPUR TECHNICAL AND BM COLLEGE (বিরামপুর টেকনিক্যাল অ্যান্ড বিএম কলেজ)",
+        "alt_names": "Birampur Technical and BM College বিরামপুর টেকনিক্যাল কলেজ",
+        "board": "tec",
+        "district": "দিনাজপুর",
+        "thana": "বিরামপুর",
+        "type": "Technical"
+    },
+    {
+        "eiin": "120021",
+        "name": "BIRAMPUR GOVT. COLLEGE (বিরামপুর সরকারি কলেজ)",
+        "alt_names": "Birampur Govt College Birampur College বিরামপুর সরকারি কলেজ",
+        "board": "dinajpur",
+        "district": "দিনাজপুর",
+        "thana": "বিরামপুর",
+        "type": "College"
+    },
+    {
+        "eiin": "120022",
+        "name": "BIRAMPUR MOHILA DEGREE COLLEGE (বিরামপুর মহিলা ডিগ্রি কলেজ)",
+        "alt_names": "Birampur Mohila Degree College Birampur Womens College বিরামপুর মহিলা ডিগ্রি কলেজ",
+        "board": "dinajpur",
+        "district": "দিনাজপুর",
+        "thana": "বিরামপুর",
+        "type": "College"
+    },
+    {
+        "eiin": "120023",
+        "name": "BIRAMPUR CITY COLLEGE (বিরামপুর সিটি কলেজ)",
+        "alt_names": "Birampur City College বিরামপুর সিটি কলেজ",
+        "board": "dinajpur",
+        "district": "দিনাজপুর",
+        "thana": "বিরামপুর",
+        "type": "College"
+    },
+    {
         "eiin": "120024",
         "name": "Janata Ideal Ju High School",
         "alt_names": "Janata Ideal Ju High School দিনাজপুর",
@@ -2097,6 +2142,51 @@ INSTITUTES = [
         "type": "Madrasah"
     },
     {
+        "eiin": "120125",
+        "name": "BIRGANJ MOHILA DEGREE COLLEGE (বীরগঞ্জ মহিলা ডিগ্রি কলেজ)",
+        "alt_names": "Birganj Mohila Degree College Birganj Womens College বীরগঞ্জ মহিলা ডিগ্রি কলেজ",
+        "board": "dinajpur",
+        "district": "দিনাজপুর",
+        "thana": "বীরগঞ্জ",
+        "type": "College"
+    },
+    {
+        "eiin": "120126",
+        "name": "BIRGANJ TECHNICAL AND BM COLLEGE (বীরগঞ্জ টেকনিক্যাল এন্ড বিএম কলেজ)",
+        "alt_names": "Birganj Technical And BM College বীরগঞ্জ টেকনিক্যাল কলেজ",
+        "board": "tec",
+        "district": "দিনাজপুর",
+        "thana": "বীরগঞ্জ",
+        "type": "Technical"
+    },
+    {
+        "eiin": "120127",
+        "name": "BIRGANJ DEGREE COLLEGE (বীরগঞ্জ ডিগ্রি কলেজ)",
+        "alt_names": "Birganj Degree College বীরগঞ্জ ডিগ্রি কলেজ",
+        "board": "dinajpur",
+        "district": "দিনাজপুর",
+        "thana": "বীরগঞ্জ",
+        "type": "College"
+    },
+    {
+        "eiin": "120128",
+        "name": "GOLAPGANJ COLLEGE, BIRGANJ (গোলাপগঞ্জ কলেজ বীরগঞ্জ)",
+        "alt_names": "Golapganj College Birganj গোলাপগঞ্জ কলেজ",
+        "board": "dinajpur",
+        "district": "দিনাজপুর",
+        "thana": "বীরগঞ্জ",
+        "type": "College"
+    },
+    {
+        "eiin": "120129",
+        "name": "JHARBARI COLLEGE, BIRGANJ (ঝাড়বাড়ী কলেজ বীরগঞ্জ)",
+        "alt_names": "Jharbari College Birganj ঝাড়বাড়ী কলেজ বীরগঞ্জ",
+        "board": "dinajpur",
+        "district": "দিনাজপুর",
+        "thana": "বীরগঞ্জ",
+        "type": "College"
+    },
+    {
         "eiin": "120130",
         "name": "Nawpara School And College",
         "alt_names": "Nawpara School And College দিনাজপুর",
@@ -2672,21 +2762,57 @@ INSTITUTES = [
         "type": "Madrasah"
     },
     {
+        "eiin": "120197",
+        "name": "BIRAL GOVT. COLLEGE (বিরল সরকারি কলেজ)",
+        "alt_names": "Biral Govt College Biral Degree College বিরল সরকারি কলেজ বিরল ডিগ্রি কলেজ",
+        "board": "dinajpur",
+        "district": "দিনাজপুর",
+        "thana": "বিরল",
+        "type": "College"
+    },
+    {
+        "eiin": "120198",
+        "name": "DHAMOIR COLLEGE, BIRAL (ধামইর কলেজ বিরল)",
+        "alt_names": "Dhamoir College Biral ধামইর কলেজ",
+        "board": "dinajpur",
+        "district": "দিনাজপুর",
+        "thana": "বিরল",
+        "type": "College"
+    },
+    {
+        "eiin": "120199",
+        "name": "MAINUL HASAN COLLEGE, BIRAL (মইনুল হাসান কলেজ বিরল)",
+        "alt_names": "Mainul Hasan College Biral মইনুল হাসান কলেজ",
+        "board": "dinajpur",
+        "district": "দিনাজপুর",
+        "thana": "বিরল",
+        "type": "College"
+    },
+    {
         "eiin": "120200",
         "name": "SETABGANJ PILOT GOVT. HIGH SCHOOL, BOCHAGANJ (সেতাবগঞ্জ পাইলট সরকারি উচ্চ বিদ্যালয়)",
-        "alt_names": "Setabganj Pilot Govt High School Bochaganj",
+        "alt_names": "BM Biral Bochaganj College Govt High Pilot School Setabganj Technical and কলেজ টেকনিক্যাল বিরল",
         "board": "dinajpur",
         "district": "দিনাজপুর",
         "thana": "বোচাগঞ্জ",
-        "type": "School"
+        "type": "Technical"
     },
     {
         "eiin": "120201",
         "name": "SETABGANJ GOVT. COLLEGE, BOCHAGANJ (সেতাবগঞ্জ সরকারি কলেজ)",
-        "alt_names": "Setabganj Govt College Bochaganj",
+        "alt_names": "Biral Birol Bochaganj College Govt Mohila Setabganj Womens কলেজ বিরল মহিলা",
         "board": "dinajpur",
         "district": "দিনাজপুর",
         "thana": "বোচাগঞ্জ",
+        "type": "College"
+    },
+    {
+        "eiin": "120202",
+        "name": "JAGATPUR COLLEGE, BIRAL (জগৎপুর কলেজ বিরল)",
+        "alt_names": "Jagatpur College Biral জগৎপুর কলেজ",
+        "board": "dinajpur",
+        "district": "দিনাজপুর",
+        "thana": "বিরল",
         "type": "College"
     },
     {
@@ -3228,6 +3354,42 @@ INSTITUTES = [
         "district": "দিনাজপুর",
         "thana": "",
         "type": "Madrasah"
+    },
+    {
+        "eiin": "120268",
+        "name": "SETABGANJ GOVT. COLLEGE (সেতাবগঞ্জ সরকারি কলেজ)",
+        "alt_names": "Setabganj Govt College সেতাবগঞ্জ সরকারি কলেজ বোচাগঞ্জ",
+        "board": "dinajpur",
+        "district": "দিনাজপুর",
+        "thana": "বোচাগঞ্জ",
+        "type": "College"
+    },
+    {
+        "eiin": "120269",
+        "name": "SETABGANJ MOHILA COLLEGE (সেতাবগঞ্জ মহিলা কলেজ)",
+        "alt_names": "Setabganj Mohila College সেতাবগঞ্জ মহিলা কলেজ",
+        "board": "dinajpur",
+        "district": "দিনাজপুর",
+        "thana": "বোচাগঞ্জ",
+        "type": "College"
+    },
+    {
+        "eiin": "120270",
+        "name": "BOCHAGANJ DEGREE COLLEGE (বোচাগঞ্জ ডিগ্রি কলেজ)",
+        "alt_names": "Bochaganj Degree College বোচাগঞ্জ ডিগ্রি কলেজ",
+        "board": "dinajpur",
+        "district": "দিনাজপুর",
+        "thana": "বোচাগঞ্জ",
+        "type": "College"
+    },
+    {
+        "eiin": "120271",
+        "name": "MAHER PUR COLLEGE, BOCHAGANJ (মাহেরপুর কলেজ বোচাগঞ্জ)",
+        "alt_names": "Maher Pur College Bochaganj মাহেরপুর কলেজ",
+        "board": "dinajpur",
+        "district": "দিনাজপুর",
+        "thana": "বোচাগঞ্জ",
+        "type": "College"
     },
     {
         "eiin": "120273",
@@ -4239,17 +4401,17 @@ INSTITUTES = [
     },
     {
         "eiin": "120387",
-        "name": "Singanogor Darul Ulum Dakil Madrasha",
-        "alt_names": "Singanogor Darul Ulum Dakil Madrasha দিনাজপুর Chirirbandar Chirir Bandar চিরিরবন্দর",
+        "name": "ABDUL HAQUE HIGH SCHOOL & COLLEGE (আব্দুল হক উচ্চ বিদ্যালয় ও কলেজ)",
+        "alt_names": "Abdul Bandar Chirir Chirirbandar College Dakil Darul Haque High Madrasha School Singanogor Ulum and আব্দুল কলেজ চিরিরবন্দর দিনাজপুর হক",
         "board": "madrasah",
         "district": "দিনাজপুর",
         "thana": "চিরিরবন্দর",
-        "type": "Madrasah"
+        "type": "College"
     },
     {
         "eiin": "120388",
         "name": "ICHHAMOTI WOMEN'S DEGREE COLLEGE (ইছামতী মহিলা ডিগ্রি কলেজ)",
-        "alt_names": "Ichhamoti Womens Degree College Ichhamati Mohila College Chirirbandar Chirir Bandar চিরিরবন্দর",
+        "alt_names": "Bandar Chirir Chirirbandar College Degree Ichamati Ichhamati Ichhamoti Mohila Womens ইছামতি কলেজ চিরিরবন্দর মহিলা",
         "board": "dinajpur",
         "district": "দিনাজপুর",
         "thana": "চিরিরবন্দর",
@@ -4267,7 +4429,7 @@ INSTITUTES = [
     {
         "eiin": "120390",
         "name": "AMBARI MOHILA COLLEGE (আমবাড়ি মহিলা কলেজ)",
-        "alt_names": "Ambari Mohila College Ambari Womens College আমবাড়ি Chirirbandar Chirir Bandar চিরিরবন্দর",
+        "alt_names": "Ambari Bandar Chirir Chirirbandar College Mohila Womens আমবাড়ি আমবাড়ী কলেজ চিরিরবন্দর মহিলা",
         "board": "dinajpur",
         "district": "দিনাজপুর",
         "thana": "চিরিরবন্দর",
@@ -4276,7 +4438,7 @@ INSTITUTES = [
     {
         "eiin": "120391",
         "name": "CHIRIRBANDAR DEGREE COLLEGE (চিরিরবন্দর ডিগ্রি কলেজ)",
-        "alt_names": "Chirirbandar College Chirirbandar Degree College চিরিরবন্দর কলেজ Chirir Bandar",
+        "alt_names": "Bandar Chirir Chirirbandar College Degree কলেজ চিরিরবন্দর ডিগ্রি",
         "board": "dinajpur",
         "district": "দিনাজপুর",
         "thana": "চিরিরবন্দর",
@@ -4285,7 +4447,7 @@ INSTITUTES = [
     {
         "eiin": "120392",
         "name": "CHIRIRBANDAR MOHILA COLLEGE (চিরিরবন্দর মহিলা কলেজ)",
-        "alt_names": "Chirirbandar Women's College Chirirbandar Mohila Degree College Chirir Bandar চিরিরবন্দর",
+        "alt_names": "Bandar Chirir Chirirbandar College Degree Mohila Women's কলেজ চিরিরবন্দর মহিলা",
         "board": "dinajpur",
         "district": "দিনাজপুর",
         "thana": "চিরিরবন্দর",
@@ -4321,7 +4483,7 @@ INSTITUTES = [
     {
         "eiin": "120396",
         "name": "RANIRBANDAR WOMEN'S COLLEGE (রাণীরবন্দর মহিলা কলেজ)",
-        "alt_names": "Ranirbandar Womens College Ranibandar Mohila College রাণীরবন্দর Chirirbandar Chirir Bandar চিরিরবন্দর",
+        "alt_names": "Bandar Chirir Chirirbandar College Mohila Ranibandar Ranirbandar Womens কলেজ চিরিরবন্দর মহিলা রাণীরবন্দর",
         "board": "dinajpur",
         "district": "দিনাজপুর",
         "thana": "চিরিরবন্দর",
@@ -4330,7 +4492,7 @@ INSTITUTES = [
     {
         "eiin": "120397",
         "name": "BINNAKURI COLLEGE (বিন্যাকুড়ী কলেজ)",
-        "alt_names": "Binnakuri College Binakuri College বিন্যাকুড়ী কলেজ Chirirbandar Chirir Bandar চিরিরবন্দর",
+        "alt_names": "Bandar Binakuri Binnakuri Chirir Chirirbandar College কলেজ চিরিরবন্দর বিনাকুড়ি বিন্যাকুড়ী",
         "board": "dinajpur",
         "district": "দিনাজপুর",
         "thana": "চিরিরবন্দর",
@@ -4796,6 +4958,42 @@ INSTITUTES = [
         "type": "Madrasah"
     },
     {
+        "eiin": "120449",
+        "name": "BANGABANDHU COLLEGE, FULBARI (বঙ্গবন্ধু কলেজ ফুলবাড়ী)",
+        "alt_names": "Bangabandhu College Fulbari বঙ্গবন্ধু কলেজ ফুলবাড়ী",
+        "board": "dinajpur",
+        "district": "দিনাজপুর",
+        "thana": "ফুলবাড়ী",
+        "type": "College"
+    },
+    {
+        "eiin": "120450",
+        "name": "SHAHID SMRITY ADARSHA COLLEGE, FULBARI (শহীদ স্মৃতি আদর্শ কলেজ ফুলবাড়ী)",
+        "alt_names": "Shahid Smrity Adarsha College Fulbari শহীদ স্মৃতি আদর্শ কলেজ",
+        "board": "dinajpur",
+        "district": "দিনাজপুর",
+        "thana": "ফুলবাড়ী",
+        "type": "College"
+    },
+    {
+        "eiin": "120451",
+        "name": "PHULBARI GOVT. COLLEGE (ফুলবাড়ী সরকারি কলেজ)",
+        "alt_names": "Phulbari Govt College Fulbari Govt College ফুলবাড়ী সরকারি কলেজ ফুলবাড়ি",
+        "board": "dinajpur",
+        "district": "দিনাজপুর",
+        "thana": "ফুলবাড়ী",
+        "type": "College"
+    },
+    {
+        "eiin": "120452",
+        "name": "PHULBARI MOHILA DEGREE COLLEGE (ফুলবাড়ী মহিলা ডিগ্রি কলেজ)",
+        "alt_names": "Phulbari Mohila Degree College Fulbari Womens College ফুলবাড়ী মহিলা ডিগ্রি কলেজ",
+        "board": "dinajpur",
+        "district": "দিনাজপুর",
+        "thana": "ফুলবাড়ী",
+        "type": "College"
+    },
+    {
         "eiin": "120454",
         "name": "Pukhuri  School & College",
         "alt_names": "Pukhuri  School & College দিনাজপুর",
@@ -5138,6 +5336,42 @@ INSTITUTES = [
         "type": "Madrasah"
     },
     {
+        "eiin": "120498",
+        "name": "GHORAGHAT ADARSHA MAHABIDDALAY (ঘোড়াঘাট আদর্শ মহাবিদ্যালয়)",
+        "alt_names": "Ghoraghat Adarsha Mahabiddalay ঘোড়াঘাট আদর্শ মহাবিদ্যালয়",
+        "board": "dinajpur",
+        "district": "দিনাজপুর",
+        "thana": "ঘোড়াঘাট",
+        "type": "College"
+    },
+    {
+        "eiin": "120499",
+        "name": "GHORAGHAT DEGREE COLLEGE (ঘোড়াঘাট ডিগ্রি কলেজ)",
+        "alt_names": "Ghoraghat Degree College ঘোড়াঘাট ডিগ্রি কলেজ",
+        "board": "dinajpur",
+        "district": "দিনাজপুর",
+        "thana": "ঘোড়াঘাট",
+        "type": "College"
+    },
+    {
+        "eiin": "120501",
+        "name": "GHORAGHAT WOMEN'S DEGREE COLLEGE (ঘোড়াঘাট মহিলা ডিগ্রি কলেজ)",
+        "alt_names": "Ghoraghat Womens Degree College ঘোড়াঘাট মহিলা ডিগ্রি কলেজ",
+        "board": "dinajpur",
+        "district": "দিনাজপুর",
+        "thana": "ঘোড়াঘাট",
+        "type": "College"
+    },
+    {
+        "eiin": "120502",
+        "name": "DUGDUGI HAT COLLEGE, GHORAGHAT (দুগদুগী হাট কলেজ)",
+        "alt_names": "Dugdugi Hat College দুগদুগী হাট কলেজ ঘোড়াঘাট",
+        "board": "dinajpur",
+        "district": "দিনাজপুর",
+        "thana": "ঘোড়াঘাট",
+        "type": "College"
+    },
+    {
         "eiin": "120503",
         "name": "Dangapara Girls High School",
         "alt_names": "Dangapara Girls High School দিনাজপুর",
@@ -5444,13 +5678,31 @@ INSTITUTES = [
         "type": "Madrasah"
     },
     {
-        "eiin": "120540",
-        "name": "Kamore High School",
-        "alt_names": "Kamore High School দিনাজপুর",
+        "eiin": "120538",
+        "name": "HAKIMPUR GOVT. COLLEGE (হাকিমপুর সরকারি কলেজ)",
+        "alt_names": "Hakimpur Govt College Hakimpur College হাকিমপুর সরকারি কলেজ হিলি",
         "board": "dinajpur",
         "district": "দিনাজপুর",
-        "thana": "",
-        "type": "School"
+        "thana": "হাকিমপুর",
+        "type": "College"
+    },
+    {
+        "eiin": "120539",
+        "name": "HAKIMPUR WOMEN'S DEGREE COLLEGE (হাকিমপুর মহিলা ডিগ্রি কলেজ)",
+        "alt_names": "Hakimpur Womens Degree College হাকিমপুর মহিলা ডিগ্রি কলেজ",
+        "board": "dinajpur",
+        "district": "দিনাজপুর",
+        "thana": "হাকিমপুর",
+        "type": "College"
+    },
+    {
+        "eiin": "120540",
+        "name": "BANGLA HILI DEGREE COLLEGE (বাংলা হিলি ডিগ্রি কলেজ)",
+        "alt_names": "Bangla College Degree High Hili Kamore School কলেজ ডিগ্রি দিনাজপুর বাংলাহিলি",
+        "board": "dinajpur",
+        "district": "দিনাজপুর",
+        "thana": "হাকিমপুর",
+        "type": "College"
     },
     {
         "eiin": "120541",
@@ -5914,7 +6166,7 @@ INSTITUTES = [
     {
         "eiin": "120600",
         "name": "HAKIMPUR GOVT. DEGREE COLLEGE, HILI (হাকিমপুর সরকারি ডিগ্রি কলেজ হিলি)",
-        "alt_names": "Hakimpur Govt Degree College Hili",
+        "alt_names": "College Degree Govt Hakimpur Hili Kaharol কলেজ কাহারোল ডিগ্রি",
         "board": "dinajpur",
         "district": "দিনাজপুর",
         "thana": "হাকিমপুর",
@@ -5927,6 +6179,24 @@ INSTITUTES = [
         "board": "dinajpur",
         "district": "দিনাজপুর",
         "thana": "হাকিমপুর",
+        "type": "College"
+    },
+    {
+        "eiin": "120602",
+        "name": "KAHAROLE WOMEN'S DEGREE COLLEGE (কাহারোল মহিলা ডিগ্রি কলেজ)",
+        "alt_names": "Kaharole Womens Degree College কাহারোল মহিলা ডিগ্রি কলেজ",
+        "board": "dinajpur",
+        "district": "দিনাজপুর",
+        "thana": "কাহারোল",
+        "type": "College"
+    },
+    {
+        "eiin": "120603",
+        "name": "RAMCHANDRAPUR COLLEGE, KAHAROL (রামচন্দ্রপুর কলেজ কাহারোল)",
+        "alt_names": "Ramchandrapur College Kaharol রামচন্দ্রপুর কলেজ",
+        "board": "dinajpur",
+        "district": "দিনাজপুর",
+        "thana": "কাহারোল",
         "type": "College"
     },
     {
@@ -6640,6 +6910,51 @@ INSTITUTES = [
         "type": "Madrasah"
     },
     {
+        "eiin": "120695",
+        "name": "PAKERHAT DEGREE COLLEGE (পাকেরহাট ডিগ্রি কলেজ)",
+        "alt_names": "Pakerhat Degree College পাকেরহাট ডিগ্রি কলেজ খানসামা",
+        "board": "dinajpur",
+        "district": "দিনাজপুর",
+        "thana": "খানসামা",
+        "type": "College"
+    },
+    {
+        "eiin": "120696",
+        "name": "PAKERHAT MOHILA COLLEGE (পাকেরহাট মহিলা কলেজ)",
+        "alt_names": "Pakerhat Mohila College পাকেরহাট মহিলা কলেজ",
+        "board": "dinajpur",
+        "district": "দিনাজপুর",
+        "thana": "খানসামা",
+        "type": "College"
+    },
+    {
+        "eiin": "120697",
+        "name": "KHANSAMA DEGREE COLLEGE (খানসামা ডিগ্রি কলেজ)",
+        "alt_names": "Khansama Degree College খানসামা ডিগ্রি কলেজ",
+        "board": "dinajpur",
+        "district": "দিনাজপুর",
+        "thana": "খানসামা",
+        "type": "College"
+    },
+    {
+        "eiin": "120698",
+        "name": "BANGLA BHASA COLLEGE, KHANSAMA (বাংলা ভাষা কলেজ খানসামা)",
+        "alt_names": "Bangla Bhasa College Khansama বাংলা ভাষা কলেজ",
+        "board": "dinajpur",
+        "district": "দিনাজপুর",
+        "thana": "খানসামা",
+        "type": "College"
+    },
+    {
+        "eiin": "120699",
+        "name": "KHANSAMA WOMEN'S COLLEGE (খানসামা মহিলা কলেজ)",
+        "alt_names": "Khansama Womens College খানসামা মহিলা কলেজ",
+        "board": "dinajpur",
+        "district": "দিনাজপুর",
+        "thana": "খানসামা",
+        "type": "College"
+    },
+    {
         "eiin": "120700",
         "name": "KHANSAMA PILOT HIGH SCHOOL (খানসামা পাইলট মডেল উচ্চ বিদ্যালয়)",
         "alt_names": "Khansama Pilot High School",
@@ -6651,11 +6966,11 @@ INSTITUTES = [
     {
         "eiin": "120701",
         "name": "PAKERHAT HIGH SCHOOL, KHANSAMA (পাকেরহাট উচ্চ বিদ্যালয় খানসামা)",
-        "alt_names": "Pakerhat High School Khansama",
+        "alt_names": "Alok Alokdihi College Dihi High Ideal Khansama Pakerhat School আলোকডিহি কলেজ",
         "board": "dinajpur",
         "district": "দিনাজপুর",
         "thana": "খানসামা",
-        "type": "School"
+        "type": "College"
     },
     {
         "eiin": "120702",
@@ -6800,6 +7115,15 @@ INSTITUTES = [
         "district": "দিনাজপুর",
         "thana": "",
         "type": "School"
+    },
+    {
+        "eiin": "120723",
+        "name": "SAINT PHILIP'S HIGH SCHOOL & COLLEGE (সেন্ট ফিলিপস্ হাই স্কুল অ্যান্ড কলেজ)",
+        "alt_names": "St Philips High School and College সেন্ট ফিলিপস স্কুল এন্ড কলেজ",
+        "board": "dinajpur",
+        "district": "দিনাজপুর",
+        "thana": "দিনাজপুর সদর",
+        "type": "College"
     },
     {
         "eiin": "120724",
@@ -7586,6 +7910,123 @@ INSTITUTES = [
         "district": "দিনাজপুর",
         "thana": "দিনাজপুর সদর",
         "type": "Madrasah"
+    },
+    {
+        "eiin": "120816",
+        "name": "DINAJPUR K. B. M. COLLEGE (দিনাজপুর কে. বি. এম. কলেজ)",
+        "alt_names": "Dinajpur KBM College K.B.M. College দিনাজপুর কেবিএম কলেজ কে বি এম কলেজ",
+        "board": "dinajpur",
+        "district": "দিনাজপুর",
+        "thana": "দিনাজপুর সদর",
+        "type": "College"
+    },
+    {
+        "eiin": "120817",
+        "name": "DINAJPUR CITY COLLEGE (দিনাজপুর সিটি কলেজ)",
+        "alt_names": "Dinajpur City College সিটি কলেজ দিনাজপুর",
+        "board": "dinajpur",
+        "district": "দিনাজপুর",
+        "thana": "দিনাজপুর সদর",
+        "type": "College"
+    },
+    {
+        "eiin": "120818",
+        "name": "DINAJPUR GOVT. COLLEGE (দিনাজপুর সরকারি কলেজ)",
+        "alt_names": "Dinajpur Govt College Dinajpur Government College দিনাজপুর সরকারি কলেজ দিনাজপুর সদর",
+        "board": "dinajpur",
+        "district": "দিনাজপুর",
+        "thana": "দিনাজপুর সদর",
+        "type": "College"
+    },
+    {
+        "eiin": "120819",
+        "name": "DINAJPUR ISLAMIA WOMEN'S COLLEGE (দিনাজপুর ইসলামিয়া মহিলা কলেজ)",
+        "alt_names": "Dinajpur Islamia Womens College Islamia Mohila College ইসলামিয়া মহিলা কলেজ",
+        "board": "dinajpur",
+        "district": "দিনাজপুর",
+        "thana": "দিনাজপুর সদর",
+        "type": "College"
+    },
+    {
+        "eiin": "120820",
+        "name": "ADARSHA MAHABIDDALAYA, DINAJPUR (আদর্শ মহাবিদ্যালয় দিনাজপুর)",
+        "alt_names": "Adarsha College Dinajpur আদর্শ কলেজ আদর্শ মহাবিদ্যালয় দিনাজপুর",
+        "board": "dinajpur",
+        "district": "দিনাজপুর",
+        "thana": "দিনাজপুর সদর",
+        "type": "College"
+    },
+    {
+        "eiin": "120821",
+        "name": "DINAJPUR SANGEET DEGREE COLLEGE (দিনাজপুর সঙ্গীত ডিগ্রি কলেজ)",
+        "alt_names": "Dinajpur Sangeet College দিনাজপুর সংগীত কলেজ",
+        "board": "dinajpur",
+        "district": "দিনাজপুর",
+        "thana": "দিনাজপুর সদর",
+        "type": "College"
+    },
+    {
+        "eiin": "120822",
+        "name": "DINAJPUR GOVT. WOMEN'S COLLEGE (দিনাজপুর সরকারি মহিলা কলেজ)",
+        "alt_names": "Dinajpur Govt Womens College Dinajpur Mohila College দিনাজপুর সরকারি মহিলা কলেজ",
+        "board": "dinajpur",
+        "district": "দিনাজপুর",
+        "thana": "দিনাজপুর সদর",
+        "type": "College"
+    },
+    {
+        "eiin": "120823",
+        "name": "UTTARA RESIDENTIAL COLLEGE, DINAJPUR (উত্তরা রেসিডেন্সিয়াল কলেজ)",
+        "alt_names": "Uttara Residential College Dinajpur উত্তরা কলেজ দিনাজপুর",
+        "board": "dinajpur",
+        "district": "দিনাজপুর",
+        "thana": "দিনাজপুর সদর",
+        "type": "College"
+    },
+    {
+        "eiin": "120824",
+        "name": "OXFORD COLLEGE, DINAJPUR (অক্সফোর্ড কলেজ দিনাজপুর)",
+        "alt_names": "Oxford College Dinajpur অক্সফোর্ড কলেজ",
+        "board": "dinajpur",
+        "district": "দিনাজপুর",
+        "thana": "দিনাজপুর সদর",
+        "type": "College"
+    },
+    {
+        "eiin": "120825",
+        "name": "DINAJPUR TECHNICAL COLLEGE (দিনাজপুর টেকনিক্যাল কলেজ)",
+        "alt_names": "Dinajpur Technical College দিনাজপুর কারিগরি কলেজ",
+        "board": "tec",
+        "district": "দিনাজপুর",
+        "thana": "দিনাজপুর সদর",
+        "type": "Technical"
+    },
+    {
+        "eiin": "120826",
+        "name": "ROYAL COLLEGE, DINAJPUR (রয়েল কলেজ দিনাজপুর)",
+        "alt_names": "Royal College Dinajpur রয়েল কলেজ",
+        "board": "dinajpur",
+        "district": "দিনাজপুর",
+        "thana": "দিনাজপুর সদর",
+        "type": "College"
+    },
+    {
+        "eiin": "120827",
+        "name": "DINAJPUR MODEL COLLEGE (দিনাজপুর মডেল কলেজ)",
+        "alt_names": "Dinajpur Model College মডেল কলেজ দিনাজপুর",
+        "board": "dinajpur",
+        "district": "দিনাজপুর",
+        "thana": "দিনাজপুর সদর",
+        "type": "College"
+    },
+    {
+        "eiin": "120828",
+        "name": "IMPERIAL COLLEGE, DINAJPUR (ইম্পেরিয়াল কলেজ দিনাজপুর)",
+        "alt_names": "Imperial College Dinajpur ইম্পেরিয়াল কলেজ",
+        "board": "dinajpur",
+        "district": "দিনাজপুর",
+        "thana": "দিনাজপুর সদর",
+        "type": "College"
     },
     {
         "eiin": "120829",
@@ -8523,12 +8964,57 @@ INSTITUTES = [
         "type": "Madrasah"
     },
     {
-        "eiin": "120947",
-        "name": "Bhaduria School And College",
-        "alt_names": "Bhaduria School And College দিনাজপুর",
+        "eiin": "120939",
+        "name": "AFTABGANJ MOHILA COLLEGE (আফতাবগঞ্জ মহিলা কলেজ)",
+        "alt_names": "Aftabganj Mohila College আফতাবগঞ্জ মহিলা কলেজ",
         "board": "dinajpur",
         "district": "দিনাজপুর",
-        "thana": "",
+        "thana": "নবাবগঞ্জ",
+        "type": "College"
+    },
+    {
+        "eiin": "120940",
+        "name": "NAWABGANJ MOHILA DEGREE COLLEGE (নবাবগঞ্জ মহিলা ডিগ্রি কলেজ)",
+        "alt_names": "Nawabganj Mohila Degree College নবাবগঞ্জ মহিলা ডিগ্রি কলেজ",
+        "board": "dinajpur",
+        "district": "দিনাজপুর",
+        "thana": "নবাবগঞ্জ",
+        "type": "College"
+    },
+    {
+        "eiin": "120941",
+        "name": "NAWABGANJ DEGREE COLLEGE (নবাবগঞ্জ ডিগ্রি কলেজ)",
+        "alt_names": "Nawabganj Degree College নবাবগঞ্জ ডিগ্রি কলেজ",
+        "board": "dinajpur",
+        "district": "দিনাজপুর",
+        "thana": "নবাবগঞ্জ",
+        "type": "College"
+    },
+    {
+        "eiin": "120942",
+        "name": "AFTABGANJ DEGREE COLLEGE (আফতাবগঞ্জ ডিগ্রি কলেজ)",
+        "alt_names": "Aftabganj Degree College আফতাবগঞ্জ ডিগ্রি কলেজ",
+        "board": "dinajpur",
+        "district": "দিনাজপুর",
+        "thana": "নবাবগঞ্জ",
+        "type": "College"
+    },
+    {
+        "eiin": "120943",
+        "name": "DAUDPUR DEGREE COLLEGE, NAWABGANJ (দাউদপুর ডিগ্রি কলেজ)",
+        "alt_names": "Daudpur Degree College Nawabganj দাউদপুর ডিগ্রি কলেজ",
+        "board": "dinajpur",
+        "district": "দিনাজপুর",
+        "thana": "নবাবগঞ্জ",
+        "type": "College"
+    },
+    {
+        "eiin": "120947",
+        "name": "BHADURIA SCHOOL AND COLLEGE (ভাদুরিয়া স্কুল অ্যান্ড কলেজ)",
+        "alt_names": "And Bhaduria College School and অ্যান্ড কলেজ দিনাজপুর ভাদুরিয়া স্কুল",
+        "board": "dinajpur",
+        "district": "দিনাজপুর",
+        "thana": "নবাবগঞ্জ",
         "type": "College"
     },
     {
@@ -8552,7 +9038,7 @@ INSTITUTES = [
     {
         "eiin": "120950",
         "name": "AMENA-BAKI RESIDENTIAL MODEL SCHOOL & COLLEGE (আমেনা বাকী রেসিডেন্সিয়াল মডেল স্কুল অ্যান্ড কলেজ)",
-        "alt_names": "Amena Baki Residential Model School & College Amena Baki School Amena Baki College আমেনা বাকী রেসিডেন্সিয়াল মডেল স্কুল অ্যান্ড কলেজ আমেনা বাকী Chirirbandar চিরিরবন্দর",
+        "alt_names": "& Amena Baki Chirirbandar College Model Residential School and অ্যান্ড আমেনা কলেজ চিরিরবন্দর বাকী মডেল রেসিডেন্সিয়াল স্কুল",
         "board": "dinajpur",
         "district": "দিনাজপুর",
         "thana": "চিরিরবন্দর",
@@ -9468,21 +9954,93 @@ INSTITUTES = [
         "type": "Madrasah"
     },
     {
-        "eiin": "121064",
-        "name": "Cantt.Public School & College",
-        "alt_names": "Cantt.Public School & College দিনাজপুর",
+        "eiin": "121056",
+        "name": "PARBATIPUR TECHNICAL & BM COLLEGE (পার্বতীপুর টেকনিক্যাল অ্যান্ড বিএম কলেজ)",
+        "alt_names": "Parbatipur Technical and BM College পার্বতীপুর টেকনিক্যাল কলেজ",
+        "board": "tec",
+        "district": "দিনাজপুর",
+        "thana": "পার্বতীপুর",
+        "type": "Technical"
+    },
+    {
+        "eiin": "121057",
+        "name": "JNANANKUR PILOT MODEL HIGH SCHOOL & COLLEGE (জ্ঞানাঙ্কুর পাইলট মডেল উচ্চ বিদ্যালয় ও কলেজ)",
+        "alt_names": "Jnanankur Pilot Model High School and College জ্ঞানাঙ্কুর মডেল কলেজ",
         "board": "dinajpur",
         "district": "দিনাজপুর",
-        "thana": "",
+        "thana": "পার্বতীপুর",
+        "type": "College"
+    },
+    {
+        "eiin": "121058",
+        "name": "PARBATIPUR DEGREE COLLEGE (পার্বতীপুর ডিগ্রি কলেজ)",
+        "alt_names": "Parbatipur Degree College পার্বতীপুর ডিগ্রি কলেজ পার্বতীপুর",
+        "board": "dinajpur",
+        "district": "দিনাজপুর",
+        "thana": "পার্বতীপুর",
+        "type": "College"
+    },
+    {
+        "eiin": "121059",
+        "name": "PARBATIPUR ADARSHA DEGREE COLLEGE (পার্বতীপুর আদর্শ ডিগ্রি কলেজ)",
+        "alt_names": "Parbatipur Adarsha Degree College পার্বতীপুর আদর্শ ডিগ্রি কলেজ",
+        "board": "dinajpur",
+        "district": "দিনাজপুর",
+        "thana": "পার্বতীপুর",
+        "type": "College"
+    },
+    {
+        "eiin": "121060",
+        "name": "AMBARI DEGREE COLLEGE, PARBATIPUR (আমবাড়ী ডিগ্রি কলেজ)",
+        "alt_names": "Ambari Degree College Parbatipur আমবাড়ী ডিগ্রি কলেজ পার্বতীপুর",
+        "board": "dinajpur",
+        "district": "দিনাজপুর",
+        "thana": "পার্বতীপুর",
+        "type": "College"
+    },
+    {
+        "eiin": "121061",
+        "name": "BHOWANIPUR DEGREE COLLEGE (ভবানীপুর ডিগ্রি কলেজ)",
+        "alt_names": "Bhowanipur Degree College ভবানীপুর ডিগ্রি কলেজ পার্বতীপুর",
+        "board": "dinajpur",
+        "district": "দিনাজপুর",
+        "thana": "পার্বতীপুর",
+        "type": "College"
+    },
+    {
+        "eiin": "121062",
+        "name": "PARBATIPUR WOMEN'S DEGREE COLLEGE (পার্বতীপুর মহিলা ডিগ্রি কলেজ)",
+        "alt_names": "Parbatipur Womens Degree College Parbatipur Mohila College পার্বতীপুর মহিলা ডিগ্রি কলেজ",
+        "board": "dinajpur",
+        "district": "দিনাজপুর",
+        "thana": "পার্বতীপুর",
+        "type": "College"
+    },
+    {
+        "eiin": "121063",
+        "name": "MANMATHAPUR DEGREE COLLEGE (মন্মথপুর ডিগ্রি কলেজ)",
+        "alt_names": "Manmathapur Degree College মন্মথপুর ডিগ্রি কলেজ পার্বতীপুর",
+        "board": "dinajpur",
+        "district": "দিনাজপুর",
+        "thana": "পার্বতীপুর",
+        "type": "College"
+    },
+    {
+        "eiin": "121064",
+        "name": "CANTONMENT PUBLIC SCHOOL & COLLEGE, SAHID MAHBUB SENANIBASH (ক্যান্টনমেন্ট পাবলিক স্কুল ও কলেজ, শহীদ মাহবুব সেনানিবাস)",
+        "alt_names": "& CPSC Cantonment Cantt.Public College College, Kholahati Mahbub Parbatipur Public Sahid School Senanibash and কলেজ ক্যান্টনমেন্ট খোলাহাটী দিনাজপুর পাবলিক মাহবুব শহীদ সেনানিবাস",
+        "board": "dinajpur",
+        "district": "দিনাজপুর",
+        "thana": "পার্বতীপুর",
         "type": "College"
     },
     {
         "eiin": "121065",
-        "name": "Rajabashor School And College",
-        "alt_names": "Rajabashor School And College দিনাজপুর",
+        "name": "KHOLAHATI DEGREE COLLEGE (খোলাহাটী ডিগ্রি কলেজ)",
+        "alt_names": "And College Degree Kholahati Rajabashor School কলেজ খোলাহাটি ডিগ্রি দিনাজপুর পার্বতীপুর",
         "board": "dinajpur",
         "district": "দিনাজপুর",
-        "thana": "",
+        "thana": "পার্বতীপুর",
         "type": "College"
     },
     {
@@ -9726,6 +10284,15 @@ INSTITUTES = [
         "board": "dinajpur",
         "district": "দিনাজপুর",
         "thana": "",
+        "type": "College"
+    },
+    {
+        "eiin": "121099",
+        "name": "FULCHHARI DEGREE COLLEGE (ফুলছড়ি ডিগ্রি কলেজ)",
+        "alt_names": "Fulchhari Degree College ফুলছড়ি ডিগ্রি কলেজ",
+        "board": "dinajpur",
+        "district": "গাইবান্ধা",
+        "thana": "ফুলছড়ি",
         "type": "College"
     },
     {
@@ -10438,6 +11005,33 @@ INSTITUTES = [
         "type": "Madrasah"
     },
     {
+        "eiin": "121183",
+        "name": "GAIBANDHA GOVT. MOHILA COLLEGE (গাইবান্ধা সরকারি মহিলা কলেজ)",
+        "alt_names": "Gaibandha Govt Mohila College গাইবান্ধা সরকারি মহিলা কলেজ",
+        "board": "dinajpur",
+        "district": "গাইবান্ধা",
+        "thana": "গাইবান্ধা সদর",
+        "type": "College"
+    },
+    {
+        "eiin": "121184",
+        "name": "GAIBANDHA GOVT. COLLEGE (গাইবান্ধা সরকারি কলেজ)",
+        "alt_names": "Gaibandha Govt College গাইবান্ধা সরকারি কলেজ",
+        "board": "dinajpur",
+        "district": "গাইবান্ধা",
+        "thana": "গাইবান্ধা সদর",
+        "type": "College"
+    },
+    {
+        "eiin": "121185",
+        "name": "GAIBANDHA ADARSHA COLLEGE (গাইবান্ধা আদর্শ কলেজ)",
+        "alt_names": "Gaibandha Adarsha College গাইবান্ধা আদর্শ কলেজ",
+        "board": "dinajpur",
+        "district": "গাইবান্ধা",
+        "thana": "গাইবান্ধা সদর",
+        "type": "College"
+    },
+    {
         "eiin": "121188",
         "name": "GAIBANDHA GOVT. COLLEGE",
         "board": "dinajpur",
@@ -10456,20 +11050,20 @@ INSTITUTES = [
     },
     {
         "eiin": "121190",
-        "name": "Ahmed Uddin Sah Nikatan School And College",
-        "alt_names": "Ahmed Uddin Sah Nikatan School And College গাইবান্ধা",
+        "name": "AHMED UDDIN SHAH SHISHU NIKETAN SCHOOL & COLLEGE (আহমেদ উদ্দিন শাহ শিশু নিকেতন স্কুল ও কলেজ)",
+        "alt_names": "Ahmed And College Nikatan Niketan Sah School Shah Shishu Uddin and আহমেদ উদ্দিন কলেজ গাইবান্ধা শাহ",
         "board": "dinajpur",
         "district": "গাইবান্ধা",
-        "thana": "",
+        "thana": "গাইবান্ধা সদর",
         "type": "College"
     },
     {
         "eiin": "121191",
-        "name": "Asaduzzaman Girls High School & College",
-        "alt_names": "Asaduzzaman Girls High School & College গাইবান্ধা",
+        "name": "ASADUZZAMAN GIRLS HIGH SCHOOL & COLLEGE (আসাদুজ্জামান বালিকা উচ্চ বিদ্যালয় ও কলেজ)",
+        "alt_names": "& Asaduzzaman College Girls High School and আসাদুজ্জামান কলেজ গাইবান্ধা গার্লস",
         "board": "dinajpur",
         "district": "গাইবান্ধা",
-        "thana": "",
+        "thana": "গাইবান্ধা সদর",
         "type": "College"
     },
     {
@@ -11733,6 +12327,42 @@ INSTITUTES = [
         "type": "Madrasah"
     },
     {
+        "eiin": "121350",
+        "name": "GOBINDAGANJ GOVT. COLLEGE (গোবিন্দগঞ্জ সরকারি কলেজ)",
+        "alt_names": "Gobindaganj Govt College গোবিন্দগঞ্জ সরকারি কলেজ",
+        "board": "dinajpur",
+        "district": "গাইবান্ধা",
+        "thana": "গোবিন্দগঞ্জ",
+        "type": "College"
+    },
+    {
+        "eiin": "121351",
+        "name": "GOBINDAGANJ MOHILA DEGREE COLLEGE (গোবিন্দগঞ্জ মহিলা ডিগ্রি কলেজ)",
+        "alt_names": "Gobindaganj Mohila Degree College গোবিন্দগঞ্জ মহিলা কলেজ",
+        "board": "dinajpur",
+        "district": "গাইবান্ধা",
+        "thana": "গোবিন্দগঞ্জ",
+        "type": "College"
+    },
+    {
+        "eiin": "121353",
+        "name": "FULPUKURIYA COLLEGE, GOBINDAGANJ (ফুলপুকুরিয়া কলেজ)",
+        "alt_names": "Fulpukuriya College Gobindaganj ফুলপুকুরিয়া কলেজ গোবিন্দগঞ্জ",
+        "board": "dinajpur",
+        "district": "গাইবান্ধা",
+        "thana": "গোবিন্দগঞ্জ",
+        "type": "College"
+    },
+    {
+        "eiin": "121354",
+        "name": "EKRAMUL HAQUE IDEAL COLLEGE (একরামুল হক আইডিয়াল কলেজ)",
+        "alt_names": "Ekramul Haque Ideal College একরামুল হক কম্পিউটার বিজ্ঞান কলেজ গোবিন্দগঞ্জ",
+        "board": "dinajpur",
+        "district": "গাইবান্ধা",
+        "thana": "গোবিন্দগঞ্জ",
+        "type": "College"
+    },
+    {
         "eiin": "121355",
         "name": "Bura Buri Azitulla Sarker High School And College",
         "alt_names": "Bura Buri Azitulla Sarker High School And College গাইবান্ধা",
@@ -12307,6 +12937,33 @@ INSTITUTES = [
         "district": "গাইবান্ধা",
         "thana": "",
         "type": "Madrasah"
+    },
+    {
+        "eiin": "121425",
+        "name": "PALASHBARI GOVT. COLLEGE (পলাশবাড়ী সরকারি কলেজ)",
+        "alt_names": "Palashbari Govt College পলাশবাড়ী সরকারি কলেজ",
+        "board": "dinajpur",
+        "district": "গাইবান্ধা",
+        "thana": "পলাশবাড়ী",
+        "type": "College"
+    },
+    {
+        "eiin": "121426",
+        "name": "PALASHBARI MOHILA DEGREE COLLEGE (পলাশবাড়ী মহিলা ডিগ্রি কলেজ)",
+        "alt_names": "Palashbari Mohila Degree College পলাশবাড়ী মহিলা কলেজ",
+        "board": "dinajpur",
+        "district": "গাইবান্ধা",
+        "thana": "পলাশবাড়ী",
+        "type": "College"
+    },
+    {
+        "eiin": "121427",
+        "name": "FAKIRHAT SHAHID SMRITI DEGREE COLLEGE (ফকিরহাট শহীদ স্মৃতি ডিগ্রি কলেজ)",
+        "alt_names": "Fakirhat Shahid Smriti Degree College ফকিরহাট শহীদ স্মৃতি ডিগ্রি কলেজ পলাশবাড়ী",
+        "board": "dinajpur",
+        "district": "গাইবান্ধা",
+        "thana": "পলাশবাড়ী",
+        "type": "College"
     },
     {
         "eiin": "121431",
@@ -13200,6 +13857,24 @@ INSTITUTES = [
         "type": "Madrasah"
     },
     {
+        "eiin": "121540",
+        "name": "SADULLAPUR GOVT. COLLEGE (সাদুল্লাপুর সরকারি কলেজ)",
+        "alt_names": "Sadullapur Govt College সাদুল্লাপুর সরকারি কলেজ",
+        "board": "dinajpur",
+        "district": "গাইবান্ধা",
+        "thana": "সাদুল্লাপুর",
+        "type": "College"
+    },
+    {
+        "eiin": "121541",
+        "name": "SADULLAPUR MOHILA DEGREE COLLEGE (সাদুল্লাপুর মহিলা ডিগ্রি কলেজ)",
+        "alt_names": "Sadullapur Mohila Degree College সাদুল্লাপুর মহিলা কলেজ",
+        "board": "dinajpur",
+        "district": "গাইবান্ধা",
+        "thana": "সাদুল্লাপুর",
+        "type": "College"
+    },
+    {
         "eiin": "121544",
         "name": "Bhatgram High School And College",
         "alt_names": "Bhatgram High School And College গাইবান্ধা",
@@ -13738,6 +14413,15 @@ INSTITUTES = [
         "district": "গাইবান্ধা",
         "thana": "",
         "type": "Madrasah"
+    },
+    {
+        "eiin": "121610",
+        "name": "BONARPARA DEGREE COLLEGE, SAGHATA (বোনারপাড়া ডিগ্রি কলেজ)",
+        "alt_names": "Bonarpara Degree College Saghata বোনারপাড়া ডিগ্রি কলেজ সাঘাটা",
+        "board": "dinajpur",
+        "district": "গাইবান্ধা",
+        "thana": "সাঘাটা",
+        "type": "College"
     },
     {
         "eiin": "121613",
@@ -14899,6 +15583,33 @@ INSTITUTES = [
         "district": "গাইবান্ধা",
         "thana": "",
         "type": "Madrasah"
+    },
+    {
+        "eiin": "121754",
+        "name": "DHARMAPUR ABDUL JABBAR DEGREE COLLEGE (ধর্মপুর আব্দুল জব্বার ডিগ্রি কলেজ)",
+        "alt_names": "Dharmapur Abdul Jabbar Degree College ধর্মপুর ডিগ্রি কলেজ",
+        "board": "dinajpur",
+        "district": "গাইবান্ধা",
+        "thana": "সুন্দরগঞ্জ",
+        "type": "College"
+    },
+    {
+        "eiin": "121756",
+        "name": "BAMANDANGA ABDUL HAQUE COLLEGE (বামনডাঙ্গা আব্দুল হক কলেজ)",
+        "alt_names": "Bamandanga Abdul Haque College বামনডাঙ্গা কলেজ সুন্দরগঞ্জ",
+        "board": "dinajpur",
+        "district": "গাইবান্ধা",
+        "thana": "সুন্দরগঞ্জ",
+        "type": "College"
+    },
+    {
+        "eiin": "121759",
+        "name": "BELKA DEGREE COLLEGE (বেলকা ডিগ্রি কলেজ)",
+        "alt_names": "Belka Degree College বেলকা ডিগ্রি কলেজ সুন্দরগঞ্জ",
+        "board": "dinajpur",
+        "district": "গাইবান্ধা",
+        "thana": "সুন্দরগঞ্জ",
+        "type": "College"
     },
     {
         "eiin": "121764",
@@ -17734,6 +18445,24 @@ INSTITUTES = [
         "type": "Madrasah"
     },
     {
+        "eiin": "122122",
+        "name": "BHURUNGAMARI DEGREE COLLEGE (ভুরুঙ্গামারী ডিগ্রি কলেজ)",
+        "alt_names": "Bhurungamari Degree College ভূরুঙ্গামারী ডিগ্রি কলেজ",
+        "board": "dinajpur",
+        "district": "কুড়িগ্রাম",
+        "thana": "ভুরুঙ্গামারী",
+        "type": "College"
+    },
+    {
+        "eiin": "122123",
+        "name": "BHURUNGAMARI MOHILA COLLEGE (ভুরুঙ্গামারী মহিলা কলেজ)",
+        "alt_names": "Bhurungamari Mohila College ভূরুঙ্গামারী মহিলা কলেজ",
+        "board": "dinajpur",
+        "district": "কুড়িগ্রাম",
+        "thana": "ভুরুঙ্গামারী",
+        "type": "College"
+    },
+    {
         "eiin": "122126",
         "name": "Baldia Multileteral High School",
         "alt_names": "Baldia Multileteral High School গাইবান্ধা",
@@ -17894,6 +18623,15 @@ INSTITUTES = [
         "district": "গাইবান্ধা",
         "thana": "",
         "type": "Madrasah"
+    },
+    {
+        "eiin": "122145",
+        "name": "CHAR RAJIBPUR DEGREE COLLEGE (চর রাজিবপুর ডিগ্রি কলেজ)",
+        "alt_names": "Char Rajibpur Degree College চর রাজিবপুর ডিগ্রি কলেজ",
+        "board": "dinajpur",
+        "district": "কুড়িগ্রাম",
+        "thana": "চর রাজিবপুর",
+        "type": "College"
     },
     {
         "eiin": "122148",
@@ -18338,21 +19076,21 @@ INSTITUTES = [
     },
     {
         "eiin": "122201",
-        "name": "Miapara Adarsa Junior Girls School",
-        "alt_names": "Miapara Adarsa Junior Girls School কুড়িগ্রাম",
+        "name": "CHILMARI GOVT. COLLEGE (চিলমারী সরকারি কলেজ)",
+        "alt_names": "Adarsa Chilmari College Girls Govt Junior Miapara School কলেজ কুড়িগ্রাম চিলমারী সরকারি",
         "board": "dinajpur",
         "district": "কুড়িগ্রাম",
-        "thana": "",
-        "type": "School"
+        "thana": "চিলমারী",
+        "type": "College"
     },
     {
         "eiin": "122202",
-        "name": "Purbo Chandra Khana High School",
-        "alt_names": "Purbo Chandra Khana High School কুড়িগ্রাম",
+        "name": "CHILMARI MOHILA DEGREE COLLEGE (চিলমারী মহিলা ডিগ্রি কলেজ)",
+        "alt_names": "Chandra Chilmari College Degree High Khana Mohila Purbo School কলেজ কুড়িগ্রাম চিলমারী মহিলা",
         "board": "dinajpur",
         "district": "কুড়িগ্রাম",
-        "thana": "",
-        "type": "School"
+        "thana": "চিলমারী",
+        "type": "College"
     },
     {
         "eiin": "122203",
@@ -18650,6 +19388,24 @@ INSTITUTES = [
         "district": "কুড়িগ্রাম",
         "thana": "",
         "type": "Madrasah"
+    },
+    {
+        "eiin": "122239",
+        "name": "PHULBARI MOHILA COLLEGE, KURIGRAM (ফুলবাড়ী মহিলা কলেজ কুড়িগ্রাম)",
+        "alt_names": "Phulbari Mohila College Kurigram ফুলবাড়ী মহিলা কলেজ কুড়িগ্রাম",
+        "board": "dinajpur",
+        "district": "কুড়িগ্রাম",
+        "thana": "ফুলবাড়ী",
+        "type": "College"
+    },
+    {
+        "eiin": "122240",
+        "name": "PHULBARI DEGREE COLLEGE, KURIGRAM (ফুলবাড়ী ডিগ্রি কলেজ কুড়িগ্রাম)",
+        "alt_names": "Phulbari Degree College Kurigram ফুলবাড়ী ডিগ্রি কলেজ কুড়িগ্রাম",
+        "board": "dinajpur",
+        "district": "কুড়িগ্রাম",
+        "thana": "ফুলবাড়ী",
+        "type": "College"
     },
     {
         "eiin": "122243",
@@ -19394,6 +20150,51 @@ INSTITUTES = [
         "district": "কুড়িগ্রাম",
         "thana": "",
         "type": "Madrasah"
+    },
+    {
+        "eiin": "122330",
+        "name": "KURIGRAM GOVT. MOHILA COLLEGE (কুড়িগ্রাম সরকারি মহিলা কলেজ)",
+        "alt_names": "Kurigram Govt Mohila College কুড়িগ্রাম সরকারি মহিলা কলেজ",
+        "board": "dinajpur",
+        "district": "কুড়িগ্রাম",
+        "thana": "কুড়িগ্রাম সদর",
+        "type": "College"
+    },
+    {
+        "eiin": "122331",
+        "name": "KURIGRAM GOVT. COLLEGE (কুড়িগ্রাম সরকারি কলেজ)",
+        "alt_names": "Kurigram Govt College কুড়িগ্রাম সরকারি কলেজ",
+        "board": "dinajpur",
+        "district": "কুড়িগ্রাম",
+        "thana": "কুড়িগ্রাম সদর",
+        "type": "College"
+    },
+    {
+        "eiin": "122332",
+        "name": "KURIGRAM CITY COLLEGE (কুড়িগ্রাম সিটি কলেজ)",
+        "alt_names": "Kurigram City College কুড়িগ্রাম সিটি কলেজ",
+        "board": "dinajpur",
+        "district": "কুড়িগ্রাম",
+        "thana": "কুড়িগ্রাম সদর",
+        "type": "College"
+    },
+    {
+        "eiin": "122334",
+        "name": "PANCHGACHHI COLLEGE (পাঁচগাছী কলেজ)",
+        "alt_names": "Panchgachhi College পাঁচগাছী কলেজ কুড়িগ্রাম",
+        "board": "dinajpur",
+        "district": "কুড়িগ্রাম",
+        "thana": "কুড়িগ্রাম সদর",
+        "type": "College"
+    },
+    {
+        "eiin": "122335",
+        "name": "BHOGDANGA MODEL COLLEGE (ভোগডাঙ্গা মডেল কলেজ)",
+        "alt_names": "Bhogdanga Model College ভোগডাঙ্গা মডেল কলেজ",
+        "board": "dinajpur",
+        "district": "কুড়িগ্রাম",
+        "thana": "কুড়িগ্রাম সদর",
+        "type": "College"
     },
     {
         "eiin": "122336",
@@ -20351,21 +21152,30 @@ INSTITUTES = [
     },
     {
         "eiin": "122450",
-        "name": "Nageswari Girls Dakhil Madrasha",
-        "alt_names": "Nageswari Girls Dakhil Madrasha কুড়িগ্রাম",
+        "name": "NAGESHWARI DEGREE COLLEGE (নাগেশ্বরী ডিগ্রি কলেজ)",
+        "alt_names": "College Dakhil Degree Girls Madrasha Nageshwari Nageswari কলেজ কুড়িগ্রাম ডিগ্রি নাগেশ্বরী",
         "board": "madrasah",
         "district": "কুড়িগ্রাম",
-        "thana": "",
-        "type": "Madrasah"
+        "thana": "নাগেশ্বরী",
+        "type": "College"
     },
     {
         "eiin": "122451",
-        "name": "Bowalmari Islamia Dakhik Madrashah",
-        "alt_names": "Bowalmari Islamia Dakhik Madrashah কুড়িগ্রাম",
+        "name": "NAGESHWARI MOHILA COLLEGE (নাগেশ্বরী মহিলা কলেজ)",
+        "alt_names": "Bowalmari College Dakhik Islamia Madrashah Mohila Nageshwari কলেজ কুড়িগ্রাম নাগেশ্বরী মহিলা",
         "board": "madrasah",
         "district": "কুড়িগ্রাম",
-        "thana": "",
-        "type": "Madrasah"
+        "thana": "নাগেশ্বরী",
+        "type": "College"
+    },
+    {
+        "eiin": "122454",
+        "name": "BHITARBANDA DEGREE COLLEGE, NAGESHWARI (ভিতরবন্দ ডিগ্রি কলেজ)",
+        "alt_names": "Bhitarbanda Degree College Nageshwari ভিতরবন্দ ডিগ্রি কলেজ",
+        "board": "dinajpur",
+        "district": "কুড়িগ্রাম",
+        "thana": "নাগেশ্বরী",
+        "type": "College"
     },
     {
         "eiin": "122462",
@@ -20971,6 +21781,33 @@ INSTITUTES = [
         "type": "Madrasah"
     },
     {
+        "eiin": "122534",
+        "name": "GOVT. MIR ISMAIL HOSSAIN COLLEGE, RAJARHAT (সরকারি মীর ইসমাইল হোসেন কলেজ)",
+        "alt_names": "Govt Mir Ismail Hossain College Rajarhat মীর ইসমাইল হোসেন কলেজ রাজারহাট",
+        "board": "dinajpur",
+        "district": "কুড়িগ্রাম",
+        "thana": "রাজারহাট",
+        "type": "College"
+    },
+    {
+        "eiin": "122535",
+        "name": "RAJARHAT ADARSHA MOHILA COLLEGE (রাজারহাট আদর্শ মহিলা কলেজ)",
+        "alt_names": "Rajarhat Adarsha Mohila College রাজারহাট আদর্শ মহিলা কলেজ",
+        "board": "dinajpur",
+        "district": "কুড়িগ্রাম",
+        "thana": "রাজারহাট",
+        "type": "College"
+    },
+    {
+        "eiin": "122536",
+        "name": "RAJARHAT MOHILA DEGREE COLLEGE (রাজারহাট মহিলা ডিগ্রি কলেজ)",
+        "alt_names": "Rajarhat Mohila Degree College রাজারহাট মহিলা ডিগ্রি কলেজ",
+        "board": "dinajpur",
+        "district": "কুড়িগ্রাম",
+        "thana": "রাজারহাট",
+        "type": "College"
+    },
+    {
         "eiin": "122539",
         "name": "Nazim Khan High School & College",
         "alt_names": "Nazim Khan High School & College কুড়িগ্রাম",
@@ -21320,6 +22157,24 @@ INSTITUTES = [
         "district": "কুড়িগ্রাম",
         "thana": "",
         "type": "Madrasah"
+    },
+    {
+        "eiin": "122579",
+        "name": "ROWMARI MOHILA DEGREE COLLEGE (রৌমারী মহিলা ডিগ্রি কলেজ)",
+        "alt_names": "Rowmari Mohila Degree College রৌমারী মহিলা কলেজ",
+        "board": "dinajpur",
+        "district": "কুড়িগ্রাম",
+        "thana": "রৌমারী",
+        "type": "College"
+    },
+    {
+        "eiin": "122580",
+        "name": "ROWMARI GOVT. COLLEGE (রৌমারী সরকারি কলেজ)",
+        "alt_names": "Rowmari Govt College রৌমারী সরকারি কলেজ",
+        "board": "dinajpur",
+        "district": "কুড়িগ্রাম",
+        "thana": "রৌমারী",
+        "type": "College"
     },
     {
         "eiin": "122584",
@@ -22303,6 +23158,42 @@ INSTITUTES = [
         "type": "Madrasah"
     },
     {
+        "eiin": "122708",
+        "name": "ULIPUR GOVT. COLLEGE (উলিপুর সরকারি কলেজ)",
+        "alt_names": "Ulipur Govt College উলিপুর সরকারি কলেজ",
+        "board": "dinajpur",
+        "district": "কুড়িগ্রাম",
+        "thana": "উলিপুর",
+        "type": "College"
+    },
+    {
+        "eiin": "122709",
+        "name": "PANCHPIR DEGREE COLLEGE, ULIPUR (পাঁচপীর ডিগ্রি কলেজ)",
+        "alt_names": "Panchpir Degree College Ulipur পাঁচপীর ডিগ্রি কলেজ উলিপুর",
+        "board": "dinajpur",
+        "district": "কুড়িগ্রাম",
+        "thana": "উলিপুর",
+        "type": "College"
+    },
+    {
+        "eiin": "122710",
+        "name": "ULIPUR MOHILA DEGREE COLLEGE (উলিপুর মহিলা ডিগ্রি কলেজ)",
+        "alt_names": "Ulipur Mohila Degree College উলিপুর মহিলা কলেজ",
+        "board": "dinajpur",
+        "district": "কুড়িগ্রাম",
+        "thana": "উলিপুর",
+        "type": "College"
+    },
+    {
+        "eiin": "122711",
+        "name": "BOZRA COLLEGE, ULIPUR (বজরা কলেজ উলিপুর)",
+        "alt_names": "Bozra College Ulipur বজরা কলেজ",
+        "board": "dinajpur",
+        "district": "কুড়িগ্রাম",
+        "thana": "উলিপুর",
+        "type": "College"
+    },
+    {
         "eiin": "122712",
         "name": "Ulipur M.S. School & College",
         "alt_names": "Ulipur M.S. School & College কুড়িগ্রাম",
@@ -22742,6 +23633,24 @@ INSTITUTES = [
         "district": "কুড়িগ্রাম",
         "thana": "",
         "type": "Madrasah"
+    },
+    {
+        "eiin": "122767",
+        "name": "ADITMARI DEGREE COLLEGE (আদিতমারী ডিগ্রি কলেজ)",
+        "alt_names": "Aditmari Degree College আদিতমারী ডিগ্রি কলেজ",
+        "board": "dinajpur",
+        "district": "লালমনিরহাট",
+        "thana": "আদিতমারী",
+        "type": "College"
+    },
+    {
+        "eiin": "122768",
+        "name": "ADITMARI MOHILA DEGREE COLLEGE (আদিতমারী মহিলা ডিগ্রি কলেজ)",
+        "alt_names": "Aditmari Mohila Degree College আদিতমারী মহিলা কলেজ",
+        "board": "dinajpur",
+        "district": "লালমনিরহাট",
+        "thana": "আদিতমারী",
+        "type": "College"
     },
     {
         "eiin": "122770",
@@ -23219,6 +24128,33 @@ INSTITUTES = [
         "district": "লালমনিরহাট",
         "thana": "",
         "type": "Madrasah"
+    },
+    {
+        "eiin": "122826",
+        "name": "BARAKHATA COLLEGE, HATIBANDHA (বড়খাতা কলেজ)",
+        "alt_names": "Barakhata College Hatibandha বড়খাতা কলেজ",
+        "board": "dinajpur",
+        "district": "লালমনিরহাট",
+        "thana": "হাতীবান্ধা",
+        "type": "College"
+    },
+    {
+        "eiin": "122828",
+        "name": "HATIBANDHA MOHILA DEGREE COLLEGE (হাতিবান্ধা মহিলা ডিগ্রি কলেজ)",
+        "alt_names": "Hatibandha Mohila Degree College হাতিবান্ধা মহিলা কলেজ",
+        "board": "dinajpur",
+        "district": "লালমনিরহাট",
+        "thana": "হাতীবান্ধা",
+        "type": "College"
+    },
+    {
+        "eiin": "122829",
+        "name": "ALIMUDDIN DEGREE COLLEGE, HATIBANDHA (আলিমুদ্দিন ডিগ্রি কলেজ হাতিবান্ধা)",
+        "alt_names": "Alimuddin Degree College Hatibandha আলিমুদ্দিন ডিগ্রি কলেজ",
+        "board": "dinajpur",
+        "district": "লালমনিরহাট",
+        "thana": "হাতীবান্ধা",
+        "type": "College"
     },
     {
         "eiin": "122831",
@@ -23720,6 +24656,24 @@ INSTITUTES = [
         "district": "লালমনিরহাট",
         "thana": "",
         "type": "Madrasah"
+    },
+    {
+        "eiin": "122890",
+        "name": "KALIGANJ KARIM UDDIN PUBLIC GOVT. COLLEGE (কালীগঞ্জ করিম উদ্দিন পাবলিক সরকারি কলেজ)",
+        "alt_names": "Kaliganj Karim Uddin Public Govt College করিম উদ্দিন সরকারি কলেজ কালীগঞ্জ",
+        "board": "dinajpur",
+        "district": "লালমনিরহাট",
+        "thana": "কালীগঞ্জ",
+        "type": "College"
+    },
+    {
+        "eiin": "122891",
+        "name": "UTTAR BANGLA COLLEGE, KAKINA (উত্তর বাংলা কলেজ কাকিনা)",
+        "alt_names": "Uttar Bangla College Kakina উত্তর বাংলা কলেজ কালীগঞ্জ",
+        "board": "dinajpur",
+        "district": "লালমনিরহাট",
+        "thana": "কালীগঞ্জ",
+        "type": "College"
     },
     {
         "eiin": "122895",
@@ -24496,6 +25450,42 @@ INSTITUTES = [
         "type": "Madrasah"
     },
     {
+        "eiin": "122987",
+        "name": "BEGUM KUMRUNNESSA DEGREE COLLEGE (বেগম কামরুন্নেছা ডিগ্রি কলেজ)",
+        "alt_names": "Begum Kumrunnessa Degree College বেগম কামরুন্নেছা কলেজ লালমনিরহাট",
+        "board": "dinajpur",
+        "district": "লালমনিরহাট",
+        "thana": "লালমনিরহাট সদর",
+        "type": "College"
+    },
+    {
+        "eiin": "122988",
+        "name": "LALMONIRHAT GOVT. COLLEGE (লালমনিরহাট সরকারি কলেজ)",
+        "alt_names": "Lalmonirhat Govt College লালমনিরহাট সরকারি কলেজ",
+        "board": "dinajpur",
+        "district": "লালমনিরহাট",
+        "thana": "লালমনিরহাট সদর",
+        "type": "College"
+    },
+    {
+        "eiin": "122989",
+        "name": "LALMONIRHAT GOVT. MOHILA COLLEGE (লালমনিরহাট সরকারি মহিলা কলেজ)",
+        "alt_names": "Lalmonirhat Govt Mohila College লালমনিরহাট সরকারি মহিলা কলেজ",
+        "board": "dinajpur",
+        "district": "লালমনিরহাট",
+        "thana": "লালমনিরহাট সদর",
+        "type": "College"
+    },
+    {
+        "eiin": "122990",
+        "name": "LALMONIRHAT ADARSHA DEGREE COLLEGE (লালমনিরহাট আদর্শ ডিগ্রি কলেজ)",
+        "alt_names": "Lalmonirhat Adarsha Degree College লালমনিরহাট আদর্শ ডিগ্রি কলেজ",
+        "board": "dinajpur",
+        "district": "লালমনিরহাট",
+        "thana": "লালমনিরহাট সদর",
+        "type": "College"
+    },
+    {
         "eiin": "122992",
         "name": "Patgram T.N High School",
         "alt_names": "Patgram T.N High School লালমনিরহাট",
@@ -24800,6 +25790,24 @@ INSTITUTES = [
         "district": "লালমনিরহাট",
         "thana": "",
         "type": "Madrasah"
+    },
+    {
+        "eiin": "123027",
+        "name": "GOVT. JASHIMUDDIN KAZI ABDUL GONI DEGREE COLLEGE (সরকারি জসীমউদ্দীন কাজী আব্দুল গনি ডিগ্রি কলেজ)",
+        "alt_names": "Govt Jashimuddin Kazi Abdul Goni Degree College Patgram পাটগ্রাম সরকারি কলেজ",
+        "board": "dinajpur",
+        "district": "লালমনিরহাট",
+        "thana": "পাটগ্রাম",
+        "type": "College"
+    },
+    {
+        "eiin": "123028",
+        "name": "PATGRAM MOHILA DEGREE COLLEGE (পাটগ্রাম মহিলা ডিগ্রি কলেজ)",
+        "alt_names": "Patgram Mohila Degree College পাটগ্রাম মহিলা কলেজ",
+        "board": "dinajpur",
+        "district": "লালমনিরহাট",
+        "thana": "পাটগ্রাম",
+        "type": "College"
     },
     {
         "eiin": "123029",
@@ -26193,6 +27201,51 @@ INSTITUTES = [
         "type": "School"
     },
     {
+        "eiin": "124824",
+        "name": "DIMLA ISLAMIA DEGREE COLLEGE (ডিমলা ইসলামিয়া ডিগ্রি কলেজ)",
+        "alt_names": "Dimla Islamia Degree College ডিমলা ইসলামিয়া ডিগ্রি কলেজ",
+        "board": "dinajpur",
+        "district": "নীলফামারী",
+        "thana": "ডিমলা",
+        "type": "College"
+    },
+    {
+        "eiin": "124825",
+        "name": "DIMLA GOVT. MOHILA COLLEGE (ডিমলা সরকারি মহিলা কলেজ)",
+        "alt_names": "Dimla Govt Mohila College ডিমলা সরকারি মহিলা কলেজ",
+        "board": "dinajpur",
+        "district": "নীলফামারী",
+        "thana": "ডিমলা",
+        "type": "College"
+    },
+    {
+        "eiin": "124890",
+        "name": "DOMAR GOVT. COLLEGE (ডোমার সরকারি কলেজ)",
+        "alt_names": "Domar Govt College ডোমার সরকারি কলেজ",
+        "board": "dinajpur",
+        "district": "নীলফামারী",
+        "thana": "ডোমার",
+        "type": "College"
+    },
+    {
+        "eiin": "124891",
+        "name": "DOMAR MOHILA DEGREE COLLEGE (ডোমার মহিলা ডিগ্রি কলেজ)",
+        "alt_names": "Domar Mohila Degree College ডোমার মহিলা কলেজ",
+        "board": "dinajpur",
+        "district": "নীলফামারী",
+        "thana": "ডোমার",
+        "type": "College"
+    },
+    {
+        "eiin": "124893",
+        "name": "CHILAHATI GOVT. COLLEGE, DOMAR (চিলাহাটি সরকারি কলেজ)",
+        "alt_names": "Chilahati Govt College Domar চিলাহাটি সরকারি কলেজ ডোমার",
+        "board": "dinajpur",
+        "district": "নীলফামারী",
+        "thana": "ডোমার",
+        "type": "College"
+    },
+    {
         "eiin": "124900",
         "name": "Shimul Bari S.C High School",
         "alt_names": "Shimul Bari S.C High School নীলফামারী",
@@ -26275,21 +27328,21 @@ INSTITUTES = [
     },
     {
         "eiin": "124910",
-        "name": "Kanthali S.C High School",
-        "alt_names": "Kanthali S.C High School নীলফামারী",
+        "name": "JALDHAKA GOVT. COLLEGE (জলঢাকা সরকারি কলেজ)",
+        "alt_names": "College Govt High Jaldhaka Kanthali S.C School কলেজ জলঢাকা নীলফামারী সরকারি",
         "board": "dinajpur",
         "district": "নীলফামারী",
-        "thana": "",
-        "type": "School"
+        "thana": "জলঢাকা",
+        "type": "College"
     },
     {
         "eiin": "124911",
-        "name": "Gopal Jhar B.L. High School",
-        "alt_names": "Gopal Jhar B.L. High School নীলফামারী",
+        "name": "JALDHAKA MOHILA DEGREE COLLEGE (জলঢাকা মহিলা ডিগ্রি কলেজ)",
+        "alt_names": "B.L. College Degree Gopal High Jaldhaka Jhar Mohila School কলেজ জলঢাকা নীলফামারী মহিলা",
         "board": "dinajpur",
         "district": "নীলফামারী",
-        "thana": "",
-        "type": "School"
+        "thana": "জলঢাকা",
+        "type": "College"
     },
     {
         "eiin": "124912",
@@ -27343,12 +28396,21 @@ INSTITUTES = [
     },
     {
         "eiin": "125050",
-        "name": "Musha Model Dakhil Madrasha",
-        "alt_names": "Musha Model Dakhil Madrasha নীলফামারী",
+        "name": "KISHOREGANJ GOVT. COLLEGE, NILPHAMARI (কিশোরগঞ্জ সরকারি কলেজ নীলফামারী)",
+        "alt_names": "College Dakhil Govt Kishoreganj Madrasha Model Musha Nilphamari কলেজ কিশোরগঞ্জ নীলফামারী সরকারি",
         "board": "madrasah",
         "district": "নীলফামারী",
-        "thana": "",
-        "type": "Madrasah"
+        "thana": "কিশোরগঞ্জ",
+        "type": "College"
+    },
+    {
+        "eiin": "125051",
+        "name": "KISHOREGANJ MOHILA DEGREE COLLEGE (কিশোরগঞ্জ মহিলা ডিগ্রি কলেজ)",
+        "alt_names": "Kishoreganj Mohila Degree College কিশোরগঞ্জ মহিলা কলেজ",
+        "board": "dinajpur",
+        "district": "নীলফামারী",
+        "thana": "কিশোরগঞ্জ",
+        "type": "College"
     },
     {
         "eiin": "125056",
@@ -28431,12 +29493,57 @@ INSTITUTES = [
         "type": "Madrasah"
     },
     {
-        "eiin": "125195",
-        "name": "Colletoretorate School  & Collage",
-        "alt_names": "Colletoretorate School  & Collage নীলফামারী",
+        "eiin": "125188",
+        "name": "NILPHAMARI GOVT. MOHILA COLLEGE (নীলফামারী সরকারি মহিলা কলেজ)",
+        "alt_names": "Nilphamari Govt Mohila College নীলফামারী সরকারি মহিলা কলেজ",
         "board": "dinajpur",
         "district": "নীলফামারী",
-        "thana": "",
+        "thana": "নীলফামারী সদর",
+        "type": "College"
+    },
+    {
+        "eiin": "125189",
+        "name": "NILPHAMARI GOVT. COLLEGE (নীলফামারী সরকারি কলেজ)",
+        "alt_names": "Nilphamari Govt College নীলফামারী সরকারি কলেজ",
+        "board": "dinajpur",
+        "district": "নীলফামারী",
+        "thana": "নীলফামারী সদর",
+        "type": "College"
+    },
+    {
+        "eiin": "125190",
+        "name": "NILPHAMARI CITY COLLEGE (নীলফামারী সিটি কলেজ)",
+        "alt_names": "Nilphamari City College নীলফামারী সিটি কলেজ",
+        "board": "dinajpur",
+        "district": "নীলফামারী",
+        "thana": "নীলফামারী সদর",
+        "type": "College"
+    },
+    {
+        "eiin": "125191",
+        "name": "MOSHIUR RAHMAN DEGREE COLLEGE, NILPHAMARI (মশিউর রহমান ডিগ্রি কলেজ)",
+        "alt_names": "Moshiur Rahman Degree College মশিউর রহমান কলেজ",
+        "board": "dinajpur",
+        "district": "নীলফামারী",
+        "thana": "নীলফামারী সদর",
+        "type": "College"
+    },
+    {
+        "eiin": "125193",
+        "name": "ADARSHA COLLEGE, NILPHAMARI (আদর্শ কলেজ নীলফামারী)",
+        "alt_names": "Adarsha College Nilphamari আদর্শ কলেজ নীলফামারী",
+        "board": "dinajpur",
+        "district": "নীলফামারী",
+        "thana": "নীলফামারী সদর",
+        "type": "College"
+    },
+    {
+        "eiin": "125195",
+        "name": "COLLECTORATE PUBLIC SCHOOL & COLLEGE, NILPHAMARI (কালেক্টরেট পাবলিক স্কুল ও কলেজ)",
+        "alt_names": "& Collage Collectorate College Colletoretorate Nilphamari Public School and কলেজ কালেক্টরেট নীলফামারী",
+        "board": "dinajpur",
+        "district": "নীলফামারী",
+        "thana": "নীলফামারী সদর",
         "type": "College"
     },
     {
@@ -28819,27 +29926,30 @@ INSTITUTES = [
     },
     {
         "eiin": "125242",
-        "name": "SAIDPUR GOVT. SCIENCE COLLEGE",
+        "name": "SAIDPUR GOVT. SCIENCE COLLEGE (সৈয়দপুর সরকারি বিজ্ঞান কলেজ)",
         "board": "dinajpur",
         "district": "নীলফামারী",
         "thana": "সৈয়দপুর",
-        "type": "College"
+        "type": "College",
+        "alt_names": "College Govt High Saidpur School Science Technical কলেজ বিজ্ঞান সরকারি সৈয়দপুর"
     },
     {
         "eiin": "125243",
-        "name": "CANTONMENT PUBLIC SCHOOL & COLLEGE, SAIDPUR",
+        "name": "SAIDPUR COLLEGE (সৈয়দপুর কলেজ)",
         "board": "dinajpur",
         "district": "নীলফামারী",
         "thana": "সৈয়দপুর",
-        "type": "College"
+        "type": "College",
+        "alt_names": "College Saidpur কলেজ সৈয়দপুর"
     },
     {
         "eiin": "125244",
-        "name": "LIONS SCHOOL & COLLEGE, SAIDPUR",
+        "name": "SAIDPUR MOHILA DEGREE COLLEGE (সৈয়দপুর মহিলা ডিগ্রি কলেজ)",
         "board": "dinajpur",
         "district": "নীলফামারী",
         "thana": "সৈয়দপুর",
-        "type": "College"
+        "type": "College",
+        "alt_names": "College Degree Mohila Saidpur কলেজ মহিলা সৈয়দপুর"
     },
     {
         "eiin": "125245",
@@ -28862,7 +29972,7 @@ INSTITUTES = [
     {
         "eiin": "125247",
         "name": "SAIDPUR GOVT. COLLEGE (সৈয়দপুর সরকারি কলেজ)",
-        "alt_names": "Saidpur Govt College",
+        "alt_names": "College Govt Lions Saidpur School and লায়ন্স সৈয়দপুর স্কুল",
         "board": "dinajpur",
         "district": "নীলফামারী",
         "thana": "সৈয়দপুর",
@@ -28871,7 +29981,7 @@ INSTITUTES = [
     {
         "eiin": "125248",
         "name": "SAIDPUR MOHILA COLLEGE (সৈয়দপুর মহিলা কলেজ)",
-        "alt_names": "Saidpur Mohila College",
+        "alt_names": "CPSC Cantonment College Mohila Public Saidpur School and কলেজ ক্যান্টনমেন্ট পাবলিক সৈয়দপুর",
         "board": "dinajpur",
         "district": "নীলফামারী",
         "thana": "সৈয়দপুর",
@@ -29515,6 +30625,33 @@ INSTITUTES = [
         "district": "পঞ্চগড়",
         "thana": "",
         "type": "Madrasah"
+    },
+    {
+        "eiin": "125330",
+        "name": "PANCHAGARH B.P. GOVT. HIGH SCHOOL & COLLEGE (পঞ্চগড় বি পি স্কুল অ্যান্ড কলেজ)",
+        "alt_names": "Panchagarh BP Govt High School and College বি পি সরকারি কলেজ পঞ্চগড়",
+        "board": "dinajpur",
+        "district": "পঞ্চগড়",
+        "thana": "পঞ্চগড় সদর",
+        "type": "College"
+    },
+    {
+        "eiin": "125331",
+        "name": "PANCHAGARH ADARSHA COLLEGE (পঞ্চগড় আদর্শ কলেজ)",
+        "alt_names": "Panchagarh Adarsha College পঞ্চগড় আদর্শ কলেজ",
+        "board": "dinajpur",
+        "district": "পঞ্চগড়",
+        "thana": "পঞ্চগড় সদর",
+        "type": "College"
+    },
+    {
+        "eiin": "125332",
+        "name": "PANCHAGARH COLLECTORATE MODEL SCHOOL & COLLEGE (পঞ্চগড় কালেক্টরেট মডেল স্কুল ও কলেজ)",
+        "alt_names": "Panchagarh Collectorate Model School and College কালেক্টরেট স্কুল অ্যান্ড কলেজ পঞ্চগড়",
+        "board": "dinajpur",
+        "district": "পঞ্চগড়",
+        "thana": "পঞ্চগড় সদর",
+        "type": "College"
     },
     {
         "eiin": "125333",
@@ -30383,6 +31520,33 @@ INSTITUTES = [
         "type": "Madrasah"
     },
     {
+        "eiin": "125450",
+        "name": "BODA GOVT. COLLEGE (বোদা সরকারি কলেজ)",
+        "alt_names": "Boda Govt College বোদা সরকারি কলেজ পঞ্চগড়",
+        "board": "dinajpur",
+        "district": "পঞ্চগড়",
+        "thana": "বোদা",
+        "type": "College"
+    },
+    {
+        "eiin": "125451",
+        "name": "BODA MOHILA DEGREE COLLEGE (বোদা মহিলা ডিগ্রি কলেজ)",
+        "alt_names": "Boda Mohila Degree College বোদা মহিলা কলেজ",
+        "board": "dinajpur",
+        "district": "পঞ্চগড়",
+        "thana": "বোদা",
+        "type": "College"
+    },
+    {
+        "eiin": "125452",
+        "name": "PATHRAJ GOVT. COLLEGE, BODA (পাথরাজ সরকারি কলেজ বোদা)",
+        "alt_names": "Pathraj Govt College Boda পাথরাজ সরকারি কলেজ",
+        "board": "dinajpur",
+        "district": "পঞ্চগড়",
+        "thana": "বোদা",
+        "type": "College"
+    },
+    {
         "eiin": "125456",
         "name": "Haripur Durgadas High School And College",
         "alt_names": "Haripur Durgadas High School And College পঞ্চগড়",
@@ -30633,6 +31797,42 @@ INSTITUTES = [
         "district": "পঞ্চগড়",
         "thana": "",
         "type": "Madrasah"
+    },
+    {
+        "eiin": "125488",
+        "name": "KAZI SHAHABUDDIN SCHOOL & COLLEGE, TETULIA (কাজী শাহাবুদ্দিন স্কুল ও কলেজ তেঁতুলিয়া)",
+        "alt_names": "Kazi Shahabuddin School and College কাজী শাহাবুদ্দীন কলেজ তেঁতুলিয়া",
+        "board": "dinajpur",
+        "district": "পঞ্চগড়",
+        "thana": "তেঁতুলিয়া",
+        "type": "College"
+    },
+    {
+        "eiin": "125489",
+        "name": "TETULIA GOVT. DEGREE COLLEGE (তেঁতুলিয়া সরকারি ডিগ্রি কলেজ)",
+        "alt_names": "Tetulia Govt Degree College তেঁতুলিয়া সরকারি ডিগ্রি কলেজ",
+        "board": "dinajpur",
+        "district": "পঞ্চগড়",
+        "thana": "তেঁতুলিয়া",
+        "type": "College"
+    },
+    {
+        "eiin": "125490",
+        "name": "TETULIA MOHILA COLLEGE (তেঁতুলিয়া মহিলা কলেজ)",
+        "alt_names": "Tetulia Mohila College তেঁতুলিয়া মহিলা কলেজ",
+        "board": "dinajpur",
+        "district": "পঞ্চগড়",
+        "thana": "তেঁতুলিয়া",
+        "type": "College"
+    },
+    {
+        "eiin": "125491",
+        "name": "BHAJANPUR DEGREE COLLEGE, TETULIA (ভজনপুর ডিগ্রি কলেজ)",
+        "alt_names": "Bhajanpur Degree College ভজনপুর ডিগ্রি কলেজ তেঁতুলিয়া",
+        "board": "dinajpur",
+        "district": "পঞ্চগড়",
+        "thana": "তেঁতুলিয়া",
+        "type": "College"
     },
     {
         "eiin": "125492",
@@ -31991,6 +33191,42 @@ INSTITUTES = [
         "type": "Madrasah"
     },
     {
+        "eiin": "125654",
+        "name": "THAKURGAON ZILLA SCHOOL & COLLEGE (ঠাকুরগাঁও জিলা স্কুল ও কলেজ)",
+        "alt_names": "Thakurgaon Zilla School and College ঠাকুরগাঁও জিলা স্কুল",
+        "board": "dinajpur",
+        "district": "ঠাকুরগাঁও",
+        "thana": "ঠাকুরগাঁও সদর",
+        "type": "College"
+    },
+    {
+        "eiin": "125660",
+        "name": "THAKURGAON COLLECTORATE PUBLIC SCHOOL & COLLEGE (ঠাকুরগাঁও কালেক্টরেট পাবলিক স্কুল ও কলেজ)",
+        "alt_names": "Thakurgaon Collectorate Public School and College কালেক্টরেট কলেজ ঠাকুরগাঁও",
+        "board": "dinajpur",
+        "district": "ঠাকুরগাঁও",
+        "thana": "ঠাকুরগাঁও সদর",
+        "type": "College"
+    },
+    {
+        "eiin": "125665",
+        "name": "ECO COLLEGE, THAKURGAON (ইকো কলেজ ঠাকুরগাঁও)",
+        "alt_names": "Eco College Thakurgaon ইকো কলেজ",
+        "board": "dinajpur",
+        "district": "ঠাকুরগাঁও",
+        "thana": "ঠাকুরগাঁও সদর",
+        "type": "College"
+    },
+    {
+        "eiin": "125666",
+        "name": "THAKURGAON CITY COLLEGE (ঠাকুরগাঁও সিটি কলেজ)",
+        "alt_names": "Thakurgaon City College ঠাকুরগাঁও সিটি কলেজ",
+        "board": "dinajpur",
+        "district": "ঠাকুরগাঁও",
+        "thana": "ঠাকুরগাঁও সদর",
+        "type": "College"
+    },
+    {
         "eiin": "125668",
         "name": "Imam Gazzali Girls School & Cooege",
         "alt_names": "Imam Gazzali Girls School & Cooege ঠাকুরগাঁও",
@@ -32621,6 +33857,24 @@ INSTITUTES = [
         "type": "Madrasah"
     },
     {
+        "eiin": "125741",
+        "name": "PIRGANJ GOVT. COLLEGE, THAKURGAON (পীরগঞ্জ সরকারি কলেজ ঠাকুরগাঁও)",
+        "alt_names": "Pirganj Govt College Thakurgaon পীরগঞ্জ সরকারি কলেজ ঠাকুরগাঁও",
+        "board": "dinajpur",
+        "district": "ঠাকুরগাঁও",
+        "thana": "পীরগঞ্জ",
+        "type": "College"
+    },
+    {
+        "eiin": "125742",
+        "name": "PIRGANJ MOHILA DEGREE COLLEGE (পীরগঞ্জ মহিলা ডিগ্রি কলেজ)",
+        "alt_names": "Pirganj Mohila Degree College পীরগঞ্জ মহিলা কলেজ",
+        "board": "dinajpur",
+        "district": "ঠাকুরগাঁও",
+        "thana": "পীরগঞ্জ",
+        "type": "College"
+    },
+    {
         "eiin": "125747",
         "name": "Sondaha High School And College",
         "alt_names": "Sondaha High School And College ঠাকুরগাঁও",
@@ -32988,6 +34242,33 @@ INSTITUTES = [
         "district": "ঠাকুরগাঁও",
         "thana": "",
         "type": "Madrasah"
+    },
+    {
+        "eiin": "125788",
+        "name": "RANISANKAIL GOVT. DEGREE COLLEGE (রাণীশংকৈল সরকারি ডিগ্রি কলেজ)",
+        "alt_names": "Ranisankail Govt Degree College রাণীশংকৈল সরকারি ডিগ্রি কলেজ",
+        "board": "dinajpur",
+        "district": "ঠাকুরগাঁও",
+        "thana": "রাণীশংকৈল",
+        "type": "College"
+    },
+    {
+        "eiin": "125789",
+        "name": "RANISANKAIL MOHILA DEGREE COLLEGE (রাণীশংকৈল মহিলা ডিগ্রি কলেজ)",
+        "alt_names": "Ranisankail Mohila Degree College রাণীশংকৈল মহিলা কলেজ",
+        "board": "dinajpur",
+        "district": "ঠাকুরগাঁও",
+        "thana": "রাণীশংকৈল",
+        "type": "College"
+    },
+    {
+        "eiin": "125790",
+        "name": "NEKMARAD ALIMUDDIN GOVT. COLLEGE (নেকমরদ আলিমউদ্দিন সরকারি কলেজ)",
+        "alt_names": "Nekmarad Alimuddin Govt College নেকমরদ আলিমউদ্দিন কলেজ",
+        "board": "dinajpur",
+        "district": "ঠাকুরগাঁও",
+        "thana": "রাণীশংকৈল",
+        "type": "College"
     },
     {
         "eiin": "125793",
@@ -33602,13 +34883,49 @@ INSTITUTES = [
         "type": "Madrasah"
     },
     {
+        "eiin": "125862",
+        "name": "BALIADANGI DEGREE COLLEGE (বালিয়াডাঙ্গী ডিগ্রি কলেজ)",
+        "alt_names": "Baliadangi Degree College বালিয়াডাঙ্গী ডিগ্রি কলেজ",
+        "board": "dinajpur",
+        "district": "ঠাকুরগাঁও",
+        "thana": "বালিয়াডাঙ্গী",
+        "type": "College"
+    },
+    {
         "eiin": "125863",
-        "name": "Bodhgaon Dakhil Madrasah",
-        "alt_names": "Bodhgaon Dakhil Madrasah ঠাকুরগাঁও",
+        "name": "BALIADANGI MOHILA COLLEGE (বালিয়াডাঙ্গী মহিলা কলেজ)",
+        "alt_names": "Baliadangi Bodhgaon College Dakhil Madrasah Mohila কলেজ ঠাকুরগাঁও বালিয়াডাঙ্গী মহিলা",
         "board": "madrasah",
         "district": "ঠাকুরগাঁও",
-        "thana": "",
-        "type": "Madrasah"
+        "thana": "বালিয়াডাঙ্গী",
+        "type": "College"
+    },
+    {
+        "eiin": "125864",
+        "name": "SAMIRUDDIN SMRITI COLLEGE (সমীরউদ্দিন স্মৃতি কলেজ)",
+        "alt_names": "Samiruddin Smriti College সমীরউদ্দিন স্মৃতি কলেজ বালিয়াডাঙ্গী",
+        "board": "dinajpur",
+        "district": "ঠাকুরগাঁও",
+        "thana": "বালিয়াডাঙ্গী",
+        "type": "College"
+    },
+    {
+        "eiin": "125865",
+        "name": "ATWARI ADARSHA WOMEN'S COLLEGE (আটোয়ারী আদর্শ মহিলা কলেজ)",
+        "alt_names": "Atwari Adarsha Womens College আটোয়ারী আদর্শ মহিলা কলেজ",
+        "board": "dinajpur",
+        "district": "পঞ্চগড়",
+        "thana": "আটোয়ারী",
+        "type": "College"
+    },
+    {
+        "eiin": "125866",
+        "name": "ATWARI DEGREE COLLEGE (আটোয়ারী ডিগ্রি কলেজ)",
+        "alt_names": "Atwari Degree College আটোয়ারী ডিগ্রি কলেজ",
+        "board": "dinajpur",
+        "district": "পঞ্চগড়",
+        "thana": "আটোয়ারী",
+        "type": "College"
     },
     {
         "eiin": "125868",
@@ -34088,13 +35405,22 @@ INSTITUTES = [
         "type": "School"
     },
     {
-        "eiin": "125924",
-        "name": "Mirgang Junior Girls School",
-        "alt_names": "Mirgang Junior Girls School ঠাকুরগাঁও",
+        "eiin": "125923",
+        "name": "HARIPUR DEGREE COLLEGE (হরিপুর ডিগ্রি কলেজ)",
+        "alt_names": "Haripur Degree College হরিপুর ডিগ্রি কলেজ",
         "board": "dinajpur",
         "district": "ঠাকুরগাঁও",
-        "thana": "",
-        "type": "School"
+        "thana": "হরিপুর",
+        "type": "College"
+    },
+    {
+        "eiin": "125924",
+        "name": "HARIPUR MOHILA COLLEGE (হরিপুর মহিলা কলেজ)",
+        "alt_names": "College Girls Haripur Junior Mirgang Mohila School কলেজ ঠাকুরগাঁও মহিলা হরিপুর",
+        "board": "dinajpur",
+        "district": "ঠাকুরগাঁও",
+        "thana": "হরিপুর",
+        "type": "College"
     },
     {
         "eiin": "125925",
@@ -34403,6 +35729,15 @@ INSTITUTES = [
         "type": "Madrasah"
     },
     {
+        "eiin": "125975",
+        "name": "MAIDANDIGHI COLLEGE, DEBIGANJ (ময়দানদিঘী কলেজ)",
+        "alt_names": "Maidandighi College Debiganj ময়দানদিঘী কলেজ দেবীগঞ্জ",
+        "board": "dinajpur",
+        "district": "পঞ্চগড়",
+        "thana": "দেবীগঞ্জ",
+        "type": "College"
+    },
+    {
         "eiin": "125978",
         "name": "Debigong Alodini Govt.Girls High School",
         "alt_names": "Debigong Alodini Govt.Girls High School ঠাকুরগাঁও",
@@ -34599,6 +35934,42 @@ INSTITUTES = [
         "district": "ঠাকুরগাঁও",
         "thana": "",
         "type": "School"
+    },
+    {
+        "eiin": "126048",
+        "name": "DEBIGANJ GOVT. DEGREE COLLEGE (দেবীগঞ্জ সরকারি ডিগ্রি কলেজ)",
+        "alt_names": "Debiganj Govt Degree College দেবীগঞ্জ সরকারি ডিগ্রি কলেজ",
+        "board": "dinajpur",
+        "district": "পঞ্চগড়",
+        "thana": "দেবীগঞ্জ",
+        "type": "College"
+    },
+    {
+        "eiin": "126050",
+        "name": "DEBIGANJ MOHILA COLLEGE (দেবীগঞ্জ মহিলা কলেজ)",
+        "alt_names": "Debiganj Mohila College দেবীগঞ্জ মহিলা কলেজ",
+        "board": "dinajpur",
+        "district": "পঞ্চগড়",
+        "thana": "দেবীগঞ্জ",
+        "type": "College"
+    },
+    {
+        "eiin": "126147",
+        "name": "MOQBULUR RAHMAN GOVT. COLLEGE (মকবুলার রহমান সরকারি কলেজ পঞ্চগড়)",
+        "alt_names": "Moqbulur Rahman Govt College Moqbular Rahman Govt College মকবুলার রহমান সরকারি কলেজ পঞ্চগড়",
+        "board": "dinajpur",
+        "district": "পঞ্চগড়",
+        "thana": "পঞ্চগড় সদর",
+        "type": "College"
+    },
+    {
+        "eiin": "126148",
+        "name": "PANCHAGARH GOVT. MOHILA COLLEGE (পঞ্চগড় সরকারি মহিলা কলেজ)",
+        "alt_names": "Panchagarh Govt Mohila College পঞ্চগড় সরকারি মহিলা কলেজ",
+        "board": "dinajpur",
+        "district": "পঞ্চগড়",
+        "thana": "পঞ্চগড় সদর",
+        "type": "College"
     },
     {
         "eiin": "126490",
@@ -36358,6 +37729,24 @@ INSTITUTES = [
         "type": "Madrasah"
     },
     {
+        "eiin": "127233",
+        "name": "BADARGANJ DEGREE COLLEGE (বদরগঞ্জ ডিগ্রি কলেজ)",
+        "alt_names": "Badarganj Degree College বদরগঞ্জ ডিগ্রি কলেজ রংপুর",
+        "board": "dinajpur",
+        "district": "রংপুর",
+        "thana": "বদরগঞ্জ",
+        "type": "College"
+    },
+    {
+        "eiin": "127234",
+        "name": "BADARGANJ MOHILA COLLEGE (বদরগঞ্জ মহিলা কলেজ)",
+        "alt_names": "Badarganj Mohila College বদরগঞ্জ মহিলা কলেজ",
+        "board": "dinajpur",
+        "district": "রংপুর",
+        "thana": "বদরগঞ্জ",
+        "type": "College"
+    },
+    {
         "eiin": "127238",
         "name": "Kutubpur Orunnesa High School & College",
         "alt_names": "Kutubpur Orunnesa High School & College রংপুর",
@@ -37455,12 +38844,21 @@ INSTITUTES = [
     },
     {
         "eiin": "127377",
-        "name": "Bir Uttam Shaheed Samad High School",
-        "alt_names": "Bir Uttam Shaheed Samad High School রংপুর",
+        "name": "BIR UTTAM SHAHEED SAMAD SCHOOL & COLLEGE (বীর উত্তম শহীদ সামাদ স্কুল অ্যান্ড কলেজ)",
+        "alt_names": "Bir College High Samad School Shaheed Uttam and অ্যান্ড কলেজ রংপুর শহীদ সামাদ স্কুল",
         "board": "dinajpur",
         "district": "রংপুর",
-        "thana": "",
-        "type": "School"
+        "thana": "রংপুর সদর",
+        "type": "College"
+    },
+    {
+        "eiin": "127378",
+        "name": "BORDER GUARD PUBLIC SCHOOL & COLLEGE, RANGPUR (বিজিবি পাবলিক স্কুল অ্যান্ড কলেজ রংপুর)",
+        "alt_names": "BGB Public School and College Rangpur বিজিবি পাবলিক স্কুল রংপুর",
+        "board": "dinajpur",
+        "district": "রংপুর",
+        "thana": "রংপুর সদর",
+        "type": "College"
     },
     {
         "eiin": "127380",
@@ -38323,21 +39721,58 @@ INSTITUTES = [
         "type": "Madrasah"
     },
     {
-        "eiin": "127483",
-        "name": "Rangpur Cadet College",
-        "alt_names": "Rangpur Cadet College রংপুর",
-        "board": "dinajpur",
-        "district": "রংপুর",
-        "thana": "",
-        "type": "College"
-    },
-    {
-        "eiin": "127487",
-        "name": "CARMICHAEL COLLEGE, RANGPUR",
+        "eiin": "127482",
+        "name": "MAHIGANJ COLLEGE, RANGPUR (মাহিগঞ্জ কলেজ রংপুর)",
+        "alt_names": "Mahiganj College Rangpur মাহিগঞ্জ কলেজ",
         "board": "dinajpur",
         "district": "রংপুর",
         "thana": "রংপুর সদর",
         "type": "College"
+    },
+    {
+        "eiin": "127483",
+        "name": "RANGPUR CADET COLLEGE (রংপুর ক্যাডেট কলেজ)",
+        "alt_names": "Cadet College Rangpur কলেজ ক্যাডেট রংপুর",
+        "board": "dinajpur",
+        "district": "রংপুর",
+        "thana": "রংপুর সদর",
+        "type": "Cadet"
+    },
+    {
+        "eiin": "127484",
+        "name": "RANGPUR GOVT. COLLEGE (রংপুর সরকারি কলেজ)",
+        "alt_names": "Rangpur Govt College রংপুর সরকারি কলেজ",
+        "board": "dinajpur",
+        "district": "রংপুর",
+        "thana": "রংপুর সদর",
+        "type": "College"
+    },
+    {
+        "eiin": "127485",
+        "name": "GOVT. BEGUM ROKEYA COLLEGE, RANGPUR (সরকারি বেগম রোকেয়া কলেজ রংপুর)",
+        "alt_names": "Govt Begum Rokeya College Rangpur বেগম রোকেয়া কলেজ",
+        "board": "dinajpur",
+        "district": "রংপুর",
+        "thana": "রংপুর সদর",
+        "type": "College"
+    },
+    {
+        "eiin": "127486",
+        "name": "RANGPUR MODEL COLLEGE (রংপুর মডেল কলেজ)",
+        "alt_names": "Rangpur Model College রংপুর মডেল কলেজ",
+        "board": "dinajpur",
+        "district": "রংপুর",
+        "thana": "রংপুর সদর",
+        "type": "College"
+    },
+    {
+        "eiin": "127487",
+        "name": "MOULANA KERAMAT ALI COLLEGE, RANGPUR (মাওলানা কেরামত আলী কলেজ)",
+        "board": "dinajpur",
+        "district": "রংপুর",
+        "thana": "রংপুর সদর",
+        "type": "College",
+        "alt_names": "Ali College Keramat Moulana আলী কলেজ কেরামত রংপুর"
     },
     {
         "eiin": "127488",
@@ -38348,20 +39783,48 @@ INSTITUTES = [
         "type": "College"
     },
     {
+        "eiin": "127489",
+        "name": "CARMICHAEL COLLEGE, RANGPUR (কারমাইকেল কলেজ রংপুর)",
+        "alt_names": "Carmichael College Rangpur কারমাইকেল কলেজ রংপুর",
+        "board": "dinajpur",
+        "district": "রংপুর",
+        "thana": "রংপুর সদর",
+        "type": "College"
+    },
+    {
+        "eiin": "127491",
+        "name": "ANANDALOKE DEGREE MAHABIDYALOVA (আনন্দলোক ডিগ্রি মহাবিদ্যালয়)",
+        "alt_names": "Anandaloke Degree Mahabidyaloya আনন্দলোক ডিগ্রি কলেজ রংপুর",
+        "board": "dinajpur",
+        "district": "রংপুর",
+        "thana": "রংপুর সদর",
+        "type": "College"
+    },
+    {
+        "eiin": "127494",
+        "name": "WOMEN'S COLLEGE LAHIRIRHAT (মহিলা কলেজ লাহিড়ীরহাট)",
+        "alt_names": "Womens College Lahirirhat লাহিড়ীরহাট মহিলা কলেজ রংপুর",
+        "board": "dinajpur",
+        "district": "রংপুর",
+        "thana": "রংপুর সদর",
+        "type": "College"
+    },
+    {
         "eiin": "127495",
-        "name": "DHAP SATGARA BAITUL MUKARRAM MODEL KAMIL MADRASAH",
+        "name": "RANGPUR CITY COLLEGE (রংপুর সিটি কলেজ)",
         "board": "madrasah",
         "district": "রংপুর",
         "thana": "রংপুর সদর",
-        "type": "Madrasah"
+        "type": "College",
+        "alt_names": "City College Rangpur কলেজ রংপুর সিটি"
     },
     {
         "eiin": "127496",
-        "name": "Lion'S School And College",
-        "alt_names": "Lion'S School And College রংপুর",
+        "name": "LIONS SCHOOL & COLLEGE, RANGPUR (লায়ন্স স্কুল অ্যান্ড কলেজ রংপুর)",
+        "alt_names": "And College Lion'S Lions Rangpur School and রংপুর লায়ন্স স্কুল",
         "board": "dinajpur",
         "district": "রংপুর",
-        "thana": "",
+        "thana": "রংপুর সদর",
         "type": "College"
     },
     {
@@ -38384,20 +39847,20 @@ INSTITUTES = [
     },
     {
         "eiin": "127500",
-        "name": "Cantonment Public School And College",
-        "alt_names": "Cantonment Public School And College রংপুর",
+        "name": "CANTONMENT PUBLIC SCHOOL & COLLEGE, RANGPUR (ক্যান্টনমেন্ট পাবলিক স্কুল ও কলেজ রংপুর)",
+        "alt_names": "And CPSC Cantonment College Public Rangpur School and ক্যান্টনমেন্ট পাবলিক রংপুর স্কুল",
         "board": "dinajpur",
         "district": "রংপুর",
-        "thana": "",
+        "thana": "রংপুর সদর",
         "type": "College"
     },
     {
         "eiin": "127501",
-        "name": "Police Line School And College Rangpur",
-        "alt_names": "Police Line School And College Rangpur রংপুর",
+        "name": "POLICE LINES SCHOOL & COLLEGE, RANGPUR (পুলিশ লাইন স্কুল অ্যান্ড কলেজ রংপুর)",
+        "alt_names": "And College Line Lines Police Rangpur School and ও কলেজ পুলিশ রংপুর লাইন্স স্কুল",
         "board": "dinajpur",
         "district": "রংপুর",
-        "thana": "",
+        "thana": "রংপুর সদর",
         "type": "College"
     },
     {
@@ -38411,11 +39874,11 @@ INSTITUTES = [
     },
     {
         "eiin": "127503",
-        "name": "Collectorate School And College",
-        "alt_names": "Collectorate School And College রংপুর",
+        "name": "COLLECTORATE SCHOOL & COLLEGE, RANGPUR (কালেক্টরেট স্কুল অ্যান্ড কলেজ রংপুর)",
+        "alt_names": "And Collectorate College Rangpur School and কলেজ কালেক্টরেট রংপুর",
         "board": "dinajpur",
         "district": "রংপুর",
-        "thana": "",
+        "thana": "রংপুর সদর",
         "type": "College"
     },
     {
@@ -39778,6 +41241,24 @@ INSTITUTES = [
         "type": "Madrasah"
     },
     {
+        "eiin": "127663",
+        "name": "HABIBUNNABI ASHEQUR RAHMAN DEGREE COLLEGE (হাবিবুন্নবী আশেকুর রহমান ডিগ্রি কলেজ)",
+        "alt_names": "Habibunnabi Ashequr Rahman Degree College আশেকুর রহমান ডিগ্রি কলেজ মিঠাপুকুর",
+        "board": "dinajpur",
+        "district": "রংপুর",
+        "thana": "মিঠাপুকুর",
+        "type": "College"
+    },
+    {
+        "eiin": "127667",
+        "name": "AKHIRAHAT COLLEGE, MITHAPUKUR (আখিরাহাট কলেজ)",
+        "alt_names": "Akhirahat College Mithapukur আখিরাহাট কলেজ",
+        "board": "dinajpur",
+        "district": "রংপুর",
+        "thana": "মিঠাপুকুর",
+        "type": "College"
+    },
+    {
         "eiin": "127673",
         "name": "Jaigir High School & College",
         "alt_names": "Jaigir High School & College রংপুর",
@@ -40595,6 +42076,15 @@ INSTITUTES = [
         "district": "রংপুর",
         "thana": "",
         "type": "Madrasah"
+    },
+    {
+        "eiin": "127775",
+        "name": "ANNODANAGAR COLLEGE, PIRGACHHA (অন্নদানগর কলেজ)",
+        "alt_names": "Annodanagar College Pirgachha অন্নদানগর কলেজ পীরগাছা",
+        "board": "dinajpur",
+        "district": "রংপুর",
+        "thana": "পীরগাছা",
+        "type": "College"
     },
     {
         "eiin": "127777",
@@ -41992,6 +43482,15 @@ INSTITUTES = [
         "type": "Madrasah"
     },
     {
+        "eiin": "127946",
+        "name": "AMADPUR COLLEGE, MITHAPUKUR (আমাদপুর কলেজ)",
+        "alt_names": "Amadpur College Mithapukur আমাদপুর কলেজ মিঠাপুকুর",
+        "board": "dinajpur",
+        "district": "রংপুর",
+        "thana": "মিঠাপুকুর",
+        "type": "College"
+    },
+    {
         "eiin": "127947",
         "name": "Hazipur Balabary Junior School",
         "alt_names": "Hazipur Balabary Junior School রংপুর",
@@ -43160,6 +44659,15 @@ INSTITUTES = [
         "type": "School"
     },
     {
+        "eiin": "128848",
+        "name": "MOSLEMUDDIN DEGREE COLLEGE, HARIPUR (মুসলিমউদ্দিন ডিগ্রি কলেজ হরিপুর)",
+        "alt_names": "Moslemuddin Degree College Haripur মুসলিমউদ্দিন কলেজ হরিপুর",
+        "board": "dinajpur",
+        "district": "ঠাকুরগাঁও",
+        "thana": "হরিপুর",
+        "type": "College"
+    },
+    {
         "eiin": "129180",
         "name": "HABIGANJ GOVT. HIGH SCHOOL",
         "board": "sylhet",
@@ -43181,6 +44689,42 @@ INSTITUTES = [
         "board": "sylhet",
         "district": "হবিগঞ্জ",
         "thana": "হবিগঞ্জ সদর",
+        "type": "College"
+    },
+    {
+        "eiin": "129304",
+        "name": "THAKURGAON GOVT. MOHILA COLLEGE (ঠাকুরগাঁও সরকারি মহিলা কলেজ)",
+        "alt_names": "Thakurgaon Govt Mohila College ঠাকুরগাঁও সরকারি মহিলা কলেজ",
+        "board": "dinajpur",
+        "district": "ঠাকুরগাঁও",
+        "thana": "ঠাকুরগাঁও সদর",
+        "type": "College"
+    },
+    {
+        "eiin": "129305",
+        "name": "THAKURGAON GOVT. COLLEGE (ঠাকুরগাঁও সরকারি কলেজ)",
+        "alt_names": "Thakurgaon Govt College ঠাকুরগাঁও সরকারি কলেজ",
+        "board": "dinajpur",
+        "district": "ঠাকুরগাঁও",
+        "thana": "ঠাকুরগাঁও সদর",
+        "type": "College"
+    },
+    {
+        "eiin": "129309",
+        "name": "THAKURGAON ROAD COLLEGE (ঠাকুরগাঁও রোড কলেজ)",
+        "alt_names": "Thakurgaon Road College ঠাকুরগাঁও রোড ডিগ্রি কলেজ",
+        "board": "dinajpur",
+        "district": "ঠাকুরগাঁও",
+        "thana": "ঠাকুরগাঁও সদর",
+        "type": "College"
+    },
+    {
+        "eiin": "129316",
+        "name": "THAKURGAON NEW MODEL COLLEGE (ঠাকুরগাঁও নিউ মডেল কলেজ)",
+        "alt_names": "Thakurgaon New Model College নিউ মডেল কলেজ ঠাকুরগাঁও",
+        "board": "dinajpur",
+        "district": "ঠাকুরগাঁও",
+        "thana": "ঠাকুরগাঁও সদর",
         "type": "College"
     },
     {
@@ -43416,6 +44960,15 @@ INSTITUTES = [
         "type": "Technical"
     },
     {
+        "eiin": "131077",
+        "name": "GAIBANDHA SADAR MODEL SCHOOL & COLLEGE (গাইবান্ধা সদর মডেল স্কুল অ্যান্ড কলেজ)",
+        "alt_names": "Gaibandha Sadar Upazila Model School and College মডেল স্কুল অ্যান্ড কলেজ গাইবান্ধা",
+        "board": "dinajpur",
+        "district": "গাইবান্ধা",
+        "thana": "গাইবান্ধা সদর",
+        "type": "College"
+    },
+    {
         "eiin": "131694",
         "name": "KANPUR BAZAR DAKHIL MADRASAH",
         "alt_names": "কানপুর বাজার দাখিল মাদ্রাসা",
@@ -43434,12 +44987,48 @@ INSTITUTES = [
         "type": "College"
     },
     {
+        "eiin": "131991",
+        "name": "MUNSHIPARA ADARSHA COLLEGE (মুন্সিপাড়া আদর্শ কলেজ)",
+        "alt_names": "Munshipara Adarsha College মুন্সিপাড়া কলেজ দিনাজপুর",
+        "board": "dinajpur",
+        "district": "দিনাজপুর",
+        "thana": "দিনাজপুর সদর",
+        "type": "College"
+    },
+    {
+        "eiin": "132244",
+        "name": "PANCHAGARH TECHNICAL SCHOOL AND COLLEGE (পঞ্চগড় টেকনিক্যাল স্কুল ও কলেজ)",
+        "alt_names": "Panchagarh Technical School and College পঞ্চগড় টেকনিক্যাল স্কুল অ্যান্ড কলেজ",
+        "board": "tec",
+        "district": "পঞ্চগড়",
+        "thana": "পঞ্চগড় সদর",
+        "type": "Technical"
+    },
+    {
+        "eiin": "132271",
+        "name": "DINAJPUR TECHNICAL SCHOOL AND COLLEGE (দিনাজপুর টেকনিক্যাল স্কুল ও কলেজ)",
+        "alt_names": "Dinajpur TSC Technical School and College দিনাজপুর টেকনিক্যাল স্কুল অ্যান্ড কলেজ",
+        "board": "tec",
+        "district": "দিনাজপুর",
+        "thana": "দিনাজপুর সদর",
+        "type": "Technical"
+    },
+    {
         "eiin": "132952",
         "name": "BOIKUNTHAPUR TECHNICAL AND BM COLLEGE (বৈকুণ্ঠপুর কারিগরি ও বিএম কলেজ)",
         "alt_names": "Boikantapur Technical and Business Management College Boikunthapur BM Chirirbandar Chirir Bandar চিরিরবন্দর",
         "board": "tec",
         "district": "দিনাজপুর",
         "thana": "চিরিরবন্দর",
+        "type": "Technical"
+    },
+    {
+        "eiin": "133074",
+        "name": "GHORAGHAT TECHNICAL COLLEGE (ঘোড়াঘাট টেকনিক্যাল কলেজ)",
+        "alt_names": "Ghoraghat Technical College ঘোড়াঘাট কারিগরি কলেজ",
+        "board": "tec",
+        "district": "দিনাজপুর",
+        "thana": "ঘোড়াঘাট",
         "type": "Technical"
     },
     {
@@ -43493,11 +45082,12 @@ INSTITUTES = [
     },
     {
         "eiin": "133785",
-        "name": "GOVT. HAZI MOHAMMAD MOHSIN COLLEGE",
+        "name": "DINAJPUR GOVT. CITY COLLEGE (দিনাজপুর সরকারি সিটি কলেজ)",
         "board": "chittagong",
         "district": "চট্টগ্রাম",
         "thana": "চকবাজার",
-        "type": "College"
+        "type": "College",
+        "alt_names": "City College Dinajpur Govt কলেজ দিনাজপুর সরকারি সিটি"
     },
     {
         "eiin": "133786",
@@ -43505,6 +45095,51 @@ INSTITUTES = [
         "board": "chittagong",
         "district": "চট্টগ্রাম",
         "thana": "চকবাজার",
+        "type": "College"
+    },
+    {
+        "eiin": "134127",
+        "name": "THE MILLENNIUM STARS SCHOOL & COLLEGE, RANGPUR (দ্য মিলেনিয়াম স্টারস স্কুল অ্যান্ড কলেজ রংপুর)",
+        "alt_names": "The Millennium Stars School and College মিলেনিয়াম স্টারস কলেজ রংপুর",
+        "board": "dinajpur",
+        "district": "রংপুর",
+        "thana": "রংপুর সদর",
+        "type": "College"
+    },
+    {
+        "eiin": "135323",
+        "name": "DINAJPUR COLLECTORATE SCHOOL & COLLEGE (দিনাজপুর কালেক্টরেট স্কুল ও কলেজ)",
+        "alt_names": "Dinajpur Collectorate School and College কালেক্টরেট স্কুল অ্যান্ড কলেজ দিনাজপুর",
+        "board": "dinajpur",
+        "district": "দিনাজপুর",
+        "thana": "দিনাজপুর সদর",
+        "type": "College"
+    },
+    {
+        "eiin": "136507",
+        "name": "ZILA PARISHAD SCHOOL AND COLLEGE, NILPHAMARI (জেলা পরিষদ স্কুল ও কলেজ)",
+        "alt_names": "Zila Parishad School and College Nilphamari জেলা পরিষদ স্কুল অ্যান্ড কলেজ নীলফামারী",
+        "board": "dinajpur",
+        "district": "নীলফামারী",
+        "thana": "নীলফামারী সদর",
+        "type": "College"
+    },
+    {
+        "eiin": "136916",
+        "name": "BORDER GUARD PUBLIC SCHOOL & COLLEGE, LALMONIRHAT (বিজিবি পাবলিক স্কুল অ্যান্ড কলেজ লালমনিরহাট)",
+        "alt_names": "BGB Public School and College Lalmonirhat বিজিবি পাবলিক কলেজ লালমনিরহাট",
+        "board": "dinajpur",
+        "district": "লালমনিরহাট",
+        "thana": "লালমনিরহাট সদর",
+        "type": "College"
+    },
+    {
+        "eiin": "136959",
+        "name": "RANGPUR PUBLIC SCHOOL & COLLEGE (রংপুর পাবলিক স্কুল অ্যান্ড কলেজ)",
+        "alt_names": "Rangpur Public School and College পাবলিক স্কুল রংপুর",
+        "board": "dinajpur",
+        "district": "রংপুর",
+        "thana": "রংপুর সদর",
         "type": "College"
     },
     {
@@ -43517,18 +45152,27 @@ INSTITUTES = [
         "type": "School"
     },
     {
+        "eiin": "137653",
+        "name": "CANTONMENT PUBLIC SCHOOL & COLLEGE, LALMONIRHAT (ক্যান্টনমেন্ট পাবলিক স্কুল অ্যান্ড কলেজ লালমনিরহাট)",
+        "alt_names": "CPSC Lalmonirhat Cantonment Public School and College Lalmonirhat লালমনিরহাট ক্যান্টনমেন্ট পাবলিক কলেজ",
+        "board": "dinajpur",
+        "district": "লালমনিরহাট",
+        "thana": "লালমনিরহাট সদর",
+        "type": "College"
+    },
+    {
         "eiin": "138401",
         "name": "CITY RESIDENTIAL MODEL SCHOOL (সিটি রেসিডেন্সিয়াল মডেল স্কুল)",
-        "alt_names": "City Residential Model School City Residential School সিটি রেসিডেন্সিয়াল মডেল স্কুল সিটি রেসিডেন্সিয়াল Chirirbandar চিরিরবন্দর",
+        "alt_names": "Chirirbandar City College Model Residential School কলেজ চিরিরবন্দর মডেল রেসিডেন্সিয়াল রেসিডেন্সিয়াল সিটি স্কুল",
         "board": "dinajpur",
         "district": "দিনাজপুর",
         "thana": "চিরিরবন্দর",
-        "type": "School"
+        "type": "College"
     },
     {
         "eiin": "138497",
         "name": "CITY RESIDENTIAL MODEL COLLEGE (সিটি রেসিডেন্সিয়াল মডেল কলেজ)",
-        "alt_names": "City Residential Model College City Residential College সিটি রেসিডেন্সিয়াল মডেল কলেজ সিটি রেসিডেন্সিয়াল Chirirbandar চিরিরবন্দর",
+        "alt_names": "Chirirbandar City College Model Residential কলেজ চিরিরবন্দর মডেল রেসিডেন্সিয়াল রেসিডেন্সিয়াল সিটি",
         "board": "dinajpur",
         "district": "দিনাজপুর",
         "thana": "চিরিরবন্দর",
@@ -43542,48 +45186,165 @@ INSTITUTES = [
         "district": "দিনাজপুর",
         "thana": "চিরিরবন্দর",
         "type": "School"
+    },
+    {
+        "eiin": "139734",
+        "name": "BOCHAGANJ GOVT. TECHNICAL SCHOOL AND COLLEGE (বোচাগঞ্জ সরকারি টেকনিক্যাল স্কুল ও কলেজ)",
+        "alt_names": "Bochaganj Govt TSC বোচাগঞ্জ টেকনিক্যাল কলেজ",
+        "board": "tec",
+        "district": "দিনাজপুর",
+        "thana": "বোচাগঞ্জ",
+        "type": "Technical"
     }
 ]
 
 DISTRICT_BOARD_MAP = {
-    'dinajpur': ['দিনাজপুর', 'রংপুর', 'নীলফামারী', 'ঠাকুরগাঁও', 'পঞ্চগড়', 'গাইবান্ধা', 'কুড়িগ্রাম', 'লালমনিরহাট'],
-    'dhaka': ['ঢাকা', 'গাজীপুর', 'নারায়ণগঞ্জ', 'টাঙ্গাইল', 'ফরিদপুর', 'নরসিংদী', 'মানিকগঞ্জ', 'মুন্সীগঞ্জ'],
-    'chittagong': ['চট্টগ্রাম', 'কক্সবাজার', 'রাঙ্গামাটি', 'খাগড়াছড়ি', 'বান্দরবান'],
-    'rajshahi': ['রাজশাহী', 'বগুড়া', 'পাবনা', 'সিরাজগঞ্জ', 'নাটোর', 'নওগাঁ', 'জয়পুরহাট', 'চাঁপাইনবাবগঞ্জ'],
-    'comilla': ['কুমিল্লা', 'ফেনী', 'ব্রাহ্মণবাড়িয়া', 'চাঁদপুর', 'নোয়াখালী', 'লক্ষ্মীপুর'],
-    'jessore': ['যশোর', 'খুলনা', 'কুষ্টিয়া', 'ঝিনাইদহ', 'চুয়াডাঙ্গা', 'মাগুরা', 'মেহেরপুর', 'সাতক্ষীরা', 'বাগেরহাট', 'নড়াইল'],
-    'barisal': ['বরিশাল', 'পটুয়াখালী', 'পিরোজপুর', 'ভোলা', 'বরগুনা', 'ঝালকাঠি'],
-    'sylhet': ['সিলেট', 'মৌলভীবাজার', 'হবিগঞ্জ', 'সুনামগঞ্জ'],
-    'mymensingh': ['ময়মনসিংহ', 'জামালপুর', 'নেত্রকোণা', 'শেরপুর']
+    "dinajpur": [
+        "দিনাজপুর",
+        "রংপুর",
+        "নীলফামারী",
+        "ঠাকুরগাঁও",
+        "পঞ্চগড়",
+        "পঞ্চগড়",
+        "গাইবান্ধা",
+        "কুড়িগ্রাম",
+        "কুড়িগ্রাম",
+        "লালমনিরহাট"
+    ],
+    "dhaka": [
+        "ঢাকা",
+        "গাজীপুর",
+        "নারায়ণগঞ্জ",
+        "টাঙ্গাইল",
+        "ফরিদপুর",
+        "নরসিংদী",
+        "মানিকগঞ্জ",
+        "মুন্সীগঞ্জ"
+    ],
+    "chittagong": [
+        "চট্টগ্রাম",
+        "কক্সবাজার",
+        "রাঙ্গামাটি",
+        "খাগড়াছড়ি",
+        "বান্দরবান"
+    ],
+    "rajshahi": [
+        "রাজশাহী",
+        "বগুড়া",
+        "পাবনা",
+        "সিরাজগঞ্জ",
+        "নাটোর",
+        "নওগাঁ",
+        "জয়পুরহাট",
+        "চাঁপাইনবাবগঞ্জ"
+    ],
+    "comilla": [
+        "কুমিল্লা",
+        "ফেনী",
+        "ব্রাহ্মণবাড়িয়া",
+        "চাঁদপুর",
+        "নোয়াখালী",
+        "লক্ষ্মীপুর"
+    ],
+    "jessore": [
+        "যশোর",
+        "খুলনা",
+        "কুষ্টিয়া",
+        "ঝিনাইদহ",
+        "চুয়াডাঙ্গা",
+        "মাগুরা",
+        "মেহেরপুর",
+        "সাতক্ষীরা",
+        "বাগেরহাট",
+        "নড়াইল"
+    ],
+    "barisal": [
+        "বরিশাল",
+        "পটুয়াখালী",
+        "পিরোজপুর",
+        "ভোলা",
+        "বরগুনা",
+        "ঝালকাঠি"
+    ],
+    "sylhet": [
+        "সিলেট",
+        "মৌলভীবাজার",
+        "হবিগঞ্জ",
+        "সুনামগঞ্জ"
+    ],
+    "mymensingh": [
+        "ময়মনসিংহ",
+        "জামালপুর",
+        "নেত্রকোণা",
+        "শেরপুর"
+    ]
 }
 
 THANA_MAP = {
-    'chirirbandar': 'চিরিরবন্দর',
-    'chirir': 'চিরিরবন্দর',
-    'dinajpur': 'দিনাজপুর',
-    'sadar': 'সদর',
-    'birganj': 'বীরগঞ্জ',
-    'kaharole': 'কাহারোল',
-    'bochaganj': 'বোচাগঞ্জ',
-    'setabganj': 'সেতাবগঞ্জ',
-    'birol': 'বিরল',
-    'parbatipur': 'পার্বতীপুর',
-    'phulbari': 'ফুলবাড়ী',
-    'fulbari': 'ফুলবাড়ী',
-    'nawabganj': 'নবাবগঞ্জ',
-    'ghoraghat': 'ঘোড়াঘাট',
-    'hakimpur': 'হাকিমপুর',
-    'hili': 'হিলি',
-    'khansama': 'খানসামা',
-    'birampur': 'বিরামপুর',
-    'saidpur': 'সৈয়দপুর',
-    'nilphamari': 'নীলফামারী',
-    'rangpur': 'রংপুর',
-    'thakurgaon': 'ঠাকুরগাঁও',
-    'panchagarh': 'পঞ্চগড়',
-    'gaibandha': 'গাইবান্ধা',
-    'kurigram': 'কুড়িগ্রাম',
-    'lalmonirhat': 'লালমনিরহাট'
+    "chirirbandar": "চিরিরবন্দর",
+    "chirir": "চিরিরবন্দর",
+    "dinajpur": "দিনাজপুর",
+    "sadar": "সদর",
+    "birganj": "বীরগঞ্জ",
+    "kaharole": "কাহারোল",
+    "kaharol": "কাহারোল",
+    "bochaganj": "বোচাগঞ্জ",
+    "setabganj": "সেতাবগঞ্জ",
+    "birol": "বিরল",
+    "biral": "বিরল",
+    "parbatipur": "পার্বতীপুর",
+    "phulbari": "ফুলবাড়ী",
+    "fulbari": "ফুলবাড়ী",
+    "nawabganj": "নবাবগঞ্জ",
+    "ghoraghat": "ঘোড়াঘাট",
+    "hakimpur": "হাকিমপুর",
+    "hili": "হিলি",
+    "khansama": "খানসামা",
+    "birampur": "বিরামপুর",
+    "rangpur": "রংপুর",
+    "badarganj": "বদরগঞ্জ",
+    "gangachhara": "গঙ্গাচড়া",
+    "kaunia": "কাউনিয়া",
+    "mithapukur": "মিঠাপুকুর",
+    "pirgachha": "পীরগাছা",
+    "pirganj": "পীরগঞ্জ",
+    "taraganj": "তারাগঞ্জ",
+    "gaibandha": "গাইবান্ধা",
+    "gobindaganj": "গোবিন্দগঞ্জ",
+    "sundarganj": "সুন্দরগঞ্জ",
+    "palashbari": "পলাশবাড়ী",
+    "sadullapur": "সাদুল্লাপুর",
+    "saghata": "সাঘাটা",
+    "fulchhari": "ফুলছড়ি",
+    "kurigram": "কুড়িগ্রাম",
+    "ulipur": "উলিপুর",
+    "nageshwari": "নাগেশ্বরী",
+    "bhurungamari": "ভুরুঙ্গামারী",
+    "chilmari": "চিলমারী",
+    "rajarhat": "রাজারহাট",
+    "rowmari": "রৌমারী",
+    "char rajibpur": "চর রাজিবপুর",
+    "rajibpur": "রাজিবপুর",
+    "nilphamari": "নীলফামারী",
+    "saidpur": "সৈয়দপুর",
+    "domar": "ডোমার",
+    "dimla": "ডিমলা",
+    "jaldhaka": "জলঢাকা",
+    "kishoreganj": "কিশোরগঞ্জ",
+    "lalmonirhat": "লালমনিরহাট",
+    "patgram": "পাটগ্রাম",
+    "hatibandha": "হাতীবান্ধা",
+    "kaliganj": "কালীগঞ্জ",
+    "aditmari": "আদিতমারী",
+    "thakurgaon": "ঠাকুরগাঁও",
+    "ranisankail": "রাণীশংকৈল",
+    "baliadangi": "বালিয়াডাঙ্গী",
+    "haripur": "হরিপুর",
+    "panchagarh": "পঞ্চগড়",
+    "boda": "বোদা",
+    "debiganj": "দেবীগঞ্জ",
+    "atwari": "আটোয়ারী",
+    "tetulia": "তেঁতুলিয়া"
 }
 
 def search_institutes(query="", board="", district=""):
@@ -43596,7 +45357,7 @@ def search_institutes(query="", board="", district=""):
     results = []
     for inst in INSTITUTES:
         if b and b != 'all':
-            board_match = (inst['board'] == b)
+            board_match = (inst.get('board') == b)
             if not board_match and b in DISTRICT_BOARD_MAP:
                 if any(dist in inst.get('district', '') for dist in DISTRICT_BOARD_MAP[b]):
                     board_match = True
@@ -43634,12 +45395,7 @@ def search_institutes(query="", board="", district=""):
                 q in alt_lower or
                 thana_alias_match or
                 clean_q in clean_name or
-                clean_q in clean_alt or
-                (('binnakuri' in q or 'binakuri' in q or 'বিন্যাকুড়ী' in q) and ('binnakuri' in name_lower or 'binnakuri' in alt_lower or eiin_str == '120283')) or
-                (('amena' in q or 'আমেনা' in q) and ('amena' in name_lower or eiin_str == '120950')) or
-                (('meher' in q or 'মেহের' in q) and ('meher' in name_lower or eiin_str == '139262')) or
-                (('city' in q or 'সিটি' in q) and ('city' in name_lower or eiin_str in ['138401', '138497'])) or
-                (('ideal' in q or 'আইডিয়াল' in q) and ('ideal' in name_lower or eiin_str == '137617'))
+                clean_q in clean_alt
             )
             if not match:
                 continue
