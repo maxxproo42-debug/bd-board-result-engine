@@ -850,8 +850,8 @@ class DinajpurUnifiedEngine:
 
         # If board is Dinajpur and directly supported on Dinajpur Direct Portal:
         if board_clean == "dinajpur":
-            is_direct = (exam_upper, str(year)) in self.EXAM_MAP_DINAJPUR
-            if is_direct and not captcha:
+            cfg = self._resolve_dinajpur_exam_config(exam, year)
+            if cfg and not captcha:
                 res = self._get_dinajpur_direct_result(roll_clean, reg_clean, exam, year)
                 if res.get('success') or not res.get('not_in_direct'):
                     if res.get('success'):
@@ -863,12 +863,12 @@ class DinajpurUnifiedEngine:
         # Registration number is strictly required by the central government archive:
         if not reg_clean:
             board_label = self.BOARD_NAME_BN.get(board_clean, board_clean)
-            if board_clean == "dinajpur" and str(year) == "2026":
+            if board_clean == "dinajpur":
                 return {
                     "success": False,
                     "need_captcha": False,
                     "need_reg": True,
-                    "error": f"দিনাজপুর বোর্ডের নিজস্ব সার্ভারে ২০২৬ সালের শুধুমাত্র রোলে রেজাল্ট দেখার অপশনটি এখনও লক অবস্থায় রয়েছে। সেন্ট্রাল সার্ভার থেকে ২০২৬ সালের একক রেজাল্ট দেখতে অনুগ্রহ করে রোল নম্বরের সাথে ১০ সংখ্যার রেজিস্ট্রেশন নম্বরটি লিখুন (অথবা পাশের 'পুরো প্রতিষ্ঠানের রেজাল্ট (EIIN)' ট্যাব থেকে প্রতিষ্ঠানের রেজাল্ট দেখুন)।"
+                    "error": f"দিনাজপুর বোর্ডের সরাসরি সার্ভারে রোল {roll_clean} এর কোনো রেজাল্ট মেলেনি। সেন্ট্রাল আর্কাইভ থেকে রেজাল্ট দেখতে অনুগ্রহ করে রোল নম্বরের সাথে ১০ সংখ্যার রেজিস্ট্রেশন নম্বরটি লিখুন (অথবা পাশের 'পুরো প্রতিষ্ঠানের রেজাল্ট (EIIN)' ট্যাব থেকে কলেজের রেজাল্ট দেখুন)।"
                 }
             return {
                 "success": False,
