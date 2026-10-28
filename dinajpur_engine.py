@@ -128,6 +128,7 @@ class DinajpurUnifiedEngine:
         self._last_pdf_name = ""
         self._student_cache = {}
         self._institute_cache = {}
+        self._cache_lock = threading.Lock()
 
         # Background pre-warming worker so sessions are instantly active before first user query
         threading.Thread(target=self._prewarm_sessions, daemon=True).start()
@@ -220,17 +221,51 @@ class DinajpurUnifiedEngine:
             print(f"[Dinajpur Session Error]: {e}")
             return False
 
+    def _resolve_dinajpur_exam_config(self, exam="HSC", year="2025"):
+        """Dynamically discovers and returns the correct direct or archive route configuration
+        for Dinajpur Board on Result Publication Days."""
+        exam_upper = (exam or 'HSC').upper()
+        year_str = str(year or '2025').strip()
+        key = (exam_upper, year_str)
+
+        cfg = self.EXAM_MAP_DINAJPUR.get(key)
+        # If already configured with an exact non-empty archive exam_id
+        if cfg and cfg.get('exam_id'):
+            return cfg
+
+        try:
+            # 1. Check if the active direct homepage is live for this exam and year without timer
+            res_h = self.dinajpur_session.get(f"{self.dinajpur_base}/search/student", timeout=5, verify=False)
+            html_h = res_h.text
+            if exam_upper in html_h.upper() and year_str in html_h and 'result-timer' not in html_h and 'publishes in' not in html_h.lower():
+                discovered = {'exam_id': '', 'archive': '', 'title': f"{exam_upper} EXAMINATION {year_str}"}
+                self.EXAM_MAP_DINAJPUR[key] = discovered
+                return discovered
+
+            # 2. Check archive search for dynamic exam_id
+            url_arc = f"{self.dinajpur_base}/results?archive=1&exam={exam_upper}&year={year_str}"
+            res_arc = self.dinajpur_session.get(url_arc, timeout=5, verify=False)
+            html_arc = res_arc.text
+            m_id = re.search(r'exam_id=(\d+)', html_arc)
+            if m_id:
+                discovered = {'exam_id': m_id.group(1), 'archive': '1', 'title': f"{exam_upper} EXAMINATION {year_str}"}
+                self.EXAM_MAP_DINAJPUR[key] = discovered
+                return discovered
+        except Exception as e:
+            print(f"[Dynamic Exam Resolve Notice]: {e}")
+
+        return cfg
+
     def _get_dinajpur_direct_result(self, roll_no, regi_no="", exam="HSC", year="2025"):
         roll_clean = str(roll_no).strip()
         reg_clean = str(regi_no).strip() if regi_no else ""
-        exam_key = (exam.upper(), str(year))
 
-        cfg = self.EXAM_MAP_DINAJPUR.get(exam_key)
+        cfg = self._resolve_dinajpur_exam_config(exam, year)
         if not cfg:
             return {"success": False, "not_in_direct": True}
 
-        exam_id = cfg['exam_id']
-        archive = cfg['archive']
+        exam_id = cfg.get('exam_id', '')
+        archive = cfg.get('archive', '')
         exam_title = cfg.get('title', f'{exam} {year}')
 
         search_url = f"{self.dinajpur_base}/search/student"
@@ -296,6 +331,17 @@ class DinajpurUnifiedEngine:
                     verify=False
                 )
                 out_html = res_post.text
+
+                if 'challenge' in out_html or 'result-check' in out_html or 'Human Check' in out_html or 'challenge-form' in out_html:
+                    self._solve_dinajpur_challenge_html(out_html, referer_url=search_url)
+                    res_post = self.dinajpur_session.post(
+                        f"{self.dinajpur_base}/search/student",
+                        data=post_data_dict,
+                        headers=headers,
+                        timeout=15,
+                        verify=False
+                    )
+                    out_html = res_post.text
 
                 if res_post.status_code == 404 or "No Result Found" in out_html or "not found" in out_html.lower() or "sorry" in out_html.lower():
                     return {
@@ -787,16 +833,19 @@ class DinajpurUnifiedEngine:
         exam_upper = exam.upper()
 
         cache_key = f"{board_clean}:{exam_upper}:{year}:{roll_clean}:{reg_clean}"
-        if not captcha and cache_key in self._student_cache:
-            ts, cached_res = self._student_cache[cache_key]
-            if time.time() - ts < 86400:
-                return cached_res
+        if not captcha:
+            with self._cache_lock:
+                if cache_key in self._student_cache:
+                    ts, cached_res = self._student_cache[cache_key]
+                    if time.time() - ts < 86400:
+                        return cached_res
 
         # Dedicated Technical Board (BTEB) Router
         if board_clean in ['tec', 'technical']:
             res = self._get_bteb_result(roll_clean, reg_clean, exam, year)
             if res.get('success'):
-                self._student_cache[cache_key] = (time.time(), res)
+                with self._cache_lock:
+                    self._student_cache[cache_key] = (time.time(), res)
             return res
 
         # If board is Dinajpur and directly supported on Dinajpur Direct Portal:
@@ -806,7 +855,8 @@ class DinajpurUnifiedEngine:
                 res = self._get_dinajpur_direct_result(roll_clean, reg_clean, exam, year)
                 if res.get('success') or not res.get('not_in_direct'):
                     if res.get('success'):
-                        self._student_cache[cache_key] = (time.time(), res)
+                        with self._cache_lock:
+                            self._student_cache[cache_key] = (time.time(), res)
                     return res
 
         # For Central eBoard Archive (All Bangladesh Boards):
@@ -830,7 +880,8 @@ class DinajpurUnifiedEngine:
         # 🌟 Seamless Auto-Bypass: Call _get_eboard_archive_result directly!
         res = self._get_eboard_archive_result(roll_clean, reg_clean, exam, year, board=board_clean, captcha=captcha)
         if res.get('success'):
-            self._student_cache[cache_key] = (time.time(), res)
+            with self._cache_lock:
+                self._student_cache[cache_key] = (time.time(), res)
         return res
 
     # =========================================================================
@@ -863,53 +914,66 @@ class DinajpurUnifiedEngine:
             elif 'jsc' in exam_code or 'jdc' in exam_code: exam_code = 'jsc'
 
         cache_key = f"{board_clean}:{exam_code}:{year}:{eiin_clean}"
-        if cache_key in self._institute_cache:
-            ts, cached_res, cached_pdf, cached_pdf_name = self._institute_cache[cache_key]
-            if time.time() - ts < 86400:
-                if cached_pdf:
-                    self._last_pdf_bytes = cached_pdf
-                    self._last_pdf_name = cached_pdf_name
-                return cached_res
+        with self._cache_lock:
+            if cache_key in self._institute_cache:
+                ts, cached_res, cached_pdf, cached_pdf_name = self._institute_cache[cache_key]
+                if time.time() - ts < 86400:
+                    if cached_pdf:
+                        self._last_pdf_bytes = cached_pdf
+                        self._last_pdf_name = cached_pdf_name
+                    return cached_res
 
         # Check Dinajpur Direct Portal if applicable
-        if board_clean == "dinajpur" and (exam_upper, str(year)) in self.EXAM_MAP_DINAJPUR:
-            cfg = self.EXAM_MAP_DINAJPUR.get((exam_upper, str(year)))
-            exam_id = cfg.get('exam_id')
-            archive = cfg.get('archive')
-            try:
-                # 1. Fetch form token
-                init_url = f"{self.dinajpur_base}/search/institute"
-                params = []
-                if archive: params.append(f"archive={archive}")
-                if exam_id: params.append(f"exam_id={exam_id}")
-                if params: init_url += "?" + "&".join(params)
-                
-                res = self.dinajpur_session.get(init_url, timeout=10, verify=False)
-                if 'challenge' in html or 'result-check' in html or 'Human Check' in html or 'challenge-form' in html:
-                    self._solve_dinajpur_challenge_html(html, referer_url=init_url)
+        if board_clean == "dinajpur":
+            cfg = self._resolve_dinajpur_exam_config(exam, year)
+            if cfg:
+                exam_id = cfg.get('exam_id')
+                archive = cfg.get('archive')
+                try:
+                    # 1. Fetch form token
+                    init_url = f"{self.dinajpur_base}/search/institute"
+                    params = []
+                    if archive: params.append(f"archive={archive}")
+                    if exam_id: params.append(f"exam_id={exam_id}")
+                    if params: init_url += "?" + "&".join(params)
+                    
                     res = self.dinajpur_session.get(init_url, timeout=10, verify=False)
                     html = res.text
+                    if 'challenge' in html or 'result-check' in html or 'Human Check' in html or 'challenge-form' in html:
+                        self._solve_dinajpur_challenge_html(html, referer_url=init_url)
+                        res = self.dinajpur_session.get(init_url, timeout=10, verify=False)
+                        html = res.text
 
-                if 'result-timer' not in html and 'publishes in' not in html.lower() and ('<form' in html or 'heading' not in html.lower()):
-                    token_m = re.search(r'name="_token"\s+value="([^"]+)"', html)
-                    if token_m:
-                        token = token_m.group(1)
-                        post_data_dict = {
-                            '_token': token,
-                            'eiin_no': eiin_clean
-                        }
-                        if archive: post_data_dict['archive'] = archive
-                        if exam_id: post_data_dict['exam_id'] = exam_id
-                        
-                        headers = {'Referer': init_url, 'Origin': self.dinajpur_base}
-                        res_p = self.dinajpur_session.post(
-                            f"{self.dinajpur_base}/search/institute",
-                            data=post_data_dict,
-                            headers=headers,
-                            timeout=15,
-                            verify=False
-                        )
-                        html_post = res_p.text
+                    if 'result-timer' not in html and 'publishes in' not in html.lower() and ('<form' in html or 'heading' not in html.lower()):
+                        token_m = re.search(r'name="_token"\s+value="([^"]+)"', html)
+                        if token_m:
+                            token = token_m.group(1)
+                            post_data_dict = {
+                                '_token': token,
+                                'eiin_no': eiin_clean
+                            }
+                            if archive: post_data_dict['archive'] = archive
+                            if exam_id: post_data_dict['exam_id'] = exam_id
+                            
+                            headers = {'Referer': init_url, 'Origin': self.dinajpur_base}
+                            res_p = self.dinajpur_session.post(
+                                f"{self.dinajpur_base}/search/institute",
+                                data=post_data_dict,
+                                headers=headers,
+                                timeout=15,
+                                verify=False
+                            )
+                            html_post = res_p.text
+                            if 'challenge' in html_post or 'result-check' in html_post or 'Human Check' in html_post or 'challenge-form' in html_post:
+                                self._solve_dinajpur_challenge_html(html_post, referer_url=init_url)
+                                res_p = self.dinajpur_session.post(
+                                    f"{self.dinajpur_base}/search/institute",
+                                    data=post_data_dict,
+                                    headers=headers,
+                                    timeout=15,
+                                    verify=False
+                                )
+                                html_post = res_p.text
                         
                         if "No Result Found" not in html_post and "not found" not in html_post.lower():
                             m_inst = re.search(r'Institute</td>\s*<td[^>]*><b>([^<]+)</b>', html_post)
@@ -941,10 +1005,11 @@ class DinajpurUnifiedEngine:
                                     items = re.findall(r'<span class="rest-item">([^<,]+)', blk)
                                     sections[title] = items
                                 data['groups'] = sections
-                                self._institute_cache[cache_key] = (time.time(), data, None, '')
+                                with self._cache_lock:
+                                    self._institute_cache[cache_key] = (time.time(), data, None, '')
                                 return data
-            except Exception as e:
-                print(f"[Dinajpur Direct Institute Error]: {e}")
+                except Exception as e:
+                    print(f"[Dinajpur Direct Institute Error]: {e}")
 
         # Universal eBoard Central Gateway for All Boards & All Years (result_type: '2')
         if not self._eboard_ready:
@@ -1073,7 +1138,8 @@ class DinajpurUnifiedEngine:
                     "groups": groups,
                     "has_pdf": has_pdf
                 }
-                self._institute_cache[cache_key] = (time.time(), res_dict, getattr(self, '_last_pdf_bytes', None), getattr(self, '_last_pdf_name', ''))
+                with self._cache_lock:
+                    self._institute_cache[cache_key] = (time.time(), res_dict, getattr(self, '_last_pdf_bytes', None), getattr(self, '_last_pdf_name', ''))
                 return res_dict
 
             msg = raw_resp.get('msg', '')
