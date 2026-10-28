@@ -2170,7 +2170,13 @@
             border-color: rgba(239, 68, 68, 0.5);
         }
 
-    </style>
+    
+    @keyframes pulseGlow {
+        0%, 100% { opacity: 1; transform: scale(1); box-shadow: 0 0 8px #22c55e; }
+        50% { opacity: 0.35; transform: scale(1.25); box-shadow: 0 0 16px #4ade80; }
+    }
+    
+</style>
 </head>
 <body>
 
@@ -2458,6 +2464,45 @@
                 </div>
             </div>
 
+
+            <!-- HSC 2026 Live Countdown Timer Box (Student) -->
+            <div id="hsc-countdown-card" style="display:none; background: linear-gradient(135deg, rgba(30, 41, 59, 0.95), rgba(15, 23, 42, 0.98)); border: 1px solid rgba(56, 189, 248, 0.45); border-radius: 14px; padding: 1.15rem; margin-bottom: 1.25rem; box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.5), 0 0 20px rgba(56, 189, 248, 0.15);">
+                <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.85rem; flex-wrap: wrap; gap: 0.4rem;">
+                    <div style="display: flex; align-items: center; gap: 0.5rem;">
+                        <span style="display: inline-block; width: 10px; height: 10px; border-radius: 50%; background: #22c55e; animation: pulseGlow 1.5s infinite;"></span>
+                        <span style="font-size: 0.95rem; font-weight: 700; color: #38bdf8; letter-spacing: 0.2px;">
+                            ⏳ এইচএসসি পরীক্ষা ২০২৬ ফলাফল প্রকাশের ক্ষণগণনা (Countdown)
+                        </span>
+                    </div>
+                    <span style="font-size: 0.8rem; background: rgba(56, 189, 248, 0.15); color: #7dd3fc; padding: 0.25rem 0.65rem; border-radius: 20px; border: 1px solid rgba(56, 189, 248, 0.35); font-weight: 700;">
+                        ৩১ অক্টোবর, ২০২৬ • সকাল ১১:০০ টা
+                    </span>
+                </div>
+
+                <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 0.5rem; text-align: center; margin-bottom: 0.75rem;">
+                    <div style="background: rgba(15, 23, 42, 0.85); border: 1px solid rgba(56, 189, 248, 0.3); border-radius: 10px; padding: 0.6rem 0.2rem;">
+                        <div class="timer-days-val" style="font-size: 1.7rem; font-weight: 800; color: #f8fafc; font-family: monospace; line-height: 1.1;">00</div>
+                        <div style="font-size: 0.72rem; color: #94a3b8; font-weight: 600; text-transform: uppercase; margin-top: 0.25rem;">দিন (Days)</div>
+                    </div>
+                    <div style="background: rgba(15, 23, 42, 0.85); border: 1px solid rgba(56, 189, 248, 0.3); border-radius: 10px; padding: 0.6rem 0.2rem;">
+                        <div class="timer-hours-val" style="font-size: 1.7rem; font-weight: 800; color: #f8fafc; font-family: monospace; line-height: 1.1;">00</div>
+                        <div style="font-size: 0.72rem; color: #94a3b8; font-weight: 600; text-transform: uppercase; margin-top: 0.25rem;">ঘণ্টা (Hours)</div>
+                    </div>
+                    <div style="background: rgba(15, 23, 42, 0.85); border: 1px solid rgba(56, 189, 248, 0.3); border-radius: 10px; padding: 0.6rem 0.2rem;">
+                        <div class="timer-mins-val" style="font-size: 1.7rem; font-weight: 800; color: #f8fafc; font-family: monospace; line-height: 1.1;">00</div>
+                        <div style="font-size: 0.72rem; color: #94a3b8; font-weight: 600; text-transform: uppercase; margin-top: 0.25rem;">মিনিট (Mins)</div>
+                    </div>
+                    <div style="background: rgba(15, 23, 42, 0.85); border: 1px solid rgba(244, 63, 94, 0.45); border-radius: 10px; padding: 0.6rem 0.2rem;">
+                        <div class="timer-secs-val" style="font-size: 1.7rem; font-weight: 800; color: #fb7185; font-family: monospace; line-height: 1.1;">00</div>
+                        <div style="font-size: 0.72rem; color: #f43f5e; font-weight: 600; text-transform: uppercase; margin-top: 0.25rem;">সেকেন্ড (Secs)</div>
+                    </div>
+                </div>
+
+                <div class="timer-status-note" style="display: flex; align-items: center; justify-content: space-between; font-size: 0.84rem; color: #cbd5e1; background: rgba(56, 189, 248, 0.08); padding: 0.5rem 0.8rem; border-radius: 8px; border: 1px dashed rgba(56, 189, 248, 0.25);">
+                    <span>📢 <b>বিজ্ঞপ্তি:</b> ৩১ অক্টোবর ফলাফল প্রকাশের সাথে সাথেই এখানে শুধুমাত্র রোল নম্বর দিয়ে সম্পূর্ণ মার্কশিট দেখা যাবে।</span>
+                </div>
+            </div>
+
             <!-- Dynamic Archive Info Note -->
             <div id="archive-info-note" style="display:none; background:rgba(245, 158, 11, 0.12); border:1px solid rgba(245, 158, 11, 0.35); border-radius:10px; padding:0.85rem 1.1rem; margin-bottom:1.25rem; font-size:0.9rem; color:#fde68a; line-height:1.5;">
                 ⚠️ <b>সেন্ট্রাল আর্কাইভ নির্দেশিকা:</b> শিক্ষা বোর্ডের নিয়মানুযায়ী ২০১৫ থেকে ২০২৪ সালের সেন্ট্রাল আর্কাইভে রেজাল্ট দেখতে <b>রোল ও রেজিস্ট্রেশন নম্বর উভয়ই প্রদান করা আবশ্যক</b>। (আপনার কাছে রেজিস্ট্রেশন নম্বর না থাকলে পাশের <b>"পুরো প্রতিষ্ঠানের রেজাল্ট (EIIN)"</b> ট্যাব থেকে রোল ও জিপিএ দেখতে পারেন)।
@@ -2568,6 +2613,45 @@
                             🔍 EIIN ডিরেক্টরি থেকে নাম দিয়ে খুঁজুন ↗
                         </button>
                     </div>
+                </div>
+            </div>
+
+            
+            <!-- HSC 2026 Live Countdown Timer Box (Institute) -->
+            <div id="inst-hsc-countdown-card" style="display:none; background: linear-gradient(135deg, rgba(30, 41, 59, 0.95), rgba(15, 23, 42, 0.98)); border: 1px solid rgba(56, 189, 248, 0.45); border-radius: 14px; padding: 1.15rem; margin-top: 1.15rem; margin-bottom: 1.25rem; box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.5), 0 0 20px rgba(56, 189, 248, 0.15);">
+                <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.85rem; flex-wrap: wrap; gap: 0.4rem;">
+                    <div style="display: flex; align-items: center; gap: 0.5rem;">
+                        <span style="display: inline-block; width: 10px; height: 10px; border-radius: 50%; background: #22c55e; animation: pulseGlow 1.5s infinite;"></span>
+                        <span style="font-size: 0.95rem; font-weight: 700; color: #38bdf8; letter-spacing: 0.2px;">
+                            ⏳ এইচএসসি পরীক্ষা ২০২৬ ফলাফল প্রকাশের ক্ষণগণনা (Countdown)
+                        </span>
+                    </div>
+                    <span style="font-size: 0.8rem; background: rgba(56, 189, 248, 0.15); color: #7dd3fc; padding: 0.25rem 0.65rem; border-radius: 20px; border: 1px solid rgba(56, 189, 248, 0.35); font-weight: 700;">
+                        ৩১ অক্টোবর, ২০২৬ • সকাল ১১:০০ টা
+                    </span>
+                </div>
+
+                <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 0.5rem; text-align: center; margin-bottom: 0.75rem;">
+                    <div style="background: rgba(15, 23, 42, 0.85); border: 1px solid rgba(56, 189, 248, 0.3); border-radius: 10px; padding: 0.6rem 0.2rem;">
+                        <div class="timer-days-val" style="font-size: 1.7rem; font-weight: 800; color: #f8fafc; font-family: monospace; line-height: 1.1;">00</div>
+                        <div style="font-size: 0.72rem; color: #94a3b8; font-weight: 600; text-transform: uppercase; margin-top: 0.25rem;">দিন (Days)</div>
+                    </div>
+                    <div style="background: rgba(15, 23, 42, 0.85); border: 1px solid rgba(56, 189, 248, 0.3); border-radius: 10px; padding: 0.6rem 0.2rem;">
+                        <div class="timer-hours-val" style="font-size: 1.7rem; font-weight: 800; color: #f8fafc; font-family: monospace; line-height: 1.1;">00</div>
+                        <div style="font-size: 0.72rem; color: #94a3b8; font-weight: 600; text-transform: uppercase; margin-top: 0.25rem;">ঘণ্টা (Hours)</div>
+                    </div>
+                    <div style="background: rgba(15, 23, 42, 0.85); border: 1px solid rgba(56, 189, 248, 0.3); border-radius: 10px; padding: 0.6rem 0.2rem;">
+                        <div class="timer-mins-val" style="font-size: 1.7rem; font-weight: 800; color: #f8fafc; font-family: monospace; line-height: 1.1;">00</div>
+                        <div style="font-size: 0.72rem; color: #94a3b8; font-weight: 600; text-transform: uppercase; margin-top: 0.25rem;">মিনিট (Mins)</div>
+                    </div>
+                    <div style="background: rgba(15, 23, 42, 0.85); border: 1px solid rgba(244, 63, 94, 0.45); border-radius: 10px; padding: 0.6rem 0.2rem;">
+                        <div class="timer-secs-val" style="font-size: 1.7rem; font-weight: 800; color: #fb7185; font-family: monospace; line-height: 1.1;">00</div>
+                        <div style="font-size: 0.72rem; color: #f43f5e; font-weight: 600; text-transform: uppercase; margin-top: 0.25rem;">সেকেন্ড (Secs)</div>
+                    </div>
+                </div>
+
+                <div class="timer-status-note" style="display: flex; align-items: center; justify-content: space-between; font-size: 0.84rem; color: #cbd5e1; background: rgba(56, 189, 248, 0.08); padding: 0.5rem 0.8rem; border-radius: 8px; border: 1px dashed rgba(56, 189, 248, 0.25);">
+                    <span>📢 <b>বিজ্ঞপ্তি:</b> ৩১ অক্টোবর ফলাফল প্রকাশের সাথে সাথেই কলেজের সকল শিক্ষার্থীর ফলাফল শিট এখানে দেখা যাবে।</span>
                 </div>
             </div>
 
@@ -3713,10 +3797,63 @@
         }
     }
 
+    
+    // ==========================================
+    // HSC 2026 Live Countdown Timer Logic
+    // ==========================================
+    let countdownInterval = null;
+    const HSC_PUBLISH_TARGET = new Date("2026-10-31T11:00:00+06:00").getTime();
+
+    function updateHscCountdown() {
+        const now = new Date().getTime();
+        const diff = HSC_PUBLISH_TARGET - now;
+
+        if (diff <= 0) {
+            document.querySelectorAll('.timer-days-val').forEach(el => el.textContent = '00');
+            document.querySelectorAll('.timer-hours-val').forEach(el => el.textContent = '00');
+            document.querySelectorAll('.timer-mins-val').forEach(el => el.textContent = '00');
+            document.querySelectorAll('.timer-secs-val').forEach(el => el.textContent = '00');
+            document.querySelectorAll('.timer-status-note').forEach(el => {
+                el.innerHTML = '🎉 <b>ফলাফল প্রকাশিত হয়েছে!</b> নিচে আপনার রোল নম্বর লিখে এখনই সম্পূর্ণ মার্কশিট ও রেজাল্ট দেখুন।';
+            });
+            return;
+        }
+
+        const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+        const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+        const mins = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+        const secs = Math.floor((diff % (1000 * 60)) / 1000);
+
+        const pad = n => String(n).padStart(2, '0');
+        document.querySelectorAll('.timer-days-val').forEach(el => el.textContent = pad(days));
+        document.querySelectorAll('.timer-hours-val').forEach(el => el.textContent = pad(hours));
+        document.querySelectorAll('.timer-mins-val').forEach(el => el.textContent = pad(mins));
+        document.querySelectorAll('.timer-secs-val').forEach(el => el.textContent = pad(secs));
+
+        if (!countdownInterval) {
+            countdownInterval = setInterval(updateHscCountdown, 1000);
+        }
+    }
+
     function updateExamYearState() {
         const board = document.getElementById('board_select').value;
         const exam = document.getElementById('exam_select').value;
         const year = document.getElementById('year_select').value;
+        const hscCountdown = document.getElementById('hsc-countdown-card');
+        const instCountdown = document.getElementById('inst-hsc-countdown-card');
+        const isHsc2026 = (exam === 'HSC' && year === '2026');
+
+        if (hscCountdown) {
+            hscCountdown.style.display = isHsc2026 ? 'block' : 'none';
+        }
+        if (instCountdown) {
+            const instYr = document.getElementById('inst_year_select') ? document.getElementById('inst_year_select').value : year;
+            const instEx = document.getElementById('inst_exam_select') ? document.getElementById('inst_exam_select').value : exam;
+            instCountdown.style.display = (instEx === 'HSC' && instYr === '2026') ? 'block' : 'none';
+        }
+        if (isHsc2026) {
+            updateHscCountdown();
+        }
         const direct = isDirectPortal(exam, year, board);
         const regBadge = document.getElementById('reg_badge');
         const regInput = document.getElementById('reg_input');
@@ -3811,6 +3948,14 @@
         const btn = document.getElementById('student-btn');
         const btnText = btn.querySelector('.btn-text');
         const direct = isDirectPortal(exam, year, board);
+
+        if (exam === 'HSC' && year === '2026') {
+            const now = new Date().getTime();
+            if (now < HSC_PUBLISH_TARGET) {
+                showError('⏳ এইচএসসি ২০২৬ এর ফলাফল প্রকাশের ক্ষণগণনা (Countdown) চলছে! আগামী ৩১ অক্টোবর ২০২৬ সকাল ১১:০০ টায় ফলাফল প্রকাশিত হওয়ার সাথে সাথে এখান থেকে রেজাল্ট দেখা যাবে।');
+                return;
+            }
+        }
 
         if (!roll) {
             showError('অনুগ্রহ করে আপনার রোল নম্বর লিখুন।');
@@ -3918,6 +4063,14 @@
         const year = document.getElementById('inst_year_select').value;
         const btn = document.getElementById('institute-btn');
         const btnText = btn.querySelector('.btn-text');
+
+        if (exam === 'HSC' && year === '2026') {
+            const now = new Date().getTime();
+            if (now < HSC_PUBLISH_TARGET) {
+                showError('⏳ এইচএসসি ২০২৬ এর ফলাফল প্রকাশের ক্ষণগণনা (Countdown) চলছে! আগামী ৩১ অক্টোবর ২০২৬ সকাল ১১:০০ টায় ফলাফল প্রকাশিত হওয়ার সাথে সাথে পুরো প্রতিষ্ঠানের রেজাল্ট শিট দেখা যাবে।');
+                return;
+            }
+        }
 
         if (!eiin) {
             showError('অনুগ্রহ করে প্রতিষ্ঠানের ৬ সংখ্যার EIIN নম্বর প্রদান করুন।');
