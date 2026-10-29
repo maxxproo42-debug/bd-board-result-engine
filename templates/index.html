@@ -1011,6 +1011,69 @@
             letter-spacing: 0.03em;
         }
 
+        .clock-subdates-row {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.6rem;
+            flex-wrap: wrap;
+            font-size: 0.83rem;
+            margin-bottom: 0.55rem;
+            line-height: 1.4;
+        }
+
+        .subdate-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.35rem;
+            padding: 0.2rem 0.65rem;
+            border-radius: 9999px;
+            backdrop-filter: blur(8px);
+            font-weight: 500;
+            transition: all 0.2s ease;
+        }
+
+        .subdate-badge:hover {
+            transform: translateY(-1px);
+        }
+
+        .subdate-bangla {
+            background: rgba(245, 158, 11, 0.08);
+            border: 1px solid rgba(245, 158, 11, 0.25);
+            color: #fde68a;
+        }
+
+        .subdate-bangla .subdate-label {
+            color: #fbbf24;
+            font-weight: 600;
+        }
+
+        .subdate-bangla .subdate-val {
+            color: #fffbeb;
+            font-weight: 700;
+        }
+
+        .subdate-hijri {
+            background: rgba(16, 185, 129, 0.08);
+            border: 1px solid rgba(16, 185, 129, 0.25);
+            color: #a7f3d0;
+        }
+
+        .subdate-hijri .subdate-label {
+            color: #34d399;
+            font-weight: 600;
+        }
+
+        .subdate-hijri .subdate-val {
+            color: #ecfdf5;
+            font-weight: 700;
+        }
+
+        .subdate-divider {
+            color: rgba(255, 255, 255, 0.25);
+            font-size: 0.75rem;
+        }
+
         .clock-time-display {
             display: flex;
             align-items: center;
@@ -1150,6 +1213,13 @@
             .clock-date-row {
                 font-size: 0.8rem;
                 gap: 0.35rem;
+            }
+            .clock-subdates-row {
+                font-size: 0.75rem;
+                gap: 0.35rem;
+            }
+            .subdate-badge {
+                padding: 0.15rem 0.45rem;
             }
             .clock-digits-group {
                 font-size: 1.75rem;
@@ -2302,6 +2372,21 @@
                 <span id="live-date-bn" class="clock-date-bn">--</span>
                 <span class="clock-divider">|</span>
                 <span id="live-date-en" class="clock-date-en">--</span>
+            </div>
+
+            <!-- 1b. Traditional Calendars Row (Bangla Bongabdo & Islamic Hijri) -->
+            <div class="clock-subdates-row">
+                <span class="subdate-badge subdate-bangla" title="জাতীয় বাংলা ক্যালেন্ডার (বঙ্গাব্দ)">
+                    <span class="subdate-icon">🌾</span>
+                    <span class="subdate-label">বাংলা:</span>
+                    <span id="live-date-bongabdo" class="subdate-val">লোড হচ্ছে...</span>
+                </span>
+                <span class="subdate-divider">•</span>
+                <span class="subdate-badge subdate-hijri" title="আরবী ক্যালেন্ডার (হিজরি সন)">
+                    <span class="subdate-icon">🌙</span>
+                    <span class="subdate-label">হিজরি:</span>
+                    <span id="live-date-hijri" class="subdate-val">লোড হচ্ছে...</span>
+                </span>
             </div>
 
             <!-- 2. Live Running Digital Clock -->
@@ -4729,6 +4814,85 @@
     // ============================================================
     // LIVE DIGITAL CLOCK & CALENDAR ENGINE (HOURS, MINS, SECS, DATE)
     // ============================================================
+    // Bangladesh Official Bangla Academy Calendar Engine (Govt Gazette Revised)
+    function getBanglaCalendarDate(now) {
+        const d = now || new Date();
+        const gYear = d.getFullYear();
+        const gMonth = d.getMonth();
+        const gDate = d.getDate();
+
+        const isLeap = (gYear % 4 === 0 && gYear % 100 !== 0) || (gYear % 400 === 0);
+        const bMonths = ['বৈশাখ', 'জ্যৈষ্ঠ', 'আষাঢ়', 'শ্রাবণ', 'ভাদ্র', 'আশ্বিন', 'কার্তিক', 'অগ্রহায়ণ', 'পৌষ', 'মাঘ', 'ফাল্গুন', 'চৈত্র'];
+        const bLengths = [31, 31, 31, 31, 31, 31, 30, 30, 30, 30, isLeap ? 30 : 29, 30];
+        const gDaysInMonth = [31, isLeap ? 29 : 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
+
+        let dayOfYear = 0;
+        for (let m = 0; m < gMonth; m++) dayOfYear += gDaysInMonth[m];
+        dayOfYear += gDate;
+
+        const apr13Day = 31 + (isLeap ? 29 : 28) + 31 + 13;
+
+        let bYear, bDayOfYear;
+        if (dayOfYear > apr13Day) {
+            bYear = gYear - 593;
+            bDayOfYear = dayOfYear - apr13Day;
+        } else {
+            bYear = gYear - 594;
+            const prevLeap = ((gYear - 1) % 4 === 0 && (gYear - 1) % 100 !== 0) || ((gYear - 1) % 400 === 0);
+            const prevYearDays = prevLeap ? 366 : 365;
+            const prevApr13Day = 31 + (prevLeap ? 29 : 28) + 31 + 13;
+            bDayOfYear = (prevYearDays - prevApr13Day) + dayOfYear;
+        }
+
+        let bMonthIndex = 0;
+        let bDay = bDayOfYear;
+        for (let i = 0; i < 12; i++) {
+            if (bDay <= bLengths[i]) {
+                bMonthIndex = i;
+                break;
+            }
+            bDay -= bLengths[i];
+        }
+
+        const bnNums = {'0':'০','1':'১','2':'২','3':'৩','4':'৪','5':'৫','6':'৬','7':'৭','8':'৮','9':'৯'};
+        const toBn = s => String(s).replace(/[0-9]/g, d => bnNums[d] || d);
+
+        return `${toBn(bDay)} ${bMonths[bMonthIndex]} ${toBn(bYear)} বঙ্গাব্দ`;
+    }
+
+    // Islamic / Hijri Calendar Engine (with Bengali Month & Number Localisation)
+    function getHijriCalendarDate(now) {
+        const d = now || new Date();
+        const bnNums = {'0':'০','1':'১','2':'২','3':'৩','4':'৪','5':'৫','6':'৬','7':'৭','8':'৮','9':'৯'};
+        const toBn = s => String(s).replace(/[0-9]/g, d => bnNums[d] || d);
+
+        const arMonthsBn = [
+            '', 'মহররম', 'সফর', 'রবিউল আউয়াল', 'রবিউস সানি', 
+            'জমাদিউল আউয়াল', 'জমাদিউস সানি', 'রজব', 'শাবান', 
+            'রমজান', 'শাওয়াল', 'জিলকদ', 'জিলহজ'
+        ];
+
+        try {
+            const parts = new Intl.DateTimeFormat('en-u-ca-islamic-umalqura-nu-latn', {
+                day: 'numeric',
+                month: 'numeric',
+                year: 'numeric'
+            }).formatToParts(d);
+
+            let hDay = 1, hMonth = 1, hYear = 1448;
+            parts.forEach(p => {
+                if (p.type === 'day') hDay = parseInt(p.value, 10);
+                if (p.type === 'month') hMonth = parseInt(p.value, 10);
+                if (p.type === 'year') hYear = parseInt(p.value, 10);
+            });
+
+            const mName = arMonthsBn[hMonth] || `মাস ${hMonth}`;
+            return `${toBn(hDay)} ${mName} ${toBn(hYear)} হিজরি`;
+        } catch (e) {
+            return `১৪৪৮ হিজরি`;
+        }
+    }
+
     function updateLiveClock() {
         const now = new Date();
         
@@ -4773,9 +4937,15 @@
 
         const elDateBn = document.getElementById('live-date-bn');
         const elDateEn = document.getElementById('live-date-en');
+        const elBongabdo = document.getElementById('live-date-bongabdo');
+        const elHijri = document.getElementById('live-date-hijri');
         if (elDateBn) elDateBn.textContent = bnDateStr;
         if (elDateEn) elDateEn.textContent = enDateStr;
-        if (elMobDate) elMobDate.textContent = bnDateStr;
+        if (elBongabdo) elBongabdo.textContent = getBanglaCalendarDate(now);
+        if (elHijri) elHijri.textContent = getHijriCalendarDate(now);
+        if (elMobDate) {
+            elMobDate.innerHTML = `<div>${bnDateStr}</div><div style="font-size:0.75rem; color:#fde68a; margin-top:2px;">🌾 ${getBanglaCalendarDate(now)} · 🌙 ${getHijriCalendarDate(now)}</div>`;
+        }
     }
 
     // ============================================================
