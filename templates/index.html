@@ -976,6 +976,13 @@
             margin: 0.75rem 0 0.65rem;
         }
 
+        .clock-top-divider {
+            width: 100%;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(245, 158, 11, 0.3), rgba(56, 189, 248, 0.45), rgba(16, 185, 129, 0.3), transparent);
+            margin: 0.65rem 0 0.75rem;
+        }
+
         .clock-date-row {
             display: flex;
             align-items: center;
@@ -984,7 +991,7 @@
             flex-wrap: wrap;
             font-size: 0.9rem;
             color: var(--text-muted);
-            margin-bottom: 0.45rem;
+            margin-bottom: 0;
             font-weight: 500;
         }
 
@@ -2333,6 +2340,9 @@
                 <span class="clock-divider">|</span>
                 <span class="clock-date-hijri" title="আরবী ক্যালেন্ডার (হিজরি সন)"><span class="clock-mini-icon">🌙</span> <span id="live-date-hijri">--</span></span>
             </div>
+
+            <!-- Sleek Gradient Divider (Separating Date & Clock) -->
+            <div class="clock-top-divider"></div>
 
             <!-- 2. Live Running Digital Clock -->
             <div class="clock-time-display">
