@@ -223,38 +223,54 @@ class DinajpurUnifiedEngine:
 
     def _resolve_dinajpur_exam_config(self, exam="HSC", year="2025"):
         """Dynamically discovers and returns the correct direct or archive route configuration
-        for Dinajpur Board on Result Publication Days."""
+        for Dinajpur Board on Result Publication Days. Strictly prevents cross-year fallback."""
         exam_upper = (exam or 'HSC').upper()
         year_str = str(year or '2025').strip()
         key = (exam_upper, year_str)
 
+        # 1. If explicitly configured with an exact archive exam_id
         cfg = self.EXAM_MAP_DINAJPUR.get(key)
-        # If already configured with an exact non-empty archive exam_id
         if cfg and cfg.get('exam_id'):
             return cfg
 
         try:
-            # 1. Check if the active direct homepage is live for this exam and year without timer
-            res_h = self.dinajpur_session.get(f"{self.dinajpur_base}/search/student", timeout=5, verify=False)
+            # 2. Check if the active direct homepage / search is live for this exam and year (publication day)
+            res_h = self.dinajpur_session.get(f"{self.dinajpur_base}/search/student", timeout=6, verify=False)
             html_h = res_h.text
+            if 'challenge' in html_h or 'result-check' in html_h or 'Human Check' in html_h:
+                _, html_h = self._solve_dinajpur_challenge_html(html_h, referer_url=f"{self.dinajpur_base}/search/student")
+
             if exam_upper in html_h.upper() and year_str in html_h and 'result-timer' not in html_h and 'publishes in' not in html_h.lower():
                 discovered = {'exam_id': '', 'archive': '', 'title': f"{exam_upper} EXAMINATION {year_str}"}
                 self.EXAM_MAP_DINAJPUR[key] = discovered
                 return discovered
-
-            # 2. Check archive search for dynamic exam_id
-            url_arc = f"{self.dinajpur_base}/results?archive=1&exam={exam_upper}&year={year_str}"
-            res_arc = self.dinajpur_session.get(url_arc, timeout=5, verify=False)
-            html_arc = res_arc.text
-            m_id = re.search(r'exam_id=(\d+)', html_arc)
-            if m_id:
-                discovered = {'exam_id': m_id.group(1), 'archive': '1', 'title': f"{exam_upper} EXAMINATION {year_str}"}
-                self.EXAM_MAP_DINAJPUR[key] = discovered
-                return discovered
         except Exception as e:
-            print(f"[Dynamic Exam Resolve Notice]: {e}")
+            print(f"[Dynamic Direct Resolve Notice]: {e}")
 
-        return cfg
+        try:
+            # 3. Check archive search ONLY with strict regex requiring both exam and year match
+            url_arc = f"{self.dinajpur_base}/results?archive=1&exam={exam_upper}&year={year_str}"
+            res_arc = self.dinajpur_session.get(url_arc, timeout=6, verify=False)
+            html_arc = res_arc.text
+            if 'challenge' in html_arc or 'result-check' in html_arc or 'Human Check' in html_arc:
+                _, html_arc = self._solve_dinajpur_challenge_html(html_arc, referer_url=url_arc)
+
+            # Strict check: the archive page MUST explicitly confirm it is showing results for this exact exam & year
+            has_exam = (f"{exam_upper} RESULT {year_str}" in html_arc.upper() or 
+                        f"{exam_upper} EXAMINATION {year_str}" in html_arc.upper() or
+                        f"{exam_upper} EXAMINATION, {year_str}" in html_arc.upper())
+
+            if has_exam:
+                m_id = re.search(r'exam_id=(\d+)', html_arc)
+                if m_id:
+                    discovered = {'exam_id': m_id.group(1), 'archive': '1', 'title': f"{exam_upper} EXAMINATION {year_str}"}
+                    self.EXAM_MAP_DINAJPUR[key] = discovered
+                    return discovered
+        except Exception as e:
+            print(f"[Dynamic Archive Resolve Notice]: {e}")
+
+        # If not strictly found on Dinajpur Direct, return None so query falls through cleanly to eBoard!
+        return None
 
     def _get_dinajpur_direct_result(self, roll_no, regi_no="", exam="HSC", year="2025"):
         roll_clean = str(roll_no).strip()
@@ -349,6 +365,17 @@ class DinajpurUnifiedEngine:
                         "not_in_direct": True,
                         "error": f"রোল {roll_clean} এর কোনো রেজাল্ট {year} সালের {exam} পরীক্ষায় পাওয়া যায়নি।"
                     }
+
+                # Strict Year Validation: Ensure the returned student result strictly matches requested year
+                m_yr_check = re.search(r'RESULT OF\s+([A-Z\.]+)\s+EXAMINATION\s*,?\s*(\d{4})', out_html, re.IGNORECASE)
+                if m_yr_check:
+                    ret_yr = m_yr_check.group(2)
+                    if str(ret_yr) != str(year):
+                        return {
+                            "success": False,
+                            "not_in_direct": True,
+                            "error": f"দিনাজপুর বোর্ডের সরাসরি সার্ভারে {year} সালের রেজাল্ট উন্মুক্ত নেই。"
+                        }
 
                 data = {
                     "success": True,
@@ -944,6 +971,7 @@ class DinajpurUnifiedEngine:
                         res = self.dinajpur_session.get(init_url, timeout=10, verify=False)
                         html = res.text
 
+                    html_post = ""
                     if 'result-timer' not in html and 'publishes in' not in html.lower() and ('<form' in html or 'heading' not in html.lower()):
                         token_m = re.search(r'name="_token"\s+value="([^"]+)"', html)
                         if token_m:
@@ -975,7 +1003,15 @@ class DinajpurUnifiedEngine:
                                 )
                                 html_post = res_p.text
                         
-                        if "No Result Found" not in html_post and "not found" not in html_post.lower():
+                        if html_post and "No Result Found" not in html_post and "not found" not in html_post.lower():
+                            # Strict Year Validation: Ensure Dinajpur Direct response matches requested year
+                            m_head_yr = re.search(r'RESULT OF\s+([A-Z\.]+)\s+EXAMINATION\s*,?\s*(\d{4})', html_post, re.IGNORECASE)
+                            if m_head_yr:
+                                ret_yr = m_head_yr.group(2)
+                                if str(ret_yr) != str(year):
+                                    html_post = ""
+
+                        if html_post and "No Result Found" not in html_post and "not found" not in html_post.lower():
                             m_inst = re.search(r'Institute</td>\s*<td[^>]*><b>([^<]+)</b>', html_post)
                             if m_inst:
                                 data = {
@@ -1017,7 +1053,7 @@ class DinajpurUnifiedEngine:
 
         valid_attempts = 0
         fetch_tries = 0
-        while valid_attempts < 3 and fetch_tries < 6:
+        while valid_attempts < 5 and fetch_tries < 10:
             fetch_tries += 1
             try:
                 c_res = self.eboard_opener.open(f'{self.eboard_base}/v2/captcha', timeout=8)
