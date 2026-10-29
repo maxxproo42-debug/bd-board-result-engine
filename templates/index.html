@@ -1011,67 +1011,27 @@
             letter-spacing: 0.03em;
         }
 
-        .clock-subdates-row {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 0.6rem;
-            flex-wrap: wrap;
-            font-size: 0.83rem;
-            margin-bottom: 0.55rem;
-            line-height: 1.4;
-        }
-
-        .subdate-badge {
+        .clock-date-bangla {
+            color: #fde68a;
+            font-weight: 600;
             display: inline-flex;
             align-items: center;
-            gap: 0.35rem;
-            padding: 0.2rem 0.65rem;
-            border-radius: 9999px;
-            backdrop-filter: blur(8px);
-            font-weight: 500;
-            transition: all 0.2s ease;
+            gap: 0.28rem;
+            letter-spacing: 0.01em;
         }
 
-        .subdate-badge:hover {
-            transform: translateY(-1px);
-        }
-
-        .subdate-bangla {
-            background: rgba(245, 158, 11, 0.08);
-            border: 1px solid rgba(245, 158, 11, 0.25);
-            color: #fde68a;
-        }
-
-        .subdate-bangla .subdate-label {
-            color: #fbbf24;
-            font-weight: 600;
-        }
-
-        .subdate-bangla .subdate-val {
-            color: #fffbeb;
-            font-weight: 700;
-        }
-
-        .subdate-hijri {
-            background: rgba(16, 185, 129, 0.08);
-            border: 1px solid rgba(16, 185, 129, 0.25);
+        .clock-date-hijri {
             color: #a7f3d0;
-        }
-
-        .subdate-hijri .subdate-label {
-            color: #34d399;
             font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.28rem;
+            letter-spacing: 0.01em;
         }
 
-        .subdate-hijri .subdate-val {
-            color: #ecfdf5;
-            font-weight: 700;
-        }
-
-        .subdate-divider {
-            color: rgba(255, 255, 255, 0.25);
-            font-size: 0.75rem;
+        .clock-mini-icon {
+            font-size: 0.95rem;
+            filter: drop-shadow(0 0 4px rgba(255, 255, 255, 0.2));
         }
 
         .clock-time-display {
@@ -1214,12 +1174,8 @@
                 font-size: 0.8rem;
                 gap: 0.35rem;
             }
-            .clock-subdates-row {
-                font-size: 0.75rem;
-                gap: 0.35rem;
-            }
-            .subdate-badge {
-                padding: 0.15rem 0.45rem;
+            .clock-date-bangla, .clock-date-hijri {
+                font-size: 0.78rem;
             }
             .clock-digits-group {
                 font-size: 1.75rem;
@@ -2366,27 +2322,16 @@
 
         <!-- UNIFIED LIVE CLOCK & PRAYER TICKER CARD (ONE SINGLE GLASS CARD) -->
         <div class="live-clock-card" id="main-live-clock">
-            <!-- 1. Date Row -->
+            <!-- 1. Unified Single Date Row (All 4 Calendars in 1 Crisp Line) -->
             <div class="clock-date-row">
                 <span class="clock-cal-icon">📅</span>
                 <span id="live-date-bn" class="clock-date-bn">--</span>
                 <span class="clock-divider">|</span>
                 <span id="live-date-en" class="clock-date-en">--</span>
-            </div>
-
-            <!-- 1b. Traditional Calendars Row (Bangla Bongabdo & Islamic Hijri) -->
-            <div class="clock-subdates-row">
-                <span class="subdate-badge subdate-bangla" title="জাতীয় বাংলা ক্যালেন্ডার (বঙ্গাব্দ)">
-                    <span class="subdate-icon">🌾</span>
-                    <span class="subdate-label">বাংলা:</span>
-                    <span id="live-date-bongabdo" class="subdate-val">লোড হচ্ছে...</span>
-                </span>
-                <span class="subdate-divider">•</span>
-                <span class="subdate-badge subdate-hijri" title="আরবী ক্যালেন্ডার (হিজরি সন)">
-                    <span class="subdate-icon">🌙</span>
-                    <span class="subdate-label">হিজরি:</span>
-                    <span id="live-date-hijri" class="subdate-val">লোড হচ্ছে...</span>
-                </span>
+                <span class="clock-divider">|</span>
+                <span class="clock-date-bangla" title="জাতীয় বাংলা ক্যালেন্ডার (বঙ্গাব্দ)"><span class="clock-mini-icon">🌾</span> <span id="live-date-bongabdo">--</span></span>
+                <span class="clock-divider">|</span>
+                <span class="clock-date-hijri" title="আরবী ক্যালেন্ডার (হিজরি সন)"><span class="clock-mini-icon">🌙</span> <span id="live-date-hijri">--</span></span>
             </div>
 
             <!-- 2. Live Running Digital Clock -->
