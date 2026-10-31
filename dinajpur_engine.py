@@ -903,6 +903,12 @@ class DinajpurUnifiedEngine:
         # If board is Dinajpur and directly supported on Dinajpur Direct Portal:
         if board_clean == "dinajpur":
             cfg = self._resolve_dinajpur_exam_config(exam, year)
+            if not cfg and exam_upper in ['HSC', 'ALIM'] and str(year) == '2026':
+                return {
+                    "success": False,
+                    "need_captcha": False,
+                    "error": "দিনাজপুর বোর্ডের ২০২৬ সালের এইচএসসি ফলাফল বোর্ড সার্ভারে এখনও উন্মুক্ত করা হয়নি। বোর্ড কর্তৃপক্ষ ফলাফল উন্মুক্ত করা মাত্রই (সকাল ১১:০০ টায়) এখান থেকে পূর্ণাঙ্গ মার্কশিট দেখা যাবে।"
+                }
             if cfg and not captcha:
                 res = self._get_dinajpur_direct_result(roll_clean, reg_clean, exam, year)
                 if res.get('success') or not res.get('not_in_direct'):
