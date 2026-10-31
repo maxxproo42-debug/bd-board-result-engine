@@ -554,9 +554,14 @@ class DinajpurUnifiedEngine:
         board_clean = str(board).strip().lower() if board else "dinajpur"
         if board_clean == "technical": board_clean = "tec"
         exam_code = exam.lower()
-        if 'hsc' in exam_code or 'alim' in exam_code: exam_code = 'hsc'
-        elif 'ssc' in exam_code or 'dakhil' in exam_code: exam_code = 'ssc'
-        elif 'jsc' in exam_code or 'jdc' in exam_code: exam_code = 'jsc'
+        if board_clean == "madrasah":
+            if 'hsc' in exam_code or 'alim' in exam_code: exam_code = 'alim'
+            elif 'ssc' in exam_code or 'dakhil' in exam_code: exam_code = 'dakhil'
+            elif 'jsc' in exam_code or 'jdc' in exam_code: exam_code = 'jdc'
+        else:
+            if 'hsc' in exam_code or 'alim' in exam_code: exam_code = 'hsc'
+            elif 'ssc' in exam_code or 'dakhil' in exam_code: exam_code = 'ssc'
+            elif 'jsc' in exam_code or 'jdc' in exam_code: exam_code = 'jsc'
 
         roll_clean = str(roll).strip()
         reg_clean = str(reg).strip()
@@ -691,15 +696,22 @@ class DinajpurUnifiedEngine:
             last_error = msg
 
         # If all AI auto-bypass attempts failed: prompt with fresh captcha image
-        new_b64, new_raw = self.get_archive_captcha_base64()
-        suggested = self._solve_archive_captcha(new_raw)
-        return {
-            "success": False,
-            "need_captcha": True,
-            "captcha_img": new_b64,
-            "suggested_captcha": suggested,
-            "error": "ক্যাপচা কোডটি অটোমেটিক মেলেনি। অনুগ্রহ করে নিচে প্রদর্শিত কোডটি যাচাই করে পুনরায় সাবমিট করুন।"
-        }
+        try:
+            new_b64, new_raw = self.get_archive_captcha_base64()
+            suggested = self._solve_archive_captcha(new_raw)
+            return {
+                "success": False,
+                "need_captcha": True,
+                "captcha_img": new_b64,
+                "suggested_captcha": suggested,
+                "error": "ক্যাপচা কোডটি অটোমেটিক মেলেনি। অনুগ্রহ করে নিচে প্রদর্শিত কোডটি যাচাই করে পুনরায় সাবমিট করুন।"
+            }
+        except Exception:
+            return {
+                "success": False,
+                "need_captcha": False,
+                "error": "⚡ কেন্দ্রীয় eBoard সার্ভার অত্যন্ত ব্যস্ত (Connection Overload / High Traffic)। ফলাফল প্রকাশের এই মুহূর্তে একযোগে লাখ লাখ পরীক্ষার্থী প্রবেশ করায় সেন্ট্রাল সার্ভারে বিলম্ব হচ্ছে। অনুগ্রহ করে ১০-১৫ সেকেন্ড পর আবার চেষ্টা করুন অথবা মোবাইলে টেলিটক SMS পাঠান (যেমন আলিম: ALIM MAD <Roll> 2026 লিখে পাঠিয়ে দিন 16222 নম্বরে)।"
+            }
 
     def _get_bteb_result(self, roll, reg="", exam="HSC", year="2025"):
         """Directly queries Bangladesh Technical Education Board (BTEB) public API.

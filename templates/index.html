@@ -2472,7 +2472,7 @@
                         <span class="req">*</span>
                     </label>
                     <select id="year_select" class="custom-input" onchange="updateExamYearState()">
-                        <option value="2026" selected>⚡ ২০২৬ (2026) [আসন্ন এইচএসসি - ৩১ অক্টোবর ক্ষণগণনা]</option>
+                        <option value="2026" selected>⚡ ২০২৬ (2026) [সদ্য প্রকাশিত ফলাফল / Latest]</option>
                         <option value="2025">২০২৫ (2025) [সর্বশেষ প্রকাশিত ফলাফল]</option>
                         <option value="2024">২০২৪ (2024)</option>
                         <option value="2023">২০২৩ (2023)</option>
@@ -2511,7 +2511,7 @@
                     <div style="display: flex; align-items: center; gap: 0.5rem;">
                         <span style="display: inline-block; width: 10px; height: 10px; border-radius: 50%; background: #22c55e; animation: pulseGlow 1.5s infinite;"></span>
                         <span style="font-size: 0.95rem; font-weight: 700; color: #38bdf8; letter-spacing: 0.2px;">
-                            ⏳ এইচএসসি পরীক্ষা ২০২৬ ফলাফল প্রকাশের ক্ষণগণনা (Countdown)
+                            🎉 এইচএসসি ও সমমান ২০২৬ ফলাফল অফিশিয়ালি প্রকাশিত হয়েছে!
                         </span>
                     </div>
                     <span style="font-size: 0.8rem; background: rgba(56, 189, 248, 0.15); color: #7dd3fc; padding: 0.25rem 0.65rem; border-radius: 20px; border: 1px solid rgba(56, 189, 248, 0.35); font-weight: 700;">
@@ -2626,7 +2626,7 @@
                         <span>পাসের সাল</span>
                     </label>
                     <select id="inst_year_select" class="custom-input" onchange="syncInstToStudent()">
-                        <option value="2026" selected>⚡ ২০২৬ [আসন্ন এইচএসসি - ৩১ অক্টোবর ক্ষণগণনা]</option>
+                        <option value="2026" selected>⚡ ২০২৬ [সদ্য প্রকাশিত ফলাফল / Latest]</option>
                         <option value="2025">২০২৫ [সর্বশেষ প্রকাশিত]</option>
                         <option value="2024">২০২৪</option>
                         <option value="2023">২০২৩</option>
@@ -2663,7 +2663,7 @@
                     <div style="display: flex; align-items: center; gap: 0.5rem;">
                         <span style="display: inline-block; width: 10px; height: 10px; border-radius: 50%; background: #22c55e; animation: pulseGlow 1.5s infinite;"></span>
                         <span style="font-size: 0.95rem; font-weight: 700; color: #38bdf8; letter-spacing: 0.2px;">
-                            ⏳ এইচএসসি পরীক্ষা ২০২৬ ফলাফল প্রকাশের ক্ষণগণনা (Countdown)
+                            🎉 এইচএসসি ও সমমান ২০২৬ ফলাফল অফিশিয়ালি প্রকাশিত হয়েছে!
                         </span>
                     </div>
                     <span style="font-size: 0.8rem; background: rgba(56, 189, 248, 0.15); color: #7dd3fc; padding: 0.25rem 0.65rem; border-radius: 20px; border: 1px solid rgba(56, 189, 248, 0.35); font-weight: 700;">
@@ -3884,12 +3884,12 @@
         const isHsc2026 = (exam === 'HSC' && year === '2026');
 
         if (hscCountdown) {
-            hscCountdown.style.display = isHsc2026 ? 'block' : 'none';
+            hscCountdown.style.display = 'none';
         }
         if (instCountdown) {
             const instYr = document.getElementById('inst_year_select') ? document.getElementById('inst_year_select').value : year;
             const instEx = document.getElementById('inst_exam_select') ? document.getElementById('inst_exam_select').value : exam;
-            instCountdown.style.display = (instEx === 'HSC' && instYr === '2026') ? 'block' : 'none';
+            instCountdown.style.display = 'none';
         }
         if (isHsc2026) {
             updateHscCountdown();
@@ -3989,13 +3989,7 @@
         const btnText = btn.querySelector('.btn-text');
         const direct = isDirectPortal(exam, year, board);
 
-        if (exam === 'HSC' && year === '2026') {
-            const now = new Date().getTime();
-            if (now < HSC_PUBLISH_TARGET) {
-                showError('⏳ এইচএসসি ২০২৬ এর ফলাফল প্রকাশের ক্ষণগণনা (Countdown) চলছে! আগামী ৩১ অক্টোবর ২০২৬ সকাল ১১:০০ টায় ফলাফল প্রকাশিত হওয়ার সাথে সাথে এখান থেকে রেজাল্ট দেখা যাবে।');
-                return;
-            }
-        }
+        // HSC 2026 is published
 
         if (!roll) {
             showError('অনুগ্রহ করে আপনার রোল নম্বর লিখুন।');
@@ -4104,13 +4098,7 @@
         const btn = document.getElementById('institute-btn');
         const btnText = btn.querySelector('.btn-text');
 
-        if (exam === 'HSC' && year === '2026') {
-            const now = new Date().getTime();
-            if (now < HSC_PUBLISH_TARGET) {
-                showError('⏳ এইচএসসি ২০২৬ এর ফলাফল প্রকাশের ক্ষণগণনা (Countdown) চলছে! আগামী ৩১ অক্টোবর ২০২৬ সকাল ১১:০০ টায় ফলাফল প্রকাশিত হওয়ার সাথে সাথে পুরো প্রতিষ্ঠানের রেজাল্ট শিট দেখা যাবে।');
-                return;
-            }
-        }
+        // HSC 2026 is published
 
         if (!eiin) {
             showError('অনুগ্রহ করে প্রতিষ্ঠানের ৬ সংখ্যার EIIN নম্বর প্রদান করুন।');
