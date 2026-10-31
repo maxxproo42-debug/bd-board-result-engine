@@ -4646,7 +4646,15 @@
                 document.getElementById('exam_select').value = currentInstituteResult.exam;
             }
             if (currentInstituteResult.board && document.getElementById('board_select')) {
-                document.getElementById('board_select').value = currentInstituteResult.board.toLowerCase();
+                const bRaw = currentInstituteResult.board.toLowerCase();
+                let canonicalBoard = 'dinajpur';
+                for (const b of ['dinajpur','dhaka','comilla','rajshahi','jessore','chittagong','barisal','sylhet','mymensingh','madrasah','technical','tec']) {
+                    if (bRaw.includes(b)) {
+                        canonicalBoard = (b === 'technical') ? 'tec' : b;
+                        break;
+                    }
+                }
+                document.getElementById('board_select').value = canonicalBoard;
             }
         }
         switchTab('student');

@@ -112,6 +112,8 @@ class DinajpurUnifiedEngine:
             'Accept-Encoding': 'gzip, deflate',
         })
         self._dinajpur_ready = False
+        self._dinajpur_gate_token = None
+        self._dinajpur_gate_token_time = 0
 
         # Central eBoard Archive Session
         self.eboard_base = "https://eboardresults.com"
@@ -145,85 +147,85 @@ class DinajpurUnifiedEngine:
             pass
 
     # =========================================================================
-    # Dinajpur Direct Portal Engine (2023 - 2026)
+    # Dinajpur Direct Portal Engine (Next.js REST API Architecture 2023 - 2026)
     # =========================================================================
-    def _solve_dinajpur_challenge_html(self, html, referer_url=""):
-        """Solves Dinajpur Board robot/human challenge directly from the page HTML."""
+    def _ensure_dinajpur_gate_token(self):
+        """Ensures a valid X-Result-Gate token is available for the Dinajpur REST API.
+        Tokens are cached for 25 minutes (expires in 30 minutes on server)."""
+        now = time.time()
+        if self._dinajpur_gate_token and (now - self._dinajpur_gate_token_time < 1500):
+            return self._dinajpur_gate_token
+
+        with self._cache_lock:
+            if self._dinajpur_gate_token and (now - self._dinajpur_gate_token_time < 1500):
+                return self._dinajpur_gate_token
+
+            try:
+                ch_res = self.dinajpur_session.get(
+                    f"{self.dinajpur_base}/api/challenge?next=%2Fstudent",
+                    timeout=8,
+                    verify=False
+                )
+                if ch_res.status_code == 200:
+                    ch_data = ch_res.json()
+                    token = ch_data.get('token')
+                    symbols = ch_data.get('symbols', [])
+                    counts = Counter(symbols)
+                    unique_syms = [s for s, count in counts.items() if count == 1]
+                    ans_idx = symbols.index(unique_syms[0]) if unique_syms else 0
+
+                    ver_res = self.dinajpur_session.post(
+                        f"{self.dinajpur_base}/api/challenge/verify",
+                        json={'token': token, 'answer': ans_idx, 'next': '/student'},
+                        timeout=8,
+                        verify=False
+                    )
+                    if ver_res.status_code in [200, 201]:
+                        ver_data = ver_res.json()
+                        gate_token = ver_data.get('gateToken')
+                        if gate_token:
+                            self._dinajpur_gate_token = gate_token
+                            self._dinajpur_gate_token_time = time.time()
+                            self.dinajpur_session.headers.update({'X-Result-Gate': gate_token})
+                            self._dinajpur_ready = True
+                            return gate_token
+            except Exception as e:
+                print(f"[Dinajpur Gate Token Notice]: {e}")
+        return None
+
+    def _get_dinajpur_captcha(self, purpose="student_search"):
+        """Fetches and solves the arithmetic captcha for Dinajpur API."""
+        gate_token = self._ensure_dinajpur_gate_token()
+        headers = {'X-Result-Gate': gate_token} if gate_token else {}
         try:
-            token_m = re.search(r'name="_token"\s+value="([^"]+)"', html)
-            c_token_m = re.search(r'name="challenge_token"\s+value="([^"]+)"', html)
-            if not token_m or not c_token_m:
-                return False, ""
-            
-            token = token_m.group(1)
-            c_token = c_token_m.group(1)
-            ans = ""
-
-            # 1. Symbol grid challenge (Choose different symbol)
-            labels = re.findall(r'<label[^>]*>([\s\S]*?)</label>', html)
-            choices = []
-            for lbl in labels:
-                v_m = re.search(r'value="(\d+)"', lbl)
-                s_m = re.search(r'<span[^>]*aria-hidden="true">([^<]+)</span>', lbl)
-                if v_m and s_m:
-                    choices.append((v_m.group(1), s_m.group(1).strip()))
-
-            if choices:
-                symbols = [c[1] for c in choices]
-                counts = Counter(symbols)
-                unique_syms = [s for s, count in counts.items() if count == 1]
-                if unique_syms:
-                    ans = [val for val, sym in choices if sym.strip() == unique_syms[0]][0]
-
-            # 2. Math question challenge (Fallback)
-            if not ans:
-                q_match = re.search(r'<div class="question">(\d+)\s*([\+\-\*])\s*(\d+)\s*=\s*\?</div>', html)
-                if q_match:
-                    n1, op, n2 = q_match.group(1), q_match.group(2), q_match.group(3)
-                    ans = str(eval(f"{n1} {op} {n2}"))
-
-            if not ans:
-                return False, ""
-
-            post_data = {
-                '_token': token,
-                'challenge_token': c_token,
-                'answer': ans
-            }
-            headers = {
-                'Referer': referer_url or f"{self.dinajpur_base}/results",
-                'Origin': self.dinajpur_base
-            }
-            r_post = self.dinajpur_session.post(
-                f"{self.dinajpur_base}/result-check",
-                data=post_data,
+            r = self.dinajpur_session.get(
+                f"{self.dinajpur_base}/api/captcha?purpose={purpose}",
                 headers=headers,
-                timeout=10,
+                timeout=8,
                 verify=False
             )
-            self._dinajpur_ready = True
-            return True, r_post.text
+            if r.status_code == 200:
+                data = r.json()
+                cap_token = data.get('token')
+                q = data.get('question', '')
+                m = re.search(r'(\d+)\s*([\+\-\*])\s*(\d+)', q)
+                if m:
+                    n1, op, n2 = m.group(1), m.group(2), m.group(3)
+                    ans = str(eval(f"{n1} {op} {n2}"))
+                else:
+                    ans = "0"
+                return cap_token, ans
         except Exception as e:
-            print(f"[Dinajpur Challenge Solve Error]: {e}")
-            return False, ""
+            print(f"[Dinajpur Captcha Notice]: {e}")
+        return None, None
 
     def _ensure_dinajpur_session(self):
-        try:
-            url = f"{self.dinajpur_base}/results"
-            res = self.dinajpur_session.get(url, timeout=10, verify=False)
-            html = res.text
-            if 'challenge-page' in html or 'result-check' in html or 'challenge-form' in html or 'Human Check' in html:
-                solved, _ = self._solve_dinajpur_challenge_html(html, referer_url=url)
-                return solved
-            self._dinajpur_ready = True
-            return True
-        except Exception as e:
-            print(f"[Dinajpur Session Error]: {e}")
-            return False
+        token = self._ensure_dinajpur_gate_token()
+        return bool(token)
 
     def _resolve_dinajpur_exam_config(self, exam="HSC", year="2025"):
         """Dynamically discovers and returns the correct direct or archive route configuration
-        for Dinajpur Board on Result Publication Days. Strictly prevents cross-year fallback."""
+        for Dinajpur Board via REST API. Strictly prevents cross-year fallback."""
         exam_upper = (exam or 'HSC').upper()
         year_str = str(year or '2025').strip()
         key = (exam_upper, year_str)
@@ -234,40 +236,24 @@ class DinajpurUnifiedEngine:
             return cfg
 
         try:
-            # 2. Check if the active direct homepage / search is live for this exam and year (publication day)
-            res_h = self.dinajpur_session.get(f"{self.dinajpur_base}/search/student", timeout=6, verify=False)
-            html_h = res_h.text
-            if 'challenge' in html_h or 'result-check' in html_h or 'Human Check' in html_h:
-                _, html_h = self._solve_dinajpur_challenge_html(html_h, referer_url=f"{self.dinajpur_base}/search/student")
-
-            if exam_upper in html_h.upper() and year_str in html_h and 'result-timer' not in html_h and 'publishes in' not in html_h.lower():
-                discovered = {'exam_id': '', 'archive': '', 'title': f"{exam_upper} EXAMINATION {year_str}"}
-                self.EXAM_MAP_DINAJPUR[key] = discovered
-                return discovered
-        except Exception as e:
-            print(f"[Dynamic Direct Resolve Notice]: {e}")
-
-        try:
-            # 3. Check archive search ONLY with strict regex requiring both exam and year match
-            url_arc = f"{self.dinajpur_base}/results?archive=1&exam={exam_upper}&year={year_str}"
-            res_arc = self.dinajpur_session.get(url_arc, timeout=6, verify=False)
-            html_arc = res_arc.text
-            if 'challenge' in html_arc or 'result-check' in html_arc or 'Human Check' in html_arc:
-                _, html_arc = self._solve_dinajpur_challenge_html(html_arc, referer_url=url_arc)
-
-            # Strict check: the archive page MUST explicitly confirm it is showing results for this exact exam & year
-            has_exam = (f"{exam_upper} RESULT {year_str}" in html_arc.upper() or 
-                        f"{exam_upper} EXAMINATION {year_str}" in html_arc.upper() or
-                        f"{exam_upper} EXAMINATION, {year_str}" in html_arc.upper())
-
-            if has_exam:
-                m_id = re.search(r'exam_id=(\d+)', html_arc)
-                if m_id:
-                    discovered = {'exam_id': m_id.group(1), 'archive': '1', 'title': f"{exam_upper} EXAMINATION {year_str}"}
+            # 2. Query official API exam resolver
+            res_resolve = self.dinajpur_session.get(
+                f"{self.dinajpur_base}/api/exams/resolve?year={year_str}&name={exam_upper}",
+                timeout=6,
+                verify=False
+            )
+            if res_resolve.status_code == 200:
+                data = res_resolve.json()
+                if data and data.get('id'):
+                    discovered = {
+                        'exam_id': str(data['id']),
+                        'archive': '1' if not data.get('isCurrent') else '',
+                        'title': data.get('title') or f"{exam_upper} EXAMINATION {year_str}"
+                    }
                     self.EXAM_MAP_DINAJPUR[key] = discovered
                     return discovered
         except Exception as e:
-            print(f"[Dynamic Archive Resolve Notice]: {e}")
+            print(f"[Dynamic API Resolve Notice]: {e}")
 
         # If not strictly found on Dinajpur Direct, return None so query falls through cleanly to eBoard!
         return None
@@ -277,160 +263,152 @@ class DinajpurUnifiedEngine:
         reg_clean = str(regi_no).strip() if regi_no else ""
 
         cfg = self._resolve_dinajpur_exam_config(exam, year)
-        if not cfg:
+        if not cfg or not cfg.get('exam_id'):
             return {"success": False, "not_in_direct": True}
 
-        exam_id = cfg.get('exam_id', '')
-        archive = cfg.get('archive', '')
+        exam_id = cfg.get('exam_id')
         exam_title = cfg.get('title', f'{exam} {year}')
 
-        search_url = f"{self.dinajpur_base}/search/student"
-        params = []
-        if archive:
-            params.append(f"archive={archive}")
-        if exam_id:
-            params.append(f"exam_id={exam_id}")
-        if params:
-            search_url += "?" + "&".join(params)
-
         for attempt in range(2):
+            gate_token = self._ensure_dinajpur_gate_token()
+            if not gate_token:
+                if attempt == 0:
+                    self._dinajpur_gate_token = None
+                    continue
+                return {"success": False, "not_in_direct": True, "error": "দিনাজপুর সার্ভার সংযোগে সমস্যা হয়েছে।"}
+
+            cap_token, cap_ans = self._get_dinajpur_captcha("student_search")
+            if not cap_token:
+                if attempt == 0:
+                    continue
+                return {"success": False, "not_in_direct": True, "error": "দিনাজপুর বোর্ডের ক্যাপচা সমাধান সম্ভব হয়নি।"}
+
+            payload = {
+                'roll': roll_clean,
+                'examId': int(exam_id),
+                'captchaToken': cap_token,
+                'captchaAnswer': cap_ans
+            }
+            if reg_clean:
+                payload['reg'] = reg_clean
+
+            headers = {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+                'X-Result-Gate': gate_token,
+                'Referer': f"{self.dinajpur_base}/student"
+            }
+
             try:
-                res = self.dinajpur_session.get(search_url, timeout=12, verify=False)
-                html = res.text
-
-                if 'challenge' in html or 'result-check' in html or 'Human Check' in html or 'challenge-form' in html:
-                    solved, _ = self._solve_dinajpur_challenge_html(html, referer_url=search_url)
-                    if solved:
-                        res = self.dinajpur_session.get(search_url, timeout=12, verify=False)
-                        html = res.text
-
-                if 'result-timer' in html or 'publishes in' in html.lower() or 'not published yet' in html.lower() or ('<form' not in html and 'heading' in html.lower()):
-                    return {"success": False, "not_in_direct": True}
-
-                token_m = re.search(r'name="_token"\s+value="([^"]+)"', html)
-                if not token_m:
-                    if attempt == 0:
-                        self._ensure_dinajpur_session()
-                        continue
-                    return {"success": False, "error": f"দিনাজপুর বোর্ডের {year} সালের {exam} পরীক্ষার ফলাফল সার্ভার এখনও উন্মুক্ত করেনি। অনুগ্রহ করে সাল বা পরীক্ষা সঠিক আছে কি না মিলিয়ে নিন।"}
-                token = token_m.group(1)
-
-                cap_match = re.search(r'class="[^"]*board-captcha-q[^"]*"[^>]*>(\d+)\s*([\+\-\*])\s*(\d+)\s*=\s*\?</span>', html)
-                if not cap_match:
-                    cap_match = re.search(r'(\d+)\s*([\+\-\*])\s*(\d+)\s*=\s*\?', html)
-                if not cap_match:
-                    return {"success": False, "error": "ক্যাপচা সমাধান সম্ভব হয়নি।"}
-                n1, op, n2 = cap_match.group(1), cap_match.group(2), cap_match.group(3)
-                captcha_ans = str(eval(f"{n1} {op} {n2}"))
-
-                post_data_dict = {
-                    '_token': token,
-                    'roll_no': roll_clean,
-                    'regi_no': reg_clean,
-                    'captcha': captcha_ans,
-                    'submit': '1'
-                }
-                if archive:
-                    post_data_dict['archive'] = archive
-                if exam_id:
-                    post_data_dict['exam_id'] = exam_id
-
-                headers = {
-                    'Referer': search_url,
-                    'Origin': self.dinajpur_base
-                }
                 res_post = self.dinajpur_session.post(
-                    f"{self.dinajpur_base}/search/student",
-                    data=post_data_dict,
+                    f"{self.dinajpur_base}/api/results/student",
+                    json=payload,
                     headers=headers,
                     timeout=15,
                     verify=False
                 )
-                out_html = res_post.text
 
-                if 'challenge' in out_html or 'result-check' in out_html or 'Human Check' in out_html or 'challenge-form' in out_html:
-                    self._solve_dinajpur_challenge_html(out_html, referer_url=search_url)
-                    res_post = self.dinajpur_session.post(
-                        f"{self.dinajpur_base}/search/student",
-                        data=post_data_dict,
-                        headers=headers,
-                        timeout=15,
-                        verify=False
-                    )
-                    out_html = res_post.text
+                if res_post.status_code == 401:
+                    # Token expired or invalid captcha, clear cached token and retry
+                    self._dinajpur_gate_token = None
+                    continue
 
-                if res_post.status_code == 404 or "No Result Found" in out_html or "not found" in out_html.lower() or "sorry" in out_html.lower():
+                if res_post.status_code == 404 or "No Result Found" in res_post.text or "not found" in res_post.text.lower():
                     return {
                         "success": False,
                         "not_in_direct": True,
                         "error": f"রোল {roll_clean} এর কোনো রেজাল্ট {year} সালের {exam} পরীক্ষায় পাওয়া যায়নি।"
                     }
 
-                # Strict Year Validation: Ensure the returned student result strictly matches requested year
-                m_yr_check = re.search(r'RESULT OF\s+([A-Z\.]+)\s+EXAMINATION\s*,?\s*(\d{4})', out_html, re.IGNORECASE)
-                if m_yr_check:
-                    ret_yr = m_yr_check.group(2)
-                    if str(ret_yr) != str(year):
-                        return {
-                            "success": False,
-                            "not_in_direct": True,
-                            "error": f"দিনাজপুর বোর্ডের সরাসরি সার্ভারে {year} সালের রেজাল্ট উন্মুক্ত নেই。"
-                        }
+                if res_post.status_code in [200, 201]:
+                    res_json = res_post.json()
+                    res_wrap = res_json.get('result', {})
+                    res_student = res_wrap.get('result', {})
+                    exam_info = res_wrap.get('exam', {})
 
-                data = {
-                    "success": True,
-                    "source": "dinajpur_direct",
-                    "exam_title": f"RESULT OF {exam_title}",
-                    "exam": exam,
-                    "year": str(year)
+                    # Extract subjects
+                    subjects = []
+                    letter_grades = res_student.get('letterGrades', [])
+                    for sub in letter_grades:
+                        s_name = sub.get('subject', '')
+                        s_name = s_name.replace('&amp;', '&').replace('&quot;', '"').replace('&#39;', "'")
+                        subjects.append({
+                            'code': str(sub.get('code', '')),
+                            'name': s_name,
+                            'grade': str(sub.get('grade', '')),
+                            'kind': str(sub.get('kind', 'main'))
+                        })
+
+                    # If GPA is present or in resDetail
+                    gpa = str(res_student.get('gpa', '')).strip()
+                    res_detail = str(res_student.get('resDetail', '')).strip()
+                    if not gpa and res_detail:
+                        gpa = res_detail.replace('GPA=', '').strip()
+                    if not gpa and res_student.get('badResult'):
+                        gpa = 'FAILED'
+
+                    board_name = res_wrap.get('portalBoardName') or self.BOARD_DISPLAY_MAP.get('dinajpur')
+
+                    return {
+                        "success": True,
+                        "source": "dinajpur_direct_api",
+                        "exam_title": exam_info.get('title') or f"RESULT OF {exam_title}",
+                        "exam": exam.upper(),
+                        "year": str(year),
+                        "roll": str(res_student.get('rollNo', roll_clean)),
+                        "reg": str(res_student.get('regno', reg_clean or '[HIDDEN]')),
+                        "name": res_student.get('name', 'N/A'),
+                        "father": res_student.get('father', 'N/A'),
+                        "mother": res_student.get('mother', 'N/A'),
+                        "institute": res_student.get('institute', 'N/A'),
+                        "eiin": str(res_student.get('eiin', '')),
+                        "board": board_name,
+                        "session": res_student.get('session', 'N/A'),
+                        "group": res_student.get('studGroup', 'N/A'),
+                        "type": res_student.get('studType', 'N/A'),
+                        "gpa": gpa,
+                        "total_marks": str(res_student.get('gtot', '')),
+                        "subjects": subjects
+                    }
+
+                err_msg = ""
+                try:
+                    err_msg = res_post.json().get('message', '')
+                except Exception:
+                    pass
+                return {
+                    "success": False,
+                    "not_in_direct": True,
+                    "error": err_msg or f"রোল {roll_clean} এর ফলাফল পাওয়া যায়নি।"
                 }
-                pairs = [
-                    ('roll', r'Roll No</b></td>\s*<td><b>([^<]+)</b>'),
-                    ('reg', r'Registration No</b></td>\s*<td>([^<]+)</td>'),
-                    ('name', r'Name of Student:</b></td>\s*<td[^>]*><b>([^<]+)</b>'),
-                    ('father', r'Father\'s Name</b></td>\s*<td[^>]*>([^<]+)</td>'),
-                    ('mother', r'Mother\'s Name</b></td>\s*<td[^>]*>([^<]+)</td>'),
-                    ('institute', r'Name of Institute</b></td>\s*<td[^>]*>([^<]+)</td>'),
-                    ('board', r'Board</b></td>\s*<td>([^<]+)</td>'),
-                    ('session', r'Session</b></td>\s*<td>([^<]+)</td>'),
-                    ('group', r'Group</b></td>\s*<td>([^<]+)</td>'),
-                    ('type', r'Type:</b></td>\s*<td>([^<]+)</td>'),
-                    ('gpa', r'Result</b></td>\s*<td[^>]*><b>(?:GPA=)?([^<]+)</b>'),
-                    ('total_marks', r'TOTAL MARK</b></td>\s*<td[^>]*><b>([^<]+)</b>')
-                ]
-                for k, pat in pairs:
-                    m = re.search(pat, out_html, re.I)
-                    data[k] = m.group(1).strip() if m else ''
-
-                subjects = []
-                sub_rows = re.findall(r'<tr[^>]*>\s*<td class="c">(\d+)</td>\s*<td class="l">(.*?)</td>\s*<td class="c">.*?<span class="grade-letter">([^<]+)</span>(?:<span class="grade-mod">([^<]*)</span>)?', out_html)
-                for code, raw_name, g_letter, g_mod in sub_rows:
-                    grade = g_letter + (g_mod if g_mod else '')
-                    clean_name = re.sub(r'<[^>]+>', ' ', raw_name).strip()
-                    clean_name = re.sub(r'\s+', ' ', clean_name)
-                    subjects.append({'code': code.strip(), 'name': clean_name, 'grade': grade.strip()})
-                data['subjects'] = subjects
-
-                if not data['roll']: data['roll'] = roll_clean
-                if not data['reg'] and reg_clean: data['reg'] = reg_clean
-                return data
 
             except Exception as e:
                 if attempt == 0:
                     time.sleep(0.5)
                     continue
-                return {"success": False, "not_in_direct": True, "error": f"দিনাজপুর সরাসরি সার্ভারে সংযোগে সাময়িক বিলম্ব হয়েছে। অনুগ্রহ করে কয়েক সেকেন্ড পর পুনরায় চেষ্টা করুন। ({str(e)})"}
-        return {"success": False, "error": "রেজাল্ট আনতে ব্যর্থ হয়েছে।"}
+                return {"success": False, "not_in_direct": True, "error": f"দিনাজপুর সরাসরি সার্ভারে সংযোগে সাময়িক বিলম্ব হয়েছে: {str(e)}"}
+
+        return {"success": False, "not_in_direct": True, "error": "দিনাজপুর সার্ভার থেকে রেজাল্ট আনতে ব্যর্থ হয়েছে।"}
 
     # =========================================================================
     # Central eBoard Archive Engine (All 11 Boards)
     # =========================================================================
-    def _bypass_eboard_robot(self):
+    def _bypass_eboard_robot(self, challenge_html=None):
         try:
-            res = self.eboard_opener.open(f'{self.eboard_base}/v2/home', timeout=10)
-            html = res.read().decode('utf-8', errors='ignore')
+            html = challenge_html
+            if not html:
+                res = self.eboard_opener.open(f'{self.eboard_base}/v2/home', timeout=10)
+                html = res.read().decode('utf-8', errors='ignore')
 
             m = re.search(r'var challenge\s*=\s*({[^;]+});', html)
+            if not m and not challenge_html:
+                try:
+                    c_probe = self.eboard_opener.open(f'{self.eboard_base}/v2/captcha', timeout=8)
+                    c_data = c_probe.read().decode('utf-8', errors='ignore')
+                    m = re.search(r'var challenge\s*=\s*({[^;]+});', c_data)
+                except Exception:
+                    pass
+
             if m:
                 c = json.loads(m.group(1))
                 proof = f"browser-proof:{c['seed']}:{c['salt']}".encode('utf-8')
@@ -446,7 +424,6 @@ class DinajpurUnifiedEngine:
                 res_v = self.eboard_opener.open(req_v, timeout=10)
                 v_data = json.loads(res_v.read().decode())
                 if v_data.get('ok'):
-                    self.eboard_opener.open(f'{self.eboard_base}/v2/home', timeout=10)
                     self._eboard_ready = True
                     return True
             else:
@@ -552,7 +529,7 @@ class DinajpurUnifiedEngine:
                     c_res = self.eboard_opener.open(f'{self.eboard_base}/v2/captcha', timeout=8)
                     raw_img = c_res.read()
                     if raw_img.startswith(b'<') or len(raw_img) < 300:
-                        self._bypass_eboard_robot()
+                        self._bypass_eboard_robot(challenge_html=raw_img.decode('utf-8', errors='ignore'))
                         continue
                     cur_captcha = self._solve_archive_captcha(raw_img)
                     if not cur_captcha or len(cur_captcha) != 4:
@@ -953,99 +930,83 @@ class DinajpurUnifiedEngine:
         # Check Dinajpur Direct Portal if applicable
         if board_clean == "dinajpur":
             cfg = self._resolve_dinajpur_exam_config(exam, year)
-            if cfg:
+            if cfg and cfg.get('exam_id'):
                 exam_id = cfg.get('exam_id')
-                archive = cfg.get('archive')
                 try:
-                    # 1. Fetch form token
-                    init_url = f"{self.dinajpur_base}/search/institute"
-                    params = []
-                    if archive: params.append(f"archive={archive}")
-                    if exam_id: params.append(f"exam_id={exam_id}")
-                    if params: init_url += "?" + "&".join(params)
-                    
-                    res = self.dinajpur_session.get(init_url, timeout=10, verify=False)
-                    html = res.text
-                    if 'challenge' in html or 'result-check' in html or 'Human Check' in html or 'challenge-form' in html:
-                        self._solve_dinajpur_challenge_html(html, referer_url=init_url)
-                        res = self.dinajpur_session.get(init_url, timeout=10, verify=False)
-                        html = res.text
+                    gate_token = self._ensure_dinajpur_gate_token()
+                    headers = {
+                        'Accept': 'application/json',
+                        'Referer': f"{self.dinajpur_base}/institute"
+                    }
+                    if gate_token:
+                        headers['X-Result-Gate'] = gate_token
 
-                    html_post = ""
-                    if 'result-timer' not in html and 'publishes in' not in html.lower() and ('<form' in html or 'heading' not in html.lower()):
-                        token_m = re.search(r'name="_token"\s+value="([^"]+)"', html)
-                        if token_m:
-                            token = token_m.group(1)
-                            post_data_dict = {
-                                '_token': token,
-                                'eiin_no': eiin_clean
-                            }
-                            if archive: post_data_dict['archive'] = archive
-                            if exam_id: post_data_dict['exam_id'] = exam_id
-                            
-                            headers = {'Referer': init_url, 'Origin': self.dinajpur_base}
-                            res_p = self.dinajpur_session.post(
-                                f"{self.dinajpur_base}/search/institute",
-                                data=post_data_dict,
+                    res_inst = self.dinajpur_session.get(
+                        f"{self.dinajpur_base}/api/results/institute?eiin={eiin_clean}&examId={exam_id}",
+                        headers=headers,
+                        timeout=12,
+                        verify=False
+                    )
+
+                    if res_inst.status_code == 401:
+                        # Refresh gate token and retry once
+                        self._dinajpur_gate_token = None
+                        gate_token = self._ensure_dinajpur_gate_token()
+                        if gate_token:
+                            headers['X-Result-Gate'] = gate_token
+                            res_inst = self.dinajpur_session.get(
+                                f"{self.dinajpur_base}/api/results/institute?eiin={eiin_clean}&examId={exam_id}",
                                 headers=headers,
-                                timeout=15,
+                                timeout=12,
                                 verify=False
                             )
-                            html_post = res_p.text
-                            if 'challenge' in html_post or 'result-check' in html_post or 'Human Check' in html_post or 'challenge-form' in html_post:
-                                self._solve_dinajpur_challenge_html(html_post, referer_url=init_url)
-                                res_p = self.dinajpur_session.post(
-                                    f"{self.dinajpur_base}/search/institute",
-                                    data=post_data_dict,
-                                    headers=headers,
-                                    timeout=15,
-                                    verify=False
-                                )
-                                html_post = res_p.text
-                        
-                        if html_post and "No Result Found" not in html_post and "not found" not in html_post.lower():
-                            # Strict Year Validation: Ensure Dinajpur Direct response matches requested year
-                            m_head_yr = re.search(r'RESULT OF\s+([A-Z\.]+)\s+EXAMINATION\s*,?\s*(\d{4})', html_post, re.IGNORECASE)
-                            if m_head_yr:
-                                ret_yr = m_head_yr.group(2)
-                                if str(ret_yr) != str(year):
-                                    html_post = ""
 
-                        if html_post and "No Result Found" not in html_post and "not found" not in html_post.lower():
-                            m_inst = re.search(r'Institute</td>\s*<td[^>]*><b>([^<]+)</b>', html_post)
-                            if m_inst:
-                                data = {
-                                    "success": True,
-                                    "source": "dinajpur_direct",
-                                    "eiin": eiin_clean,
-                                    "institute": m_inst.group(1).strip(),
-                                    "exam_title": f"INSTITUTE RESULT · {cfg.get('title', exam)}",
-                                    "exam": exam,
-                                    "year": str(year),
-                                    "board": self.BOARD_DISPLAY_MAP.get(board_clean, 'BOARD OF INTERMEDIATE & SECONDARY EDUCATION, DINAJPUR')
-                                }
-                                m_thana = re.search(r'Thana/Upazilla</td>\s*<td[^>]*>([^<]+)</td>', html_post)
-                                data['thana'] = m_thana.group(1).strip() if m_thana else ''
-                                for key, pat in [('gpa5', r'GPA 5\.00</td>\s*<td><b>([^<]+)</b>'),
-                                                 ('appeared', r'Appeared</td>\s*<td><b>([^<]+)</b>'),
-                                                 ('passed', r'Passed</td>\s*<td><b>([^<]+)</b>'),
-                                                 ('pass_pct', r'Pass %</td>\s*<td><b>([^<]+)</b>')]:
-                                    m = re.search(pat, html_post)
-                                    data[key] = m.group(1).strip() if m else ''
-                                
-                                sections = {}
-                                sec_blocks = re.findall(r'<div class="result-section">(.*?)(?=<div class="result-section"|<div class="nav-row|\Z)', html_post, re.DOTALL)
-                                for blk in sec_blocks:
-                                    title_m = re.search(r'<div class="section-title">\s*<span>:\s*([^:]+)\s*:</span>', blk)
-                                    title = title_m.group(1).strip() if title_m else 'General'
-                                    items = re.findall(r'<span class="rest-item">([^<,]+)', blk)
-                                    sections[title] = items
-                                data['groups'] = sections
-                                with self._cache_lock:
-                                    self._institute_cache[cache_key] = (time.time(), data, None, '')
-                                return data
+                    if res_inst.status_code == 200:
+                        inst_json = res_inst.json()
+                        center = inst_json.get('center', {})
+                        groups_raw = inst_json.get('groups', {})
+                        exam_meta = inst_json.get('exam', {})
+
+                        group_label_map = {
+                            'science': 'SCIENCE',
+                            'humanities': 'HUMANITIES',
+                            'business': 'BUSINESS STUDIES',
+                            'other': 'OTHER'
+                        }
+
+                        sections = {}
+                        for g_key, g_data in groups_raw.items():
+                            lbl = group_label_map.get(g_key.lower(), g_key.upper())
+                            items = []
+                            if isinstance(g_data, dict):
+                                items.extend(g_data.get('pass', []))
+                                items.extend(g_data.get('fail', []))
+                            if items:
+                                sections[lbl] = items
+
+                        inst_data = {
+                            "success": True,
+                            "source": "dinajpur_direct_api",
+                            "eiin": str(center.get('eiin', eiin_clean)),
+                            "institute": center.get('name', f"INSTITUTION (EIIN: {eiin_clean})"),
+                            "exam_title": f"INSTITUTE RESULT · {exam_meta.get('title', cfg.get('title', exam))}",
+                            "exam": exam,
+                            "year": str(year),
+                            "board": self.BOARD_DISPLAY_MAP.get(board_clean, 'BOARD OF INTERMEDIATE & SECONDARY EDUCATION, DINAJPUR'),
+                            "thana": center.get('thana', ''),
+                            "zilla": center.get('zilla', ''),
+                            "gpa5": str(center.get('gpa5', '0')),
+                            "appeared": str(center.get('appeared', '0')),
+                            "passed": str(center.get('passed', '0')),
+                            "failed": str(center.get('failed', '0')),
+                            "pass_pct": str(center.get('passRate', '0')),
+                            "groups": sections
+                        }
+                        with self._cache_lock:
+                            self._institute_cache[cache_key] = (time.time(), inst_data, None, '')
+                        return inst_data
                 except Exception as e:
-                    print(f"[Dinajpur Direct Institute Error]: {e}")
+                    print(f"[Dinajpur Direct Institute API Error]: {e}")
 
         # Universal eBoard Central Gateway for All Boards & All Years (result_type: '2')
         if not self._eboard_ready:
@@ -1059,7 +1020,7 @@ class DinajpurUnifiedEngine:
                 c_res = self.eboard_opener.open(f'{self.eboard_base}/v2/captcha', timeout=8)
                 raw_img = c_res.read()
                 if raw_img.startswith(b'<') or len(raw_img) < 300:
-                    self._bypass_eboard_robot()
+                    self._bypass_eboard_robot(challenge_html=raw_img.decode('utf-8', errors='ignore'))
                     continue
                 cur_captcha = self._solve_archive_captcha(raw_img)
                 if not cur_captcha or len(cur_captcha) != 4:
