@@ -306,10 +306,12 @@ class DinajpurUnifiedEngine:
 
             payload = {
                 'roll': roll_clean,
-                'examId': int(exam_id),
                 'captchaToken': cap_token,
                 'captchaAnswer': cap_ans
             }
+            # Only include examId if this is an archive examination (isCurrent=false)
+            if cfg.get('archive') and exam_id:
+                payload['examId'] = int(exam_id)
             if reg_clean:
                 payload['reg'] = reg_clean
 
@@ -325,7 +327,7 @@ class DinajpurUnifiedEngine:
                     f"{self.dinajpur_base}/api/results/student",
                     json=payload,
                     headers=headers,
-                    timeout=15,
+                    timeout=20,
                     verify=False
                 )
 
@@ -342,15 +344,16 @@ class DinajpurUnifiedEngine:
                         if cap_token2:
                             payload2 = {
                                 'roll': roll_clean,
-                                'examId': int(exam_id),
                                 'captchaToken': cap_token2,
                                 'captchaAnswer': cap_ans2
                             }
+                            if cfg.get('archive') and exam_id:
+                                payload2['examId'] = int(exam_id)
                             res_post2 = self.dinajpur_session.post(
                                 f"{self.dinajpur_base}/api/results/student",
                                 json=payload2,
                                 headers=headers,
-                                timeout=15,
+                                timeout=20,
                                 verify=False
                             )
                             if res_post2.status_code in [200, 201]:
@@ -386,11 +389,12 @@ class DinajpurUnifiedEngine:
                         })
 
                     # If GPA is present or in resDetail
-                    gpa = str(res_student.get('gpa', '')).strip()
-                    res_detail = str(res_student.get('resDetail', '')).strip()
+                    raw_gpa = res_student.get('gpa')
+                    gpa = str(raw_gpa).strip() if raw_gpa is not None else ''
+                    res_detail = str(res_student.get('resDetail') or '').strip()
                     if not gpa and res_detail:
                         gpa = res_detail.replace('GPA=', '').strip()
-                    if not gpa and res_student.get('badResult'):
+                    if (not gpa or gpa.upper() in ['NONE', 'NULL']) and (res_student.get('badResult') or 'FAIL' in res_detail.upper()):
                         gpa = 'FAILED'
 
                     board_name = res_wrap.get('portalBoardName') or self.BOARD_DISPLAY_MAP.get('dinajpur')
@@ -1021,10 +1025,14 @@ class DinajpurUnifiedEngine:
                     if gate_token:
                         headers['X-Result-Gate'] = gate_token
 
+                    inst_url = f"{self.dinajpur_base}/api/results/institute?eiin={eiin_clean}"
+                    if cfg.get('archive') and exam_id:
+                        inst_url += f"&examId={exam_id}"
+
                     res_inst = self.dinajpur_session.get(
-                        f"{self.dinajpur_base}/api/results/institute?eiin={eiin_clean}&examId={exam_id}",
+                        inst_url,
                         headers=headers,
-                        timeout=12,
+                        timeout=18,
                         verify=False
                     )
 
@@ -1035,9 +1043,9 @@ class DinajpurUnifiedEngine:
                         if gate_token:
                             headers['X-Result-Gate'] = gate_token
                             res_inst = self.dinajpur_session.get(
-                                f"{self.dinajpur_base}/api/results/institute?eiin={eiin_clean}&examId={exam_id}",
+                                inst_url,
                                 headers=headers,
-                                timeout=12,
+                                timeout=18,
                                 verify=False
                             )
 
