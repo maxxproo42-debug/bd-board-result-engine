@@ -24,6 +24,12 @@ try:
 except ImportError:
     HAS_DDDDOCR = False
 
+try:
+    from institutes_data import INSTITUTES
+    INSTITUTES_MAP = {inst['eiin']: inst for inst in INSTITUTES if 'eiin' in inst}
+except Exception:
+    INSTITUTES_MAP = {}
+
 class DinajpurUnifiedEngine:
     """
     Unified All-Years (2015 - 2026) Engine for All 11 Bangladesh Education Boards:
@@ -947,6 +953,14 @@ class DinajpurUnifiedEngine:
 
         # 🌟 Seamless Auto-Bypass: Call _get_eboard_archive_result directly!
         res = self._get_eboard_archive_result(roll_clean, reg_clean, exam, year, board=board_clean, captcha=captcha)
+        if not res.get('success') and board_clean == 'dinajpur':
+            # Auto-fallback to Madrasah board if not found on Dinajpur
+            try:
+                mad_res = self._get_eboard_archive_result(roll_clean, reg_clean, exam, year, board='madrasah', captcha=captcha)
+                if mad_res.get('success'):
+                    res = mad_res
+            except Exception:
+                pass
         if res.get('success'):
             with self._cache_lock:
                 self._student_cache[cache_key] = (time.time(), res)
@@ -966,6 +980,19 @@ class DinajpurUnifiedEngine:
         if board_clean == "technical": board_clean = "tec"
         eiin_clean = str(eiin_no).strip()
         exam_upper = exam.upper()
+
+        # 🌟 Smart Auto-Board Resolution from Nationwide Educational Directory:
+        # If user searched under Dinajpur (or default), but this EIIN uniquely belongs to Madrasah or another board:
+        known_inst = INSTITUTES_MAP.get(eiin_clean)
+        switched_board_msg = None
+        if known_inst and known_inst.get('board'):
+            detected_board = str(known_inst.get('board')).strip().lower()
+            if detected_board == "technical": detected_board = "tec"
+            if board_clean != detected_board:
+                new_board_name = self.BOARD_NAME_BN.get(detected_board, detected_board)
+                inst_name = known_inst.get('name', f"EIIN: {eiin_clean}")
+                board_clean = detected_board
+                switched_board_msg = f"💡 EIIN {eiin_clean} হলো '{inst_name}'—যা {new_board_name} শিক্ষা বোর্ডের অধীন। আপনার সুবিধার্থে স্বয়ংক্রিয়ভাবে {new_board_name} বোর্ডের ফলাফল প্রদর্শন করা হয়েছে।"
         
         # Determine eboard exam code
         exam_code = exam.lower()
@@ -1299,6 +1326,9 @@ class DinajpurUnifiedEngine:
                     "groups": groups,
                     "has_pdf": has_pdf
                 }
+                if switched_board_msg:
+                    res_dict["auto_board_switched"] = True
+                    res_dict["detected_board_note"] = switched_board_msg
                 with self._cache_lock:
                     self._institute_cache[cache_key] = (time.time(), res_dict, getattr(self, '_last_pdf_bytes', None), getattr(self, '_last_pdf_name', ''))
                 return res_dict
@@ -1310,6 +1340,17 @@ class DinajpurUnifiedEngine:
                 if "BTEB.GOV.BD" in msg_upper:
                     bn_err = "কারিগরি শিক্ষা বোর্ডের (BTEB) রেজাল্ট সরাসরি তাদের নিজস্ব সরকারি সার্ভারে সংরক্ষিত থাকে। অনুগ্রহ করে https://result.bteb.gov.bd ভিজিট করুন।"
                 elif "NOT FOUND" in msg_upper or "NO RESULT" in msg_upper:
+                    if board_clean == "dinajpur":
+                        try:
+                            # Auto-fallback to Madrasah Board in case this institution is a Madrasah
+                            mad_res = self.get_institute_result(eiin_no=eiin_clean, exam=exam, year=year, board="madrasah")
+                            if mad_res and mad_res.get('success'):
+                                mad_res['auto_board_switched'] = True
+                                if not mad_res.get('detected_board_note'):
+                                    mad_res['detected_board_note'] = f"💡 প্রতিষ্ঠানটি বাংলাদেশ মাদ্রাসা শিক্ষা বোর্ডের অধীন পাওয়া গেছে। স্বয়ংক্রিয়ভাবে মাদ্রাসা বোর্ডের ফলাফল প্রদর্শন করা হয়েছে।"
+                                return mad_res
+                        except Exception:
+                            pass
                     bn_err = f"{board_label} বোর্ডের {year} সালের {exam_code.upper()} পরীক্ষায় EIIN নম্বর {eiin_clean} এর কোনো ফলাফল পাওয়া যায়নি। অনুগ্রহ করে EIIN নম্বর, বোর্ড বা পরীক্ষার সাল সঠিক আছে কি না মিলিয়ে নিন।"
                 else:
                     bn_err = f"প্রতিষ্ঠান রেজাল্ট পাওয়া যায়নি: {msg}"

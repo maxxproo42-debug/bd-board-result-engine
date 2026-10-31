@@ -2646,7 +2646,8 @@
                         <span>প্রতিষ্ঠানের EIIN নম্বর (৬ সংখ্যা)</span>
                         <span class="req">* আবশ্যক</span>
                     </label>
-                    <input type="number" id="eiin_input" class="custom-input" placeholder="যেমন: সৈয়দপুর সায়েন্স কলেজ = 125242" required>
+                    <input type="number" id="eiin_input" class="custom-input" placeholder="যেমন: সৈয়দপুর সায়েন্স কলেজ = 125242" required oninput="handleEiinInputAutoDetect(this.value)">
+                    <div id="eiin_detect_hint" style="display:none; margin-top:0.5rem; padding:0.5rem 0.85rem; border-radius:8px; font-size:0.88rem; font-weight:700; transition:all 0.3s;"></div>
                     <div style="margin-top:0.45rem; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:0.4rem;">
                         <span style="font-size:0.83rem; color:var(--text-muted);">💡 আপনার স্কুল বা কলেজের EIIN নম্বর জানা নেই?</span>
                         <button type="button" onclick="switchTab('directory')" style="background:rgba(6,182,212,0.12); border:1px solid rgba(6,182,212,0.3); color:#38bdf8; font-size:0.83rem; font-weight:700; padding:0.25rem 0.7rem; border-radius:8px; cursor:pointer; transition:all 0.2s;" onmouseover="this.style.background='rgba(6,182,212,0.25)'" onmouseout="this.style.background='rgba(6,182,212,0.12)'">
@@ -3692,6 +3693,55 @@
         });
     }
 
+    
+    let eiinDetectTimeout = null;
+    async function handleEiinInputAutoDetect(val) {
+        val = (val || '').trim();
+        const hint = document.getElementById('eiin_detect_hint');
+        if (!hint) return;
+        if (val.length !== 6) {
+            hint.style.display = 'none';
+            return;
+        }
+        if (eiinDetectTimeout) clearTimeout(eiinDetectTimeout);
+        eiinDetectTimeout = setTimeout(async () => {
+            try {
+                const res = await fetch(`/api/institutes?q=${encodeURIComponent(val)}`);
+                const data = await res.json();
+                if (data.success && data.institutes && data.institutes.length > 0) {
+                    const inst = data.institutes[0];
+                    hint.style.display = 'block';
+                    hint.style.background = 'rgba(16, 185, 129, 0.15)';
+                    hint.style.border = '1px solid rgba(52, 211, 153, 0.4)';
+                    hint.style.color = '#a7f3d0';
+                    const boardNameMap = {
+                        'madrasah': 'মাদ্রাসা শিক্ষা বোর্ড',
+                        'dinajpur': 'দিনাজপুর শিক্ষা বোর্ড',
+                        'dhaka': 'ঢাকা শিক্ষা বোর্ড',
+                        'rajshahi': 'রাজশাহী শিক্ষা বোর্ড',
+                        'chittagong': 'চট্টগ্রাম শিক্ষা বোর্ড',
+                        'comilla': 'কুমিল্লা শিক্ষা বোর্ড',
+                        'jessore': 'যশোর শিক্ষা বোর্ড',
+                        'barisal': 'বরিশাল শিক্ষা বোর্ড',
+                        'sylhet': 'সিলেট শিক্ষা বোর্ড',
+                        'mymensingh': 'ময়মনসিংহ শিক্ষা বোর্ড',
+                        'tec': 'কারিগরি শিক্ষা বোর্ড'
+                    };
+                    const bName = boardNameMap[inst.board] || inst.board;
+                    hint.innerHTML = `✅ প্রতিষ্ঠান শনাক্ত: <b>${inst.name}</b> (${bName})`;
+                    if (inst.board && document.getElementById('inst_board_select')) {
+                        document.getElementById('inst_board_select').value = inst.board;
+                        syncInstToStudent();
+                    }
+                } else {
+                    hint.style.display = 'none';
+                }
+            } catch (e) {
+                hint.style.display = 'none';
+            }
+        }, 200);
+    }
+
     function selectInstitute(eiin, board) {
         // Switch to Institute tab
         switchTab('institute');
@@ -3703,11 +3753,7 @@
             syncInstToStudent();
         }
 
-        // If madrasah and default was HSC, switch to SSC (দাখিল) by default
-        const instExamSelect = document.getElementById('inst_exam_select');
-        if (instExamSelect && board === 'madrasah') {
-            instExamSelect.value = 'SSC';
-        }
+
 
         // Set EIIN input
         const eiinInput = document.getElementById('eiin_input');
@@ -3744,6 +3790,7 @@
         if (b && document.getElementById('board_select')) document.getElementById('board_select').value = b;
         if (ex && document.getElementById('exam_select')) document.getElementById('exam_select').value = ex;
         if (yr && document.getElementById('year_select')) document.getElementById('year_select').value = yr;
+        handleBoardChange();
         updateExamYearState();
     }
 
@@ -4652,6 +4699,12 @@
                         <div style="display:inline-flex; align-items:center; gap:0.5rem; background:rgba(2,132,199,0.1); border:1px solid rgba(2,132,199,0.3); border-radius:8px; padding:0.25rem 0.75rem; margin-bottom:0.6rem; color:#0284c7; font-weight:800; font-size:0.95rem;">
                             📅 ${data.year} সালের ফলাফল
                         </div>
+                        ${data.detected_board_note ? `
+                            <div style="background: linear-gradient(135deg, rgba(6, 78, 59, 0.9), rgba(6, 95, 70, 0.9)); border: 1.5px solid rgba(52, 211, 153, 0.55); border-radius: 10px; padding: 0.65rem 1rem; margin-bottom: 0.75rem; color: #ecfdf5; font-weight: 700; font-size: 0.92rem; display: flex; align-items: center; gap: 0.55rem; box-shadow: 0 4px 15px rgba(6, 78, 59, 0.4);">
+                                <span style="font-size: 1.25rem;">🕌</span>
+                                <span>${data.detected_board_note}</span>
+                            </div>
+                        ` : ''}
                         <h2>${data.institute || 'INSTITUTE RESULT'}</h2>
                         <h4>EIIN: ${data.eiin} · ${data.board || ''} · ${data.exam_title || ''}</h4>
                         ${data.centre || data.thana ? `<p style="color:#64748b; font-size:0.88rem; margin-top:0.35rem; font-weight:600;">📍 কেন্দ্র ও এলাকা: <b>${data.centre || data.thana}</b></p>` : ''}
@@ -4715,7 +4768,12 @@
                 document.getElementById('year_select').value = currentInstituteResult.year;
             }
             if (currentInstituteResult.exam && document.getElementById('exam_select')) {
-                document.getElementById('exam_select').value = currentInstituteResult.exam;
+                const exUpper = currentInstituteResult.exam.toUpperCase();
+                let canonicalExam = 'HSC';
+                if (exUpper.includes('SSC') || exUpper.includes('DAKHIL')) canonicalExam = 'SSC';
+                else if (exUpper.includes('JSC') || exUpper.includes('JDC')) canonicalExam = 'JSC';
+                else canonicalExam = 'HSC';
+                document.getElementById('exam_select').value = canonicalExam;
             }
             if (currentInstituteResult.board && document.getElementById('board_select')) {
                 const bRaw = currentInstituteResult.board.toLowerCase();
@@ -4728,6 +4786,7 @@
                 }
                 document.getElementById('board_select').value = canonicalBoard;
             }
+            handleBoardChange();
         }
         switchTab('student');
         document.getElementById('roll_input').value = roll;
