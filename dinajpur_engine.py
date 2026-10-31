@@ -281,6 +281,12 @@ class DinajpurUnifiedEngine:
 
         cfg = self._resolve_dinajpur_exam_config(exam, year)
         if not cfg or not cfg.get('exam_id'):
+            if exam.upper() == 'HSC' and str(year) == '2026':
+                return {
+                    "success": False,
+                    "not_in_direct": True,
+                    "error": "দিনাজপুর বোর্ডের ২০২৬ সালের এইচএসসি ফলাফল বোর্ড সার্ভারে এখনও উন্মুক্ত করা হয়নি। বোর্ড কর্তৃপক্ষ ফলাফল উন্মুক্ত করা মাত্রই (সকাল ১১:০০ টায়) এখান থেকে পূর্ণাঙ্গ মার্কশিট দেখা যাবে।"
+                }
             return {"success": False, "not_in_direct": True}
 
         exam_id = cfg.get('exam_id')
@@ -972,6 +978,12 @@ class DinajpurUnifiedEngine:
         # Check Dinajpur Direct Portal if applicable
         if board_clean == "dinajpur":
             cfg = self._resolve_dinajpur_exam_config(exam, year)
+            if not cfg or not cfg.get('exam_id'):
+                if exam_upper in ['HSC', 'ALIM'] and str(year) == '2026':
+                    return {
+                        "success": False,
+                        "error": "দিনাজপুর বোর্ডের ২০২৬ সালের এইচএসসি ফলাফল বোর্ড সার্ভারে এখনও উন্মুক্ত করা হয়নি। বোর্ড কর্তৃপক্ষ ফলাফল উন্মুক্ত করা মাত্রই (সকাল ১১:০০ টায়) পুরো প্রতিষ্ঠানের ফলাফল শিট এখানে দেখা যাবে।"
+                    }
             if cfg and cfg.get('exam_id'):
                 exam_id = cfg.get('exam_id')
                 try:
