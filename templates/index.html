@@ -4165,6 +4165,10 @@
             }
 
             if (!data.success) {
+                if (data.is_exam_mismatch) {
+                    renderExamMismatchCard(data);
+                    return;
+                }
                 showError(data.error || 'প্রতিষ্ঠানের রেজাল্ট পাওয়া যায়নি।', true);
                 document.getElementById('result-container').style.display = 'none';
             } else {
@@ -4178,6 +4182,86 @@
             btn.disabled = false;
             btnText.innerHTML = originalBtnHtml;
         }
+    }
+
+
+    function renderExamMismatchCard(data) {
+        const container = document.getElementById('result-container');
+        if (!container) return;
+        hideError();
+
+        const isSchool = data.school_type === 'School';
+        const targetExam = data.suggested_exam || (isSchool ? 'SSC' : 'HSC');
+        const targetYear = data.suggested_year || '2025';
+        const targetExamBn = targetExam === 'SSC' ? 'এসএসসি (SSC)' : 'এইচএসসি (HSC)';
+        const aliasBtnHtml = data.suggested_eiin ? `
+            <div style="margin-top: 1.25rem; padding-top: 1.25rem; border-top: 1px dashed rgba(255,255,255,0.15);">
+                <div style="font-size: 0.95rem; color: #bae6fd; font-weight: 600; margin-bottom: 0.75rem;">
+                    💡 আপনি কি <b>${data.suggested_eiin_name}</b> (EIIN: <span style="font-family:monospace; color:#38bdf8; font-weight:800;">${data.suggested_eiin}</span>) এর এইচএসসি রেজাল্ট খুঁজছেন?
+                </div>
+                <button type="button" onclick="loadSuggestedEiin('${data.suggested_eiin}', 'HSC', '${targetYear}')" class="btn-print" style="background: linear-gradient(135deg, #0ea5e9, #0284c7); color: #ffffff; border: none; font-weight: 700; padding: 0.75rem 1.4rem; border-radius: 10px; cursor: pointer; display: inline-flex; align-items: center; gap: 0.5rem; box-shadow: 0 4px 15px rgba(14,165,233,0.35); font-size: 0.95rem;">
+                    🏛️ ${data.suggested_eiin_name} এর রেজাল্ট দেখুন (EIIN: ${data.suggested_eiin})
+                </button>
+            </div>
+        ` : '';
+
+        container.innerHTML = `
+            <div class="sheet-card" style="border: 2px solid rgba(245, 158, 11, 0.5); background: linear-gradient(135deg, rgba(15, 23, 42, 0.96), rgba(30, 41, 59, 0.96)); box-shadow: 0 16px 40px rgba(0,0,0,0.45); padding: 2rem 1.75rem; border-radius: 16px;">
+                <div style="display: flex; align-items: flex-start; gap: 1rem; margin-bottom: 1.25rem;">
+                    <div style="width: 52px; height: 52px; border-radius: 12px; background: rgba(245, 158, 11, 0.15); border: 1.5px solid rgba(245, 158, 11, 0.35); display: flex; align-items: center; justify-content: center; font-size: 1.9rem; flex-shrink: 0;">
+                        🏫
+                    </div>
+                    <div>
+                        <div style="display: inline-flex; align-items: center; gap: 0.4rem; background: rgba(245, 158, 11, 0.12); color: #f59e0b; padding: 0.25rem 0.75rem; border-radius: 20px; font-size: 0.8rem; font-weight: 800; border: 1px solid rgba(245, 158, 11, 0.3); margin-bottom: 0.35rem;">
+                            ⚠️ পরীক্ষার ধরন সমন্বয় প্রয়োজন
+                        </div>
+                        <h2 style="color: #ffffff; font-size: 1.35rem; font-weight: 800; margin: 0 0 0.3rem 0; letter-spacing: -0.3px;">
+                            ${data.institute_name || `EIIN: ${data.eiin}`}
+                        </h2>
+                        <div style="color: #94a3b8; font-size: 0.88rem;">
+                            EIIN নম্বর: <b style="color: #38bdf8; font-family: monospace; font-size: 1rem;">${data.eiin}</b> · বোর্ড: <b style="color:#ffffff;">দিনাজপুর বোর্ড</b>
+                        </div>
+                    </div>
+                </div>
+
+                <div style="background: rgba(0, 0, 0, 0.35); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 12px; padding: 1.1rem 1.25rem; margin-bottom: 1.5rem; color: #e2e8f0; font-size: 0.95rem; line-height: 1.6;">
+                    ${data.error.replace(/\n/g, '<br>')}
+                </div>
+
+                <div style="display: flex; flex-direction: column; gap: 1rem;">
+                    <div>
+                        <button type="button" onclick="loadSuggestedExam('${data.eiin}', '${targetExam}', '${targetYear}')" class="btn-print" style="background: linear-gradient(135deg, #10b981, #059669); color: #ffffff; border: none; font-weight: 800; font-size: 1rem; padding: 0.85rem 1.6rem; border-radius: 10px; cursor: pointer; display: inline-flex; align-items: center; gap: 0.6rem; box-shadow: 0 6px 20px rgba(16,185,129,0.35); transition: transform 0.2s;" onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform='none'">
+                            <span>🎯 এক ক্লিকে ${targetExamBn} ফলাফল দেখুন (${targetYear})</span>
+                            <span style="font-size: 1.15rem;">➡️</span>
+                        </button>
+                    </div>
+
+                    ${aliasBtnHtml}
+                </div>
+            </div>
+        `;
+        container.style.display = 'block';
+        container.scrollIntoView({ behavior: 'smooth' });
+    }
+
+    function loadSuggestedExam(eiin, exam, year) {
+        if (document.getElementById('eiin_input')) document.getElementById('eiin_input').value = eiin;
+        if (document.getElementById('inst_exam_select')) document.getElementById('inst_exam_select').value = exam;
+        if (document.getElementById('inst_year_select')) document.getElementById('inst_year_select').value = year;
+        if (document.getElementById('exam_select')) document.getElementById('exam_select').value = exam;
+        if (document.getElementById('year_select')) document.getElementById('year_select').value = year;
+        updateExamYearState();
+        document.getElementById('institute-btn').click();
+    }
+
+    function loadSuggestedEiin(eiin, exam, year) {
+        if (document.getElementById('eiin_input')) document.getElementById('eiin_input').value = eiin;
+        if (document.getElementById('inst_exam_select')) document.getElementById('inst_exam_select').value = exam;
+        if (document.getElementById('inst_year_select')) document.getElementById('inst_year_select').value = year;
+        if (document.getElementById('exam_select')) document.getElementById('exam_select').value = exam;
+        if (document.getElementById('year_select')) document.getElementById('year_select').value = year;
+        updateExamYearState();
+        document.getElementById('institute-btn').click();
     }
 
     function renderStudentResult(data) {
@@ -4659,6 +4743,9 @@
         }
         switchTab('student');
         document.getElementById('roll_input').value = roll;
+        if (document.getElementById('reg_input')) {
+            document.getElementById('reg_input').value = '';
+        }
         updateExamYearState();
         document.getElementById('student-btn').click();
     }

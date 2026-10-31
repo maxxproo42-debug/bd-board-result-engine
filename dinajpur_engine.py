@@ -48,7 +48,7 @@ class DinajpurUnifiedEngine:
     EXAM_MAP_DINAJPUR = {
         ('HSC', '2026'): {'exam_id': '', 'archive': '', 'title': 'HSC EXAMINATION 2026'},
         ('HSC', '2025'): {'exam_id': '3', 'archive': '1', 'title': 'HSC EXAMINATION 2025'},
-        ('SSC', '2026'): {'exam_id': '', 'archive': '', 'title': 'SSC EXAMINATION 2026'},
+        ('SSC', '2026'): {'exam_id': '1', 'archive': '1', 'title': 'RESULT OF S.S.C. EXAMINATION, 2026'},
         ('SSC', '2025'): {'exam_id': '2', 'archive': '1', 'title': 'SSC EXAMINATION 2025'},
         ('SSC', '2024'): {'exam_id': '4', 'archive': '1', 'title': 'SSC EXAMINATION 2024'},
         ('SSC', '2023'): {'exam_id': '5', 'archive': '1', 'title': 'SSC EXAMINATION 2023'},
@@ -236,7 +236,24 @@ class DinajpurUnifiedEngine:
             return cfg
 
         try:
-            # 2. Query official API exam resolver
+            # 2. Query official API all exams list (Instant discovery for HSC 2026 & new releases)
+            res_all = self.dinajpur_session.get(f"{self.dinajpur_base}/api/exams", timeout=6, verify=False)
+            if res_all.status_code == 200:
+                exams_list = res_all.json()
+                for e_item in exams_list:
+                    if str(e_item.get('year')) == year_str and str(e_item.get('name', '')).upper() == exam_upper:
+                        discovered = {
+                            'exam_id': str(e_item['id']),
+                            'archive': '1' if not e_item.get('isCurrent') else '',
+                            'title': e_item.get('title') or f"{exam_upper} EXAMINATION {year_str}"
+                        }
+                        self.EXAM_MAP_DINAJPUR[key] = discovered
+                        return discovered
+        except Exception as e:
+            print(f"[Dynamic API Exams List Notice]: {e}")
+
+        try:
+            # 3. Query official API exam resolver
             res_resolve = self.dinajpur_session.get(
                 f"{self.dinajpur_base}/api/exams/resolve?year={year_str}&name={exam_upper}",
                 timeout=6,
@@ -314,11 +331,36 @@ class DinajpurUnifiedEngine:
                     continue
 
                 if res_post.status_code == 404 or "No Result Found" in res_post.text or "not found" in res_post.text.lower():
-                    return {
-                        "success": False,
-                        "not_in_direct": True,
-                        "error": f"রোল {roll_clean} এর কোনো রেজাল্ট {year} সালের {exam} পরীক্ষায় পাওয়া যায়নি।"
-                    }
+                    # If registration was provided, it might have been mismatched/wrong.
+                    # Automatically retry with JUST ROLL on Dinajpur Direct API!
+                    if reg_clean:
+                        cap_token2, cap_ans2 = self._get_dinajpur_captcha("student_search")
+                        if cap_token2:
+                            payload2 = {
+                                'roll': roll_clean,
+                                'examId': int(exam_id),
+                                'captchaToken': cap_token2,
+                                'captchaAnswer': cap_ans2
+                            }
+                            res_post2 = self.dinajpur_session.post(
+                                f"{self.dinajpur_base}/api/results/student",
+                                json=payload2,
+                                headers=headers,
+                                timeout=15,
+                                verify=False
+                            )
+                            if res_post2.status_code in [200, 201]:
+                                res_json_t = res_post2.json()
+                                res_stud_t = res_json_t.get('result', {}).get('result', {})
+                                if res_stud_t and res_stud_t.get('rollNo'):
+                                    res_post = res_post2
+
+                    if res_post.status_code == 404 or "No Result Found" in res_post.text or "not found" in res_post.text.lower():
+                        return {
+                            "success": False,
+                            "not_in_direct": True,
+                            "error": f"রোল {roll_clean} এর কোনো রেজাল্ট {year} সালের {exam} পরীক্ষায় পাওয়া যায়নি।"
+                        }
 
                 if res_post.status_code in [200, 201]:
                     res_json = res_post.json()
@@ -1005,6 +1047,57 @@ class DinajpurUnifiedEngine:
                         with self._cache_lock:
                             self._institute_cache[cache_key] = (time.time(), inst_data, None, '')
                         return inst_data
+
+                    # If not found for current exam, check if this EIIN is a School/College mismatch:
+                    if exam_upper in ['HSC', 'ALIM']:
+                        for alt_id, alt_yr in [('2', '2025'), ('1', '2026')]:
+                            try:
+                                res_chk = self.dinajpur_session.get(
+                                    f"{self.dinajpur_base}/api/results/institute?eiin={eiin_clean}&examId={alt_id}",
+                                    headers=headers, timeout=4, verify=False
+                                )
+                                if res_chk.status_code == 200:
+                                    c_alt = res_chk.json().get('center', {})
+                                    sch_name = c_alt.get('name', f"INSTITUTE (EIIN: {eiin_clean})")
+                                    alias_eiin = "120021" if eiin_clean == "120050" else ("120818" if eiin_clean in ["120784", "120786"] else None)
+                                    alias_name = "বিরামপুর সরকারি কলেজ" if eiin_clean == "120050" else ("দিনাজপুর সরকারি কলেজ" if eiin_clean in ["120784", "120786"] else None)
+                                    return {
+                                        "success": False,
+                                        "is_exam_mismatch": True,
+                                        "institute_name": sch_name,
+                                        "eiin": eiin_clean,
+                                        "school_type": "School",
+                                        "searched_exam": "HSC",
+                                        "suggested_exam": "SSC",
+                                        "suggested_year": alt_yr,
+                                        "suggested_eiin": alias_eiin,
+                                        "suggested_eiin_name": alias_name,
+                                        "error": f"📌 এটি '{sch_name}' (EIIN: {eiin_clean})—একটি মাধ্যমিক বিদ্যালয় (Secondary School)। এটিতে শুধুমাত্র এসএসসি (SSC) পরীক্ষা অনুষ্ঠিত হয়, এইচএসসি (HSC) পরীক্ষা নেই।"
+                                    }
+                            except Exception:
+                                pass
+                    elif exam_upper in ['SSC', 'DAKHIL']:
+                        try:
+                            res_chk = self.dinajpur_session.get(
+                                f"{self.dinajpur_base}/api/results/institute?eiin={eiin_clean}&examId=3",
+                                headers=headers, timeout=4, verify=False
+                            )
+                            if res_chk.status_code == 200:
+                                c_alt = res_chk.json().get('center', {})
+                                clg_name = c_alt.get('name', f"INSTITUTE (EIIN: {eiin_clean})")
+                                return {
+                                    "success": False,
+                                    "is_exam_mismatch": True,
+                                    "institute_name": clg_name,
+                                    "eiin": eiin_clean,
+                                    "school_type": "College",
+                                    "searched_exam": "SSC",
+                                    "suggested_exam": "HSC",
+                                    "suggested_year": "2025",
+                                    "error": f"📌 এটি '{clg_name}' (EIIN: {eiin_clean})—একটি উচ্চ মাধ্যমিক কলেজ (College)। এটিতে শুধুমাত্র এইচএসসি (HSC) পরীক্ষা অনুষ্ঠিত হয়, এসএসসি (SSC) পরীক্ষা নেই।"
+                                }
+                        except Exception:
+                            pass
                 except Exception as e:
                     print(f"[Dinajpur Direct Institute API Error]: {e}")
 

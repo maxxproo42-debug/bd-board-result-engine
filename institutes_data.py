@@ -7,6 +7,15 @@ Total institutions: 5047
 
 INSTITUTES = [
     {
+        "eiin": "104532",
+        "name": "CHITTAGONG COLLEGE (চট্টগ্রাম কলেজ)",
+        "alt_names": "Chittagong College Ctg College চট্টগ্রাম কলেজ",
+        "board": "chittagong",
+        "district": "চট্টগ্রাম",
+        "thana": "চকবাজার",
+        "type": "College"
+    },
+    {
         "eiin": "100380",
         "name": "BARGUNA GOVT. CONCENTRATED HIGH SCHOOL",
         "board": "barisal",
@@ -1540,30 +1549,30 @@ INSTITUTES = [
     },
     {
         "eiin": "120050",
-        "name": "BIRAMPUR GOVT. COLLEGE (বিরামপুর সরকারি কলেজ)",
-        "alt_names": "Birampur Govt College",
+        "name": "EKATA HIGH SCHOOL (একতা উচ্চ বিদ্যালয়)",
+        "alt_names": "Ekata High School Birganj Dinajpur একতা উচ্চ বিদ্যালয় বীরগঞ্জ",
         "board": "dinajpur",
         "district": "দিনাজপুর",
-        "thana": "বিরামপুর",
-        "type": "College"
+        "thana": "বীরগঞ্জ",
+        "type": "School"
     },
     {
         "eiin": "120051",
-        "name": "BIRAMPUR PILOT HIGH SCHOOL (বিরামপুর পাইলট মডেল উচ্চ বিদ্যালয়)",
-        "alt_names": "Birampur Pilot High School",
+        "name": "IBRAHIM MEMORIAL SHIKSHA NIKETAN (ইব্রাহিম মেমোরিয়াল শিক্ষা নিকেতন)",
+        "alt_names": "Ibrahim Memorial Shiksha Niketan Birganj Dinajpur ইব্রাহিম মেমোরিয়াল শিক্ষা নিকেতন",
         "board": "dinajpur",
         "district": "দিনাজপুর",
-        "thana": "বিরামপুর",
+        "thana": "বীরগঞ্জ",
         "type": "School"
     },
     {
         "eiin": "120052",
-        "name": "BIRAMPUR MOHILA COLLEGE (বিরামপুর মহিলা কলেজ)",
-        "alt_names": "Birampur Mohila College",
+        "name": "CHOWDHURY HAT HIGH SCHOOL (চৌধুরী হাট উচ্চ বিদ্যালয়)",
+        "alt_names": "Chowdhury Hat High School Birganj Dinajpur চৌধুরী হাট উচ্চ বিদ্যালয়",
         "board": "dinajpur",
         "district": "দিনাজপুর",
-        "thana": "বিরামপুর",
-        "type": "College"
+        "thana": "বীরগঞ্জ",
+        "type": "School"
     },
     {
         "eiin": "120053",
@@ -45082,7 +45091,7 @@ INSTITUTES = [
     },
     {
         "eiin": "133785",
-        "name": "DINAJPUR GOVT. CITY COLLEGE (দিনাজপুর সরকারি সিটি কলেজ)",
+        "name": "GOVT. CITY COLLEGE, CHITTAGONG (সরকারি সিটি কলেজ চট্টগ্রাম)",
         "board": "chittagong",
         "district": "চট্টগ্রাম",
         "thana": "চকবাজার",
