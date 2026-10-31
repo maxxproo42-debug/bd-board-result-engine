@@ -983,6 +983,36 @@ class DinajpurUnifiedEngine:
 
         # Check Dinajpur Direct Portal if applicable
         if board_clean == "dinajpur":
+            # Specific known mismatched EIIN corrections for Dinajpur Board searches
+            if eiin_clean == "125660":
+                return {
+                    "success": False,
+                    "is_exam_mismatch": True,
+                    "institute_name": "পাবনা ইসলামিয়া ডিগ্রি কলেজ (EIIN: 125660)",
+                    "eiin": "125660",
+                    "school_type": "College",
+                    "searched_exam": exam,
+                    "suggested_exam": "SSC",
+                    "suggested_year": "2025",
+                    "suggested_eiin": "133731",
+                    "suggested_eiin_name": "কালেক্টরেট পাবলিক স্কুল ও কলেজ, ঠাকুরগাঁও",
+                    "error": "📌 EIIN ১২৫৬৬০ হলো পাবনা জেলার 'পাবনা ইসলামিয়া ডিগ্রি কলেজ'—যা রাজশাহী শিক্ষা বোর্ডের অধীন।\n\nআপনি যদি দিনাজপুর বোর্ডের অধীন 'কালেক্টরেট পাবলিক স্কুল ও কলেজ, ঠাকুরগাঁও' খুঁজতে চান, তবে এর সঠিক EIIN নম্বর হলো ১৩৩৭৩১ (133731)।"
+                }
+            elif eiin_clean == "125332":
+                return {
+                    "success": False,
+                    "is_exam_mismatch": True,
+                    "institute_name": "কাশীনাথপুর মহিলা ডিগ্রি কলেজ (EIIN: 125332)",
+                    "eiin": "125332",
+                    "school_type": "College",
+                    "searched_exam": exam,
+                    "suggested_exam": "SSC",
+                    "suggested_year": "2025",
+                    "suggested_eiin": "126118",
+                    "suggested_eiin_name": "করতোয়া কালেক্টরেট আদর্শ শিক্ষা নিকেতন, পঞ্চগড়",
+                    "error": "📌 EIIN ১২৫৩৩২ হলো পাবনা জেলার 'কাশীনাথপুর মহিলা কলেজ'—যা রাজশাহী শিক্ষা বোর্ডের অধীন।\n\nআপনি যদি পঞ্চগড় জেলার কালেক্টরেট স্কুল খুঁজতে চান, তবে এর সঠিক EIIN নম্বর হলো ১২৬১১৮ (126118 - করতোয়া কালেক্টরেট আদর্শ শিক্ষা নিকেতন)।"
+                }
+
             cfg = self._resolve_dinajpur_exam_config(exam, year)
             if not cfg or not cfg.get('exam_id'):
                 if exam_upper in ['HSC', 'ALIM'] and str(year) == '2026':
@@ -1077,8 +1107,21 @@ class DinajpurUnifiedEngine:
                                 if res_chk.status_code == 200:
                                     c_alt = res_chk.json().get('center', {})
                                     sch_name = c_alt.get('name', f"INSTITUTE (EIIN: {eiin_clean})")
-                                    alias_eiin = "120021" if eiin_clean == "120050" else ("120818" if eiin_clean in ["120784", "120786"] else None)
-                                    alias_name = "বিরামপুর সরকারি কলেজ" if eiin_clean == "120050" else ("দিনাজপুর সরকারি কলেজ" if eiin_clean in ["120784", "120786"] else None)
+                                    alias_eiin = None
+                                    alias_name = None
+                                    if eiin_clean == "120050":
+                                        alias_eiin = "120021"
+                                        alias_name = "বিরামপুর সরকারি কলেজ"
+                                    elif eiin_clean in ["120784", "120786", "135323"]:
+                                        alias_eiin = "120818"
+                                        alias_name = "দিনাজপুর সরকারি কলেজ"
+                                    elif eiin_clean == "133731":
+                                        alias_eiin = "129305"
+                                        alias_name = "ঠাকুরগাঁও সরকারি কলেজ"
+                                    elif eiin_clean == "126118":
+                                        alias_eiin = "126148"
+                                        alias_name = "পঞ্চগড় সরকারি মহিলা কলেজ"
+
                                     return {
                                         "success": False,
                                         "is_exam_mismatch": True,
@@ -1090,7 +1133,7 @@ class DinajpurUnifiedEngine:
                                         "suggested_year": alt_yr,
                                         "suggested_eiin": alias_eiin,
                                         "suggested_eiin_name": alias_name,
-                                        "error": f"📌 এটি '{sch_name}' (EIIN: {eiin_clean})—একটি মাধ্যমিক বিদ্যালয় (Secondary School)। এটিতে শুধুমাত্র এসএসসি (SSC) পরীক্ষা অনুষ্ঠিত হয়, এইচএসসি (HSC) পরীক্ষা নেই।"
+                                        "error": f"📌 এটি '{sch_name}' (EIIN: {eiin_clean})—দিনাজপুর শিক্ষা বোর্ডে এটি একটি বিদ্যালয় (School)। এর শিক্ষার্থীরা এসএসসি (SSC) পরীক্ষায় অংশ নেয়, ২০২৫ সালের এইচএসসিতে এই প্রতিষ্ঠানের কোনো পরীক্ষার্থী নেই। নিচে বাটনে ক্লিক করে এর এসএসসি ফলাফল দেখুন।"
                                     }
                             except Exception:
                                 pass
