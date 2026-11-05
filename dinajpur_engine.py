@@ -120,6 +120,8 @@ class DinajpurUnifiedEngine:
         self._dinajpur_ready = False
         self._dinajpur_gate_token = None
         self._dinajpur_gate_token_time = 0
+        self._dinajpur_roll_url = None
+        self._dinajpur_session_time = 0
 
         # Central eBoard Archive Session
         self.eboard_base = "https://eboardresults.com"
@@ -155,6 +157,60 @@ class DinajpurUnifiedEngine:
     # =========================================================================
     # Dinajpur Direct Portal Engine (Next.js REST API Architecture 2023 - 2026)
     # =========================================================================
+    def _ensure_dinajpur_web_session(self):
+        """Maintains an authentic browser session with Dinajpur Board's dynamic security router."""
+        now = time.time()
+        if self._dinajpur_roll_url and (now - self._dinajpur_session_time < 1200) and ('result_gate' in self.dinajpur_session.cookies):
+            return True
+
+        with self._cache_lock:
+            if self._dinajpur_roll_url and (now - self._dinajpur_session_time < 1200) and ('result_gate' in self.dinajpur_session.cookies):
+                return True
+
+            try:
+                # 1. Fetch portal entry
+                r0 = self.dinajpur_session.get(f"{self.dinajpur_base}/", timeout=10, verify=False)
+                m = re.search(r'href="(/p/[^"]+)"', r0.text)
+                if not m:
+                    return False
+                p_url = f"{self.dinajpur_base}{m.group(1)}"
+
+                # 2. Fetch challenge page
+                r1 = self.dinajpur_session.get(p_url, timeout=10, verify=False)
+                action_m = re.search(r'<form[^>]*action="([^"]+)"', r1.text)
+                if not action_m:
+                    return False
+                action_url = f"{self.dinajpur_base}{action_m.group(1)}"
+
+                token_m = re.search(r'name="token"\s+value="([^"]+)"', r1.text)
+                next_m = re.search(r'name="next"\s+value="([^"]+)"', r1.text)
+                token = token_m.group(1) if token_m else ''
+                next_val = next_m.group(1) if next_m else ''
+
+                # Automated unique symbol detection (different shape solver)
+                symbols = re.findall(r'value="(\d+)"[^>]*>.*?data-symbol="([^"]+)"', r1.text, re.DOTALL)
+                sym_counts = Counter(sym for val, sym in symbols)
+                unique_sym = [sym for sym, count in sym_counts.items() if count == 1]
+                if not unique_sym:
+                    return False
+                ans_val = [val for val, sym in symbols if sym == unique_sym[0]][0]
+
+                # 3. Post challenge answer to authorize session
+                r2 = self.dinajpur_session.post(action_url, data={'answer': ans_val, 'token': token, 'next': next_val}, timeout=10, verify=False)
+
+                # 4. Extract Roll form page URL
+                m_roll = re.search(r'<a href="(/p/[^"]+)"[^>]*><span class="board-choice-mark">ROLL</span>', r2.text)
+                if not m_roll:
+                    m_roll = re.search(r'<a href="(/p/[^"]+)"[^>]*>Roll</a>', r2.text)
+                if m_roll:
+                    self._dinajpur_roll_url = f"{self.dinajpur_base}{m_roll.group(1)}"
+                    self._dinajpur_session_time = time.time()
+                    self._dinajpur_ready = True
+                    return True
+            except Exception as e:
+                print(f"[Dinajpur Web Session Notice]: {e}")
+        return False
+
     def _ensure_dinajpur_gate_token(self):
         """Ensures a valid X-Result-Gate token is available for the Dinajpur REST API.
         Tokens are cached for 25 minutes (expires in 30 minutes on server)."""
@@ -281,170 +337,154 @@ class DinajpurUnifiedEngine:
         # If not strictly found on Dinajpur Direct, return None so query falls through cleanly to eBoard!
         return None
 
-    def _get_dinajpur_direct_result(self, roll_no, regi_no="", exam="HSC", year="2025"):
+    def _parse_dinajpur_student_html(self, html, roll="", exam="HSC", year="2026"):
+        """Extracts complete student metadata and full subject-wise marksheet from official Dinajpur HTML."""
+        from bs4 import BeautifulSoup
+        soup = BeautifulSoup(html, 'html.parser')
+        tables = soup.find_all('table')
+        if len(tables) < 2:
+            err_div = soup.find(class_=re.compile(r'error|alert|notice'))
+            err_msg = err_div.get_text().strip() if err_div else f"রোল {roll} এর কোনো ফলাফল পাওয়া যায়নি।"
+            return {"success": False, "error": err_msg}
+
+        meta = {}
+        for r in tables[0].find_all('tr'):
+            cells = [c.get_text().strip() for c in r.find_all(['th', 'td'])]
+            if len(cells) in (2, 3):
+                meta[cells[0].rstrip(':').strip().lower()] = cells[1]
+            elif len(cells) >= 4:
+                meta[cells[0].rstrip(':').strip().lower()] = cells[1]
+                meta[cells[2].rstrip(':').strip().lower()] = cells[3]
+
+        name = meta.get('name of student', meta.get('name', 'N/A'))
+        father = meta.get("father's name", meta.get('father', 'N/A'))
+        mother = meta.get("mother's name", meta.get('mother', 'N/A'))
+        institute = meta.get('name of institute', meta.get('institute', 'N/A'))
+        board_val = meta.get('board', 'DINAJPUR')
+        session_val = meta.get('session', 'N/A')
+        group_val = meta.get('group', 'N/A')
+        type_val = meta.get('type', 'REGULAR')
+        reg_val = meta.get('registration no', meta.get('reg', '[HIDDEN]'))
+        roll_val = meta.get('roll no', meta.get('roll', roll))
+
+        raw_result = meta.get('result', '')
+        gpa = raw_result.replace('GPA=', '').strip()
+        if not gpa or 'FAIL' in gpa.upper() or gpa.upper() in ['F', 'FAILED']:
+            gpa = 'FAILED'
+
+        subjects = []
+        for r in tables[1].find_all('tr')[1:]:
+            cells = [c.get_text().strip() for c in r.find_all(['td', 'th'])]
+            if len(cells) >= 3:
+                subjects.append({
+                    'code': cells[0],
+                    'name': cells[1],
+                    'grade': cells[2]
+                })
+
+        title_el = soup.find(class_='site-exam-title') or soup.find(class_='home-heading')
+        exam_title = title_el.get_text().strip() if title_el else f"RESULT OF {exam} EXAMINATION, {year}"
+
+        return {
+            "success": True,
+            "source": "dinajpur_direct_web",
+            "exam_title": exam_title,
+            "exam": exam.upper(),
+            "year": str(year),
+            "roll": roll_val,
+            "reg": reg_val,
+            "name": name,
+            "father": father,
+            "mother": mother,
+            "institute": institute,
+            "board": "BOARD OF INTERMEDIATE & SECONDARY EDUCATION, DINAJPUR",
+            "session": session_val,
+            "group": group_val,
+            "type": type_val,
+            "gpa": gpa,
+            "subjects": subjects
+        }
+
+    def _get_dinajpur_direct_result(self, roll_no, regi_no="", exam="HSC", year="2026"):
         roll_clean = str(roll_no).strip()
         reg_clean = str(regi_no).strip() if regi_no else ""
-
-        cfg = self._resolve_dinajpur_exam_config(exam, year)
-        if not cfg or not cfg.get('exam_id'):
-            return {
-                "success": False,
-                "not_in_direct": True,
-                "error": "⚡ সরকারি সার্ভারে উচ্চ ট্রাফিক: ফলাফল প্রকাশিত হওয়ায় শিক্ষা বোর্ড ও সেন্ট্রাল সার্ভার অতিরিক্ত ট্রাফিকের কারণে সাময়িকভাবে বিলম্ব করছে। অনুগ্রহ করে ১০-১৫ সেকেন্ড পর আবার চেষ্টা করুন অথবা মোবাইলে SMS (HSC DIN <Roll> 2026 to 16222) করুন।"
-            }
-
-        exam_id = cfg.get('exam_id')
-        exam_title = cfg.get('title', f'{exam} {year}')
+        exam_upper = (exam or 'HSC').upper()
+        year_str = str(year or '2026').strip()
 
         for attempt in range(2):
-            gate_token = self._ensure_dinajpur_gate_token()
-            if not gate_token:
+            if not self._ensure_dinajpur_web_session():
                 if attempt == 0:
-                    self._dinajpur_gate_token = None
+                    self._dinajpur_session_time = 0
                     continue
                 return {"success": False, "not_in_direct": True, "error": "দিনাজপুর সার্ভার সংযোগে সমস্যা হয়েছে।"}
 
-            cap_token, cap_ans = self._get_dinajpur_captcha("student_search")
-            if not cap_token:
-                if attempt == 0:
-                    continue
-                return {"success": False, "not_in_direct": True, "error": "দিনাজপুর বোর্ডের ক্যাপচা সমাধান সম্ভব হয়নি।"}
-
-            payload = {
-                'roll': roll_clean,
-                'captchaToken': cap_token,
-                'captchaAnswer': cap_ans
-            }
-            # Only include examId if this is an archive examination (isCurrent=false)
-            if cfg.get('archive') and exam_id:
-                payload['examId'] = int(exam_id)
-            if reg_clean:
-                payload['reg'] = reg_clean
-
-            headers = {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json',
-                'X-Result-Gate': gate_token,
-                'Referer': f"{self.dinajpur_base}/student"
-            }
-
             try:
-                res_post = self.dinajpur_session.post(
-                    f"{self.dinajpur_base}/api/results/student",
-                    json=payload,
-                    headers=headers,
-                    timeout=20,
-                    verify=False
-                )
-
-                if res_post.status_code == 401:
-                    # Token expired or invalid captcha, clear cached token and retry
-                    self._dinajpur_gate_token = None
+                r_form = self.dinajpur_session.get(self._dinajpur_roll_url, timeout=10, verify=False)
+                if r_form.status_code != 200 or '<form' not in r_form.text:
+                    self._dinajpur_session_time = 0
                     continue
 
-                if res_post.status_code == 404 or "No Result Found" in res_post.text or "not found" in res_post.text.lower():
-                    # If registration was provided, it might have been mismatched/wrong.
-                    # Automatically retry with JUST ROLL on Dinajpur Direct API!
-                    if reg_clean:
-                        cap_token2, cap_ans2 = self._get_dinajpur_captcha("student_search")
-                        if cap_token2:
-                            payload2 = {
-                                'roll': roll_clean,
-                                'captchaToken': cap_token2,
-                                'captchaAnswer': cap_ans2
-                            }
-                            if cfg.get('archive') and exam_id:
-                                payload2['examId'] = int(exam_id)
-                            res_post2 = self.dinajpur_session.post(
-                                f"{self.dinajpur_base}/api/results/student",
-                                json=payload2,
-                                headers=headers,
-                                timeout=20,
-                                verify=False
-                            )
-                            if res_post2.status_code in [200, 201]:
-                                res_json_t = res_post2.json()
-                                res_stud_t = res_json_t.get('result', {}).get('result', {})
-                                if res_stud_t and res_stud_t.get('rollNo'):
-                                    res_post = res_post2
+                form_action_m = re.search(r'<form[^>]*action="([^"]+)"', r_form.text)
+                if not form_action_m:
+                    self._dinajpur_session_time = 0
+                    continue
+                submit_url = f"{self.dinajpur_base}{form_action_m.group(1)}"
 
-                    if res_post.status_code == 404 or "No Result Found" in res_post.text or "not found" in res_post.text.lower():
+                cap_q_m = re.search(r'<span class="board-captcha-q">([^<]+)</span>', r_form.text)
+                if not cap_q_m:
+                    self._dinajpur_session_time = 0
+                    continue
+                cap_q = cap_q_m.group(1)
+                qm = re.search(r'(\d+)\s*([\+\-\*])\s*(\d+)', cap_q)
+                if qm:
+                    cap_ans = str(eval(f"{qm.group(1)} {qm.group(2)} {qm.group(3)}"))
+                else:
+                    cap_ans = "0"
+
+                token_m = re.search(r'name="captcha_token"\s+value="([^"]+)"', r_form.text)
+                cap_token = token_m.group(1) if token_m else ''
+
+                exam_m = re.search(r'name="exam"\s+value="([^"]+)"', r_form.text)
+                exam_val = exam_m.group(1) if exam_m else '6'
+
+                post_data = {
+                    'roll': roll_clean,
+                    'reg': reg_clean,
+                    'captcha_answer': cap_ans,
+                    'captcha_token': cap_token,
+                    'exam': exam_val
+                }
+
+                r_res = self.dinajpur_session.post(submit_url, data=post_data, timeout=12, verify=False)
+                if r_res.status_code == 200:
+                    if 'No Result Found' in r_res.text or 'not found' in r_res.text.lower() or 'কোনো ফলাফল পাওয়া যায়নি' in r_res.text:
                         return {
                             "success": False,
                             "not_in_direct": True,
-                            "error": f"রোল {roll_clean} এর কোনো রেজাল্ট {year} সালের {exam} পরীক্ষায় পাওয়া যায়নি।"
+                            "error": f"দিনাজপুর বোর্ডের সরাসরি সার্ভারে রোল {roll_clean} এর কোনো রেজাল্ট মেলেনি।"
                         }
 
-                if res_post.status_code in [200, 201]:
-                    res_json = res_post.json()
-                    res_wrap = res_json.get('result', {})
-                    res_student = res_wrap.get('result', {})
-                    exam_info = res_wrap.get('exam', {})
+                    parsed = self._parse_dinajpur_student_html(r_res.text, roll=roll_clean, exam=exam_upper, year=year_str)
+                    if parsed.get('success'):
+                        return parsed
+                    elif parsed.get('error'):
+                        return {
+                            "success": False,
+                            "not_in_direct": True,
+                            "error": parsed.get('error')
+                        }
 
-                    # Extract subjects
-                    subjects = []
-                    letter_grades = res_student.get('letterGrades', [])
-                    for sub in letter_grades:
-                        s_name = sub.get('subject', '')
-                        s_name = s_name.replace('&amp;', '&').replace('&quot;', '"').replace('&#39;', "'")
-                        subjects.append({
-                            'code': str(sub.get('code', '')),
-                            'name': s_name,
-                            'grade': str(sub.get('grade', '')),
-                            'kind': str(sub.get('kind', 'main'))
-                        })
-
-                    # If GPA is present or in resDetail
-                    raw_gpa = res_student.get('gpa')
-                    gpa = str(raw_gpa).strip() if raw_gpa is not None else ''
-                    res_detail = str(res_student.get('resDetail') or '').strip()
-                    if not gpa and res_detail:
-                        gpa = res_detail.replace('GPA=', '').strip()
-                    if (not gpa or gpa.upper() in ['NONE', 'NULL']) and (res_student.get('badResult') or 'FAIL' in res_detail.upper()):
-                        gpa = 'FAILED'
-
-                    board_name = res_wrap.get('portalBoardName') or self.BOARD_DISPLAY_MAP.get('dinajpur')
-
-                    return {
-                        "success": True,
-                        "source": "dinajpur_direct_api",
-                        "exam_title": exam_info.get('title') or f"RESULT OF {exam_title}",
-                        "exam": exam.upper(),
-                        "year": str(year),
-                        "roll": str(res_student.get('rollNo', roll_clean)),
-                        "reg": str(res_student.get('regno', reg_clean or '[HIDDEN]')),
-                        "name": res_student.get('name', 'N/A'),
-                        "father": res_student.get('father', 'N/A'),
-                        "mother": res_student.get('mother', 'N/A'),
-                        "institute": res_student.get('institute', 'N/A'),
-                        "eiin": str(res_student.get('eiin', '')),
-                        "board": board_name,
-                        "session": res_student.get('session', 'N/A'),
-                        "group": res_student.get('studGroup', 'N/A'),
-                        "type": res_student.get('studType', 'N/A'),
-                        "gpa": gpa,
-                        "total_marks": str(res_student.get('gtot', '')),
-                        "subjects": subjects
-                    }
-
-                err_msg = ""
-                try:
-                    err_msg = res_post.json().get('message', '')
-                except Exception:
-                    pass
-                return {
-                    "success": False,
-                    "not_in_direct": True,
-                    "error": err_msg or f"রোল {roll_clean} এর ফলাফল পাওয়া যায়নি।"
-                }
+                if 'challenge' in r_res.text.lower() or 'human check' in r_res.text.lower():
+                    self._dinajpur_session_time = 0
+                    continue
 
             except Exception as e:
+                print(f"[Dinajpur Direct Web Error]: {e}")
+                self._dinajpur_session_time = 0
                 if attempt == 0:
-                    time.sleep(0.5)
                     continue
-                return {"success": False, "not_in_direct": True, "error": f"দিনাজপুর সরাসরি সার্ভারে সংযোগে সাময়িক বিলম্ব হয়েছে: {str(e)}"}
 
-        return {"success": False, "not_in_direct": True, "error": "দিনাজপুর সার্ভার থেকে রেজাল্ট আনতে ব্যর্থ হয়েছে।"}
+        return {"success": False, "not_in_direct": True, "error": "দিনাজপুর সার্ভার থেকে রেজাল্ট আনতে সাময়িক সমস্যা হয়েছে।"}
 
     # =========================================================================
     # Central eBoard Archive Engine (All 11 Boards)
