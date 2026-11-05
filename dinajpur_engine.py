@@ -13,8 +13,13 @@ import sys
 import threading
 import requests
 import urllib3
+import html as html_lib
 from collections import Counter
-from PIL import Image, ImageEnhance
+try:
+    from PIL import Image, ImageEnhance
+    HAS_PIL = True
+except ImportError:
+    HAS_PIL = False
 
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
@@ -339,30 +344,54 @@ class DinajpurUnifiedEngine:
 
     def _parse_dinajpur_student_html(self, html, roll="", exam="HSC", year="2026"):
         """Extracts complete student metadata and full subject-wise marksheet from official Dinajpur HTML."""
-        from bs4 import BeautifulSoup
-        soup = BeautifulSoup(html, 'html.parser')
-        tables = soup.find_all('table')
-        if len(tables) < 2:
-            err_div = soup.find(class_=re.compile(r'error|alert|notice'))
-            err_msg = err_div.get_text().strip() if err_div else f"রোল {roll} এর কোনো ফলাফল পাওয়া যায়নি।"
+        def strip_tags(text):
+            return re.sub(r'<[^>]+>', ' ', text).strip()
+
+        tables_data = []
+        try:
+            from bs4 import BeautifulSoup
+            soup = BeautifulSoup(html, 'html.parser')
+            for t in soup.find_all('table'):
+                t_rows = []
+                for r in t.find_all('tr'):
+                    cells = [c.get_text().strip() for c in r.find_all(['th', 'td'])]
+                    t_rows.append(cells)
+                tables_data.append(t_rows)
+        except Exception:
+            pass
+
+        if not tables_data:
+            # Fallback pure regex parser if bs4 is not available
+            tables = re.findall(r'<table[^>]*>(.*?)</table>', html, re.DOTALL | re.IGNORECASE)
+            for t in tables:
+                t_rows = []
+                rows = re.findall(r'<tr[^>]*>(.*?)</tr>', t, re.DOTALL | re.IGNORECASE)
+                for r in rows:
+                    cells = [strip_tags(c) for c in re.findall(r'<t[dh][^>]*>(.*?)</t[dh]>', r, re.DOTALL | re.IGNORECASE)]
+                    cells = [re.sub(r'\s+', ' ', c).strip() for c in cells]
+                    t_rows.append(cells)
+                tables_data.append(t_rows)
+
+        if len(tables_data) < 2:
+            m_err = re.search(r'class="[^"]*(?:error|alert|notice)[^"]*"[^>]*>(.*?)</div>', html, re.DOTALL | re.IGNORECASE)
+            err_msg = strip_tags(m_err.group(1)) if m_err else f"রোল {roll} এর কোনো ফলাফল পাওয়া যায়নি।"
             return {"success": False, "error": err_msg}
 
         meta = {}
-        for r in tables[0].find_all('tr'):
-            cells = [c.get_text().strip() for c in r.find_all(['th', 'td'])]
+        for cells in tables_data[0]:
             if len(cells) in (2, 3):
                 meta[cells[0].rstrip(':').strip().lower()] = cells[1]
             elif len(cells) >= 4:
                 meta[cells[0].rstrip(':').strip().lower()] = cells[1]
                 meta[cells[2].rstrip(':').strip().lower()] = cells[3]
 
-        name = meta.get('name of student', meta.get('name', 'N/A'))
-        father = meta.get("father's name", meta.get('father', 'N/A'))
-        mother = meta.get("mother's name", meta.get('mother', 'N/A'))
-        institute = meta.get('name of institute', meta.get('institute', 'N/A'))
+        name = html_lib.unescape(meta.get('name of student', meta.get('name', 'N/A')))
+        father = html_lib.unescape(meta.get("father's name", meta.get('father', 'N/A')))
+        mother = html_lib.unescape(meta.get("mother's name", meta.get('mother', 'N/A')))
+        institute = html_lib.unescape(meta.get('name of institute', meta.get('institute', 'N/A')))
         board_val = meta.get('board', 'DINAJPUR')
         session_val = meta.get('session', 'N/A')
-        group_val = meta.get('group', 'N/A')
+        group_val = html_lib.unescape(meta.get('group', 'N/A'))
         type_val = meta.get('type', 'REGULAR')
         reg_val = meta.get('registration no', meta.get('reg', '[HIDDEN]'))
         roll_val = meta.get('roll no', meta.get('roll', roll))
@@ -373,17 +402,17 @@ class DinajpurUnifiedEngine:
             gpa = 'FAILED'
 
         subjects = []
-        for r in tables[1].find_all('tr')[1:]:
-            cells = [c.get_text().strip() for c in r.find_all(['td', 'th'])]
+        for cells in tables_data[1][1:]:
             if len(cells) >= 3:
+                s_grade = re.sub(r'\s+', '', cells[2])
                 subjects.append({
                     'code': cells[0],
-                    'name': cells[1],
-                    'grade': cells[2]
+                    'name': html_lib.unescape(cells[1]),
+                    'grade': s_grade
                 })
 
-        title_el = soup.find(class_='site-exam-title') or soup.find(class_='home-heading')
-        exam_title = title_el.get_text().strip() if title_el else f"RESULT OF {exam} EXAMINATION, {year}"
+        m_title = re.search(r'class="[^"]*(?:site-exam-title|home-heading)[^"]*"[^>]*>(.*?)<', html, re.IGNORECASE)
+        exam_title = m_title.group(1).strip() if m_title else f"RESULT OF {exam} EXAMINATION, {year}"
 
         return {
             "success": True,
@@ -536,7 +565,7 @@ class DinajpurUnifiedEngine:
         - Multi-mode: RGB, Grayscale, and High-Contrast Grayscale (2.0x)
         - Fast early-exit consensus voting
         """
-        if not self._ocr:
+        if not self._ocr or not HAS_PIL:
             return ""
         try:
             im = Image.open(io.BytesIO(img_bytes)).convert('RGB')

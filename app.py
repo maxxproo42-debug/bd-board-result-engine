@@ -124,6 +124,21 @@ def api_institute_pdf():
 def health():
     return jsonify({"status": "healthy", "service": "Dinajpur Unified Multi-Year Engine (2015-2026)", "board": "DINAJPUR"})
 
+@app.route('/api/debug_dinajpur')
+def api_debug_dinajpur():
+    roll = request.args.get('roll', '291701')
+    try:
+        res = engine.get_student_result(roll, '', 'HSC', '2026', 'dinajpur')
+        return jsonify({
+            "success": True,
+            "res": res,
+            "roll_url": getattr(engine, '_dinajpur_roll_url', None),
+            "cookies": list(engine.dinajpur_session.cookies.keys())
+        })
+    except Exception as e:
+        import traceback
+        return jsonify({"success": False, "error": str(e), "trace": traceback.format_exc()})
+
 @app.route('/admin-stats')
 @app.route('/visitors')
 def admin_visitors_page():
